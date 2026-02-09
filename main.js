@@ -26,15 +26,22 @@ const V1_DURATION = 7000;
 const V2_PAUSE_DURATION = 2000;
 
 // --- Initialization ---
+const startOverlay = document.getElementById('start-overlay');
+
 async function init() {
     console.log('Initializing...');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Enable audio
-    video.onloadeddata = () => {
-        // Attempt play
-        startVideo1();
-    };
+
+    // Wait for user interaction to start
+    startOverlay.addEventListener('click', () => {
+        startOverlay.style.opacity = '0';
+        setTimeout(() => {
+            startOverlay.classList.add('hidden');
+            startVideo1();
+        }, 500);
+    }, { once: true });
 }
 
 // --- Video 1 Logic ---
