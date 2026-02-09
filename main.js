@@ -30,11 +30,9 @@ async function init() {
     console.log('Initializing...');
     // Setup Video 1
     video.src = videos.v1;
+    video.muted = false; // Enable audio
     video.onloadeddata = () => {
-        // Wait for user interaction or auto-play? 
-        // Browsers block autoplay with sound. V1 has sound ("With_background_noise").
-        // We might need a "Click to Start" overlay. 
-        // For now, try play() and catch error.
+        // Attempt play
         startVideo1();
     };
 }
@@ -44,9 +42,11 @@ let v1StartTime;
 
 function startVideo1() {
     overlayV1.classList.remove('hidden');
+    video.muted = false; // Ensure sound is ON for V1
     video.play().catch(e => {
         console.error("Autoplay prevented", e);
-        alert("Please click to start");
+        // Show a "Click to Enter" button if needed, or just handle silent fail
+        // For now, retry on click
         document.body.addEventListener('click', () => {
             video.play();
             v1StartTime = Date.now();
@@ -58,6 +58,11 @@ function startVideo1() {
         v1StartTime = Date.now();
         requestAnimationFrame(animateV1);
     }
+
+    // (Words code omitted - relying on untouched code below 62)
+    // Wait, I need to match the Target Content exactly or Replace the block.
+    // I will just replace the TOP part of startVideo1, but I need to be careful with the word list.
+    // I'll replace the word list too to be safe/complete in this chunk.
 
     // Words Sequence
     const words = [
@@ -94,19 +99,34 @@ function animateV1() {
         return;
     }
 
-    const growthRate = (1.5 - 0.2) / 3500; // Target 1.5x at 3.5s? "Full size" = 1.0 likely. 
-    // Assuming object-fit: contain, 1.0 is full viewport. 
-    // Start 0.2 -> 1.0
-    const baseScale = 0.2 + (elapsed * ((1.0 - 0.2) / 3500));
+    // "indication: 1st 800ms enlarge to 1.3... 2nd 800ms shrink to 0.8... 3rd 800ms enlarge to 1.5"
+    // We define keyframes relative to the Previous Step's End Scale.
+    // Step 0 (Start): 0.2
 
-    // Pulse
-    const breatheDuration = 800;
-    const cyclePos = (elapsed % breatheDuration) / breatheDuration;
-    const pulse = Math.sin(cyclePos * Math.PI * 2) * 0.05;
+    // Define the sequence of multiplicative factors
+    const factors = [1.3, 0.8, 1.5, 0.8, 1.7, 0.8, 1.9, 0.8, 2.1];
+    const stepDuration = 800;
 
-    let finalScale = Math.max(0.1, baseScale + (pulse > 0 ? pulse : pulse * 0.5));
+    // Determine current step index
+    const stepIndex = Math.floor(elapsed / stepDuration);
+    const stepProgress = (elapsed % stepDuration) / stepDuration; // 0.0 -> 1.0
 
-    video.style.transform = `scale(${finalScale})`;
+    // Calculate the Scale at the START of the current step
+    let startScale = 0.2; // Initial
+    for (let i = 0; i < stepIndex; i++) {
+        if (i < factors.length) startScale *= factors[i];
+    }
+
+    // Calculate the Target Scale at the END of the current step
+    let targetScale = startScale;
+    if (stepIndex < factors.length) {
+        targetScale = startScale * factors[stepIndex];
+    }
+
+    // Interpolate Linear
+    const currentScale = startScale + (targetScale - startScale) * stepProgress;
+
+    video.style.transform = `scale(${currentScale})`;
 
     requestAnimationFrame(animateV1);
 }
@@ -121,12 +141,13 @@ function startVideo2Setup() {
     video.src = videos.v2;
     video.style.transform = 'scale(1)';
     video.currentTime = 0;
+    video.muted = false; // Ensure sound on for V2
 
     overlayV2.classList.remove('hidden');
 
     // Wait 2s then Play
     setTimeout(() => {
-        overlayV2.classList.add('hidden'); // Hide overlay text when playing
+        overlayV2.classList.add('hidden');
         video.play();
 
         video.onended = () => {
