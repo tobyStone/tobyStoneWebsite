@@ -24,24 +24,22 @@ html {
     position: relative;
 }
 
-.start-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
+#unmute-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid white;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
     cursor: pointer;
-    transition: opacity 0.5s;
+    font-size: 1rem;
 }
 
-.start-content {
-    text-align: center;
-    color: white;
+#unmute-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 #video-wrapper {

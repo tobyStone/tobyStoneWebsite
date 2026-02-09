@@ -26,22 +26,17 @@ const V1_DURATION = 7000;
 const V2_PAUSE_DURATION = 2000;
 
 // --- Initialization ---
-const startOverlay = document.getElementById('start-overlay');
+const unmuteBtn = document.getElementById('unmute-btn');
 
 async function init() {
     console.log('Initializing...');
     // Setup Video 1
     video.src = videos.v1;
-    video.muted = false; // Enable audio
+    video.muted = false; // Try sound first
 
-    // Wait for user interaction to start
-    startOverlay.addEventListener('click', () => {
-        startOverlay.style.opacity = '0';
-        setTimeout(() => {
-            startOverlay.classList.add('hidden');
-            startVideo1();
-        }, 500);
-    }, { once: true });
+    video.onloadeddata = () => {
+        startVideo1();
+    };
 }
 
 // --- Video 1 Logic ---
@@ -49,27 +44,29 @@ let v1StartTime;
 
 function startVideo1() {
     overlayV1.classList.remove('hidden');
-    video.muted = false; // Ensure sound is ON for V1
-    video.play().catch(e => {
-        console.error("Autoplay prevented", e);
-        // Show a "Click to Enter" button if needed, or just handle silent fail
-        // For now, retry on click
-        document.body.addEventListener('click', () => {
+
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log("Autoplay with sound prevented. Falling back to muted.");
+            video.muted = true;
             video.play();
-            v1StartTime = Date.now();
-            requestAnimationFrame(animateV1);
-        }, { once: true });
-    });
 
-    if (!v1StartTime) { // If autoplay worked
-        v1StartTime = Date.now();
-        requestAnimationFrame(animateV1);
+            // Show Unmute Button
+            unmuteBtn.classList.remove('hidden');
+            unmuteBtn.onclick = () => {
+                video.muted = false;
+                unmuteBtn.classList.add('hidden');
+            };
+        }).then(() => {
+            // Play started (either muted or unmuted)
+            if (!v1StartTime) {
+                v1StartTime = Date.now();
+                requestAnimationFrame(animateV1);
+            }
+        });
     }
-
-    // (Words code omitted - relying on untouched code below 62)
-    // Wait, I need to match the Target Content exactly or Replace the block.
-    // I will just replace the TOP part of startVideo1, but I need to be careful with the word list.
-    // I'll replace the word list too to be safe/complete in this chunk.
 
     // Words Sequence
     const words = [
