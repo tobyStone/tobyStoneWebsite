@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toby Stone</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+    <div id="app">
+        <!-- Video Container -->
+        <div id="video-wrapper">
+            <video id="main-video" playsinline muted></video>
+
+            <!-- Video 1 Overlays -->
+            <div id="overlay-v1" class="overlay hidden">
+                <!-- Text will be injected here dynamically -->
+            </div>
+
+            <!-- Video 2 Poster/Overlay -->
+            <div id="overlay-v2" class="overlay hidden">
+                <div class="v2-content">
+                    <div class="v2-left">
+                        <div class="word-stack">
+                            <img src="/images/To.png" alt="To" class="word-img">
+                            <img src="/images/A.png" alt="A" class="word-img">
+                        </div>
+                    </div>
+                    <div class="v2-center-rect"></div>
+                    <div class="v2-right">
+                        <div class="word-stack">
+                            <img src="/images/super.png" alt="Super" class="word-img">
+                            <div class="letter-row">
+                                <img src="/images/S.png" alt="S" class="letter-img">
+                                <img src="/images/i.png" alt="i" class="letter-img">
+                                <img src="/images/T.png" alt="T" class="letter-img">
+                                <img src="/images/E.png" alt="E" class="letter-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 3 Overlays -->
+            <div id="overlay-v3" class="overlay hidden">
+                <img src="/images/Lets.png" id="word-lets" class="v3-word hidden">
+                <img src="/images/Pow.png" id="word-pow" class="v3-word hidden">
+                <img src="/images/Wow.png" id="word-wow" class="v3-word hidden">
+
+                <div id="contact-links" class="hidden">
+                    <a href="#" id="link-email" class="contact-item">
+                        <span class="contact-text">Email</span>
+                        <img src="/images/emailIcon.png" class="contact-icon">
+                    </a>
+                    <div id="link-form" class="contact-item">
+                        <span class="contact-text">Online Form</span>
+                        <img src="/images/onlineFormIcon.png" class="contact-icon">
+                    </div>
+                    <a href="https://www.linkedin.com/in/toby-stone/" target="_blank" id="link-linkedin"
+                        class="contact-item">
+                        <span class="contact-text">LinkedIn</span>
+                        <img src="/images/linkedInIcon.png" class="contact-icon">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden form for submission -->
+        <div id="form-modal" class="hidden">
+            <form id="interest-form">
+                <h2>Interest in Website Building</h2>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <textarea name="message" placeholder="Message" required></textarea>
+                <button type="submit">Submit</button>
+                <button type="button" id="close-form">Close</button>
+            </form>
+        </div>
+
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+
+</html>
