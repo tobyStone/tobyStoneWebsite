@@ -68,9 +68,30 @@ function startVideo1() {
         });
     }
 
-    // Words Sequence removed as per user request
-    // const words = [ ... ];
-    // words.forEach(...)
+    // Words Sequence
+    const words = [
+        { text: 'From', img: 'From.png', time: 500, pos: { top: '10%', left: '50%' } },
+        { text: 'the', img: 'The.png', time: 1000, pos: { top: '20%', right: '20%' } },
+        { text: 'seed', img: 'Seed.png', time: 1500, pos: { bottom: '20%', right: '20%' } },
+        { text: 'of', img: 'Of.png', time: 2000, pos: { bottom: '10%', left: '50%' } },
+        { text: 'a', img: 'A.png', time: 2500, pos: { bottom: '20%', left: '20%' } },
+        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '20%', left: '20%' } },
+        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '5%', left: '40%' } },
+        { text: 'an', img: 'An.png', time: 4000, pos: { top: '5%', right: '40%' } },
+        { text: 'idea', img: 'Idea.png', time: 4500, pos: { top: '50%', left: '50%', center: true } }
+    ];
+
+    words.forEach(w => {
+        setTimeout(() => {
+            const el = document.createElement('img');
+            el.src = `/images/${w.img}`;
+            el.className = 'v1-word';
+            el.onerror = () => { el.style.display = 'none'; };
+            Object.assign(el.style, w.pos);
+            if (w.pos.center) el.style.transform = 'translate(-50%, -50%)';
+            overlayV1.appendChild(el);
+        }, w.time);
+    });
 }
 
 function animateV1() {
@@ -131,51 +152,52 @@ function startVideo2Setup() {
     video.style.position = 'relative'; // Ensure z-index works
     video.style.mixBlendMode = 'screen';
 
-    // Ensure overlay is visible but behind video (z-20 vs z-30)
-    // We want the overlay to appear during the pause.
-    // Initially hidden? No, user says "remains on screen for 3600ms".
-    // "around the colour in the centre of the video... will be the words"
-    // So the video plays 1200ms. Then pauses.
-    // At 1200ms, we show the words? Or are they there from start?
-    // "At the same time... will be the words". "The video will then play... and the words will be rendered over".
-    // Implies words appear during pause.
+    // Set initial playback rate to 1/3 speed
+    video.playbackRate = 0.333;
 
-    // Hide overlay initially
-    overlayV2.classList.add('hidden');
+    // Show overlay immediately
+    overlayV2.classList.remove('hidden');
+    overlayV2.style.transition = 'opacity 0.5s ease-out';
+    overlayV2.style.opacity = '1';
 
     video.play();
 
-    // 1.2s Pause Logic
+    // Fade out text starting at 3.5s to be gone by 4.0s
     setTimeout(() => {
-        video.pause();
-        overlayV2.classList.remove('hidden'); // Show words
+        overlayV2.style.opacity = '0';
+    }, 3500);
 
-        // 3.6s Wait Logic
+    // Switch to normal speed at 3.6s (1.2s of video content * 3)
+    setTimeout(() => {
+        video.playbackRate = 1.0;
+
+        // Ensure overlay is hidden after fade
         setTimeout(() => {
-            video.play();
-            // Words remain visible, video plays over them (screen blend)
+            overlayV2.classList.add('hidden');
+        }, 500); // 3.5s + 0.5s fade = 4.0s
 
-            video.onended = () => {
-                // Cleanup V2 styles
-                video.style.zIndex = '';
-                video.style.mixBlendMode = '';
-                overlayV2.classList.add('hidden');
-                startVideo3();
-            };
+    }, 3600);
 
-            // Audio Fade
-            const monitor = setInterval(() => {
-                if (video.duration && video.currentTime >= video.duration - 1.0) {
-                    if (video.volume > 0.1) video.volume -= 0.1;
-                    if (bgAudio.paused) bgAudio.play();
-                    if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
-                }
-                if (video.ended) clearInterval(monitor);
-            }, 200);
 
-        }, 3600);
+    video.onended = () => {
+        // Cleanup V2 styles
+        video.style.zIndex = '';
+        video.style.mixBlendMode = '';
+        video.playbackRate = 1.0; // Reset for V3
+        overlayV2.classList.add('hidden');
+        overlayV2.style.opacity = ''; // Reset opacity
+        startVideo3();
+    };
 
-    }, 1200);
+    // Audio Fade
+    const monitor = setInterval(() => {
+        if (video.duration && video.currentTime >= video.duration - 1.0) {
+            if (video.volume > 0.1) video.volume -= 0.1;
+            if (bgAudio.paused) bgAudio.play();
+            if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
+        }
+        if (video.ended) clearInterval(monitor);
+    }, 200);
 }
 
 function startVideo3() {
