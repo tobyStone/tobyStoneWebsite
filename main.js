@@ -68,30 +68,9 @@ function startVideo1() {
         });
     }
 
-    // Words Sequence
-    const words = [
-        { text: 'From', img: 'From.png', time: 500, pos: { top: '10%', left: '50%' } },
-        { text: 'the', img: 'The.png', time: 1000, pos: { top: '20%', right: '20%' } },
-        { text: 'seed', img: 'Seed.png', time: 1500, pos: { bottom: '20%', right: '20%' } },
-        { text: 'of', img: 'Of.png', time: 2000, pos: { bottom: '10%', left: '50%' } },
-        { text: 'a', img: 'A.png', time: 2500, pos: { bottom: '20%', left: '20%' } },
-        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '20%', left: '20%' } },
-        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '5%', left: '40%' } },
-        { text: 'an', img: 'An.png', time: 4000, pos: { top: '5%', right: '40%' } },
-        { text: 'idea', img: 'Idea.png', time: 4500, pos: { top: '50%', left: '50%', center: true } }
-    ];
-
-    words.forEach(w => {
-        setTimeout(() => {
-            const el = document.createElement('img');
-            el.src = `/images/${w.img}`;
-            el.className = 'v1-word';
-            el.onerror = () => { el.style.display = 'none'; };
-            Object.assign(el.style, w.pos);
-            if (w.pos.center) el.style.transform = 'translate(-50%, -50%)';
-            overlayV1.appendChild(el);
-        }, w.time);
-    });
+    // Words Sequence removed as per user request
+    // const words = [ ... ];
+    // words.forEach(...)
 }
 
 function animateV1() {
@@ -147,28 +126,56 @@ function startVideo2Setup() {
     video.currentTime = 0;
     video.muted = false; // Ensure sound on for V2
 
-    overlayV2.classList.remove('hidden');
+    // Apply blend mode for "explosion over words" effect
+    video.style.zIndex = '30';
+    video.style.position = 'relative'; // Ensure z-index works
+    video.style.mixBlendMode = 'screen';
 
-    // Wait 2s then Play
+    // Ensure overlay is visible but behind video (z-20 vs z-30)
+    // We want the overlay to appear during the pause.
+    // Initially hidden? No, user says "remains on screen for 3600ms".
+    // "around the colour in the centre of the video... will be the words"
+    // So the video plays 1200ms. Then pauses.
+    // At 1200ms, we show the words? Or are they there from start?
+    // "At the same time... will be the words". "The video will then play... and the words will be rendered over".
+    // Implies words appear during pause.
+
+    // Hide overlay initially
+    overlayV2.classList.add('hidden');
+
+    video.play();
+
+    // 1.2s Pause Logic
     setTimeout(() => {
-        overlayV2.classList.add('hidden');
-        video.play();
+        video.pause();
+        overlayV2.classList.remove('hidden'); // Show words
 
-        video.onended = () => {
-            startVideo3();
-        };
+        // 3.6s Wait Logic
+        setTimeout(() => {
+            video.play();
+            // Words remain visible, video plays over them (screen blend)
 
-        // Audio Fade
-        const monitor = setInterval(() => {
-            if (video.duration && video.currentTime >= video.duration - 1.0) {
-                if (video.volume > 0.1) video.volume -= 0.1;
-                if (bgAudio.paused) bgAudio.play();
-                if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
-            }
-            if (video.ended) clearInterval(monitor);
-        }, 200);
+            video.onended = () => {
+                // Cleanup V2 styles
+                video.style.zIndex = '';
+                video.style.mixBlendMode = '';
+                overlayV2.classList.add('hidden');
+                startVideo3();
+            };
 
-    }, V2_PAUSE_DURATION);
+            // Audio Fade
+            const monitor = setInterval(() => {
+                if (video.duration && video.currentTime >= video.duration - 1.0) {
+                    if (video.volume > 0.1) video.volume -= 0.1;
+                    if (bgAudio.paused) bgAudio.play();
+                    if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
+                }
+                if (video.ended) clearInterval(monitor);
+            }, 200);
+
+        }, 3600);
+
+    }, 1200);
 }
 
 function startVideo3() {
