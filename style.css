@@ -238,3 +238,11 @@ button {
         gap: 10px;
     }
 }
+
+/* Contact Text Images (replacement for text spans) */
+.contact-text-img {
+    height: 1.5rem;
+    /* Match previous font size approx */
+    width: auto;
+    object-fit: contain;
+}

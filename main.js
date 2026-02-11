@@ -138,6 +138,7 @@ function animateV1() {
 function stopVideo1() {
     video.pause();
     overlayV1.classList.add('hidden');
+    overlayV1.innerHTML = ''; // Clear all text elements immediately
     startVideo2Setup();
 }
 
@@ -155,6 +156,9 @@ function startVideo2Setup() {
     // Set initial playback rate to 1/3 speed
     video.playbackRate = 0.333;
 
+    // Start Muted (Audio Delay)
+    video.muted = true;
+
     // Show overlay immediately
     overlayV2.classList.remove('hidden');
     overlayV2.style.transition = 'opacity 0.5s ease-out';
@@ -170,6 +174,9 @@ function startVideo2Setup() {
     // Switch to normal speed at 3.6s (1.2s of video content * 3)
     setTimeout(() => {
         video.playbackRate = 1.0;
+
+        // Unmute Video 2
+        video.muted = false;
 
         // Ensure overlay is hidden after fade
         setTimeout(() => {
