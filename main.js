@@ -35,6 +35,8 @@ async function init() {
     video.muted = false; // Try sound first
 
     video.onloadeddata = () => {
+        // Bugfix: Ensure this only runs once so V1 setup doesn't re-trigger for V2/V3
+        video.onloadeddata = null;
         startVideo1();
     };
 }
@@ -242,8 +244,8 @@ function startVideo3() {
         // "appear to the right and slightly below centre"
         // Initial: left 50%, translate -50%.
         // Target: "slightly below centre" (top 65% set in CSS). 
-        // "appear to the right" -> move LEFT value to say 60%?
-        contactLinks.style.left = '60%';
+        // "appear to the right" -> move LEFT value to 80% (User request: move 20% more to right from 60%)
+        contactLinks.style.left = '80%';
     }, 4000); // "After these transitions" -> 2s (pow) + drift time? 4s is safe.
 }
 
