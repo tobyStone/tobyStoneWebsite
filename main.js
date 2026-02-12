@@ -174,8 +174,12 @@ function startVideo2Setup() {
     setTimeout(() => {
         video.playbackRate = 1.0;
 
-        // Unmute Video 2
-        video.muted = false;
+        // Unmute Video 2 IF user has globally unmuted
+        // Check if the Unmute button is HIDDEN (meaning user clicked it)
+        const isUserUnmuted = unmuteBtn.classList.contains('hidden');
+        if (isUserUnmuted) {
+            video.muted = false;
+        }
 
         // Ensure overlay is hidden after fade
         setTimeout(() => {
@@ -212,7 +216,9 @@ function startVideo3() {
     video.loop = false;
 
     // 17% left shift and 0.5 speed
-    video.style.transform = 'translateX(-17%)';
+    // User Update: Move head back to midpoint (remove left shift)
+    // video.style.transform = 'translateX(-17%)'; 
+    video.style.transform = 'translateX(0)';
     video.playbackRate = 0.5;
 
     video.play();
