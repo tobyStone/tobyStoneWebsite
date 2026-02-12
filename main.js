@@ -47,28 +47,25 @@ let v1StartTime;
 function startVideo1() {
     overlayV1.classList.remove('hidden');
 
-    const playPromise = video.play();
+    // User requested audio starts 'off'
+    video.muted = true;
+    unmuteBtn.classList.remove('hidden');
 
-    if (playPromise !== undefined) {
-        playPromise.catch(error => {
-            console.log("Autoplay with sound prevented. Falling back to muted.");
-            video.muted = true;
-            video.play();
+    unmuteBtn.onclick = () => {
+        video.muted = false;
+        unmuteBtn.classList.add('hidden');
+        if (!bgAudio.paused) bgAudio.muted = false;
+    };
 
-            // Show Unmute Button
-            unmuteBtn.classList.remove('hidden');
-            unmuteBtn.onclick = () => {
-                video.muted = false;
-                unmuteBtn.classList.add('hidden');
-            };
-        }).then(() => {
-            // Play started (either muted or unmuted)
-            if (!v1StartTime) {
-                v1StartTime = Date.now();
-                requestAnimationFrame(animateV1);
-            }
-        });
-    }
+    video.play().then(() => {
+        // Play started
+        if (!v1StartTime) {
+            v1StartTime = Date.now();
+            requestAnimationFrame(animateV1);
+        }
+    }).catch(e => {
+        console.log("Autoplay failed even muted?", e);
+    });
 
     // Words Sequence
     const words = [
@@ -211,42 +208,64 @@ function startVideo2Setup() {
 
 function startVideo3() {
     video.src = videos.v3;
-    video.muted = true;
+    video.muted = true; // Video itself is muted, using bgAudio
     video.loop = false;
+
+    // 17% left shift and 0.5 speed
+    video.style.transform = 'translateX(-17%)';
+    video.playbackRate = 0.5;
+
     video.play();
+
+    // Background Audio Logic
+    bgAudio.muted = video.muted; // Sync with global mute state
+    bgAudio.currentTime = 0;
+    bgAudio.volume = 0;
+    bgAudio.loop = false; // Play once
+    bgAudio.play().catch(e => console.log("Audio play failed", e));
+
+    // Fade up to 0.7
+    const audioFade = setInterval(() => {
+        if (bgAudio.volume < 0.7) {
+            bgAudio.volume = Math.min(0.7, bgAudio.volume + 0.05);
+        } else {
+            clearInterval(audioFade);
+        }
+    }, 200);
 
     overlayV3.classList.remove('hidden');
 
     document.getElementById('word-lets').classList.remove('hidden');
 
-    // 1s Pow
+    // 1s Pow -> 0.8s transition handled in CSS
     setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
-        // Drift left 37% from left
-        setTimeout(() => { pow.style.left = '37%'; }, 100);
+        // Drift left 37% from left AND Rotate -37deg
+        // CSS transition updated to 0.8s
+        setTimeout(() => {
+            pow.style.left = '37%';
+            pow.style.transform = 'translate(-50%, -50%) rotate(-37deg)';
+        }, 50);
     }, 1000);
 
     // 2s Wow
     setTimeout(() => {
         const wow = document.getElementById('word-wow');
         wow.classList.remove('hidden');
-        // Drift right 37% from right -> left: 63%
-        setTimeout(() => { pow.style.left = '63%'; }, 100); // Wait, COPY PASTE ERROR? 
-        // Should be WOW. 
-        setTimeout(() => { wow.style.left = '63%'; }, 100); // Fixed
+        // Drift right 37% from right -> left: 63% AND Rotate 37deg
+        setTimeout(() => {
+            wow.style.left = '63%';
+            wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+        }, 50);
     }, 2000);
 
     // Links Fade In
     setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
-        // "appear to the right and slightly below centre"
-        // Initial: left 50%, translate -50%.
-        // Target: "slightly below centre" (top 65% set in CSS). 
-        // "appear to the right" -> move LEFT value to 80% (User request: move 20% more to right from 60%)
         contactLinks.style.left = '80%';
-    }, 4000); // "After these transitions" -> 2s (pow) + drift time? 4s is safe.
+    }, 4000);
 }
 
 document.getElementById('link-form').addEventListener('click', () => {

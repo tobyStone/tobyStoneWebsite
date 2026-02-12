@@ -135,7 +135,8 @@ html {
 /* Video 3 Words */
 .v3-word {
     position: absolute;
-    transition: all 1s ease-out;
+    transition: all 0.8s ease-out;
+    /* Duration * 0.8 */
 }
 
 #word-lets {
@@ -190,8 +191,9 @@ html {
 /* "icon to the right of the wording" -> Text first, then Icon. default flex row is fine. */
 
 .contact-icon {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    /* 1.5x of 40px */
+    height: 60px;
 }
 
 /* Form Modal */
@@ -242,8 +244,8 @@ button {
 
 /* Contact Text Images (replacement for text spans) */
 .contact-text-img {
-    height: 1.5rem;
-    /* Match previous font size approx */
+    height: 2.25rem;
+    /* 1.5x of 1.5rem */
     width: auto;
     object-fit: contain;
 }
