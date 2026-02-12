@@ -69,7 +69,7 @@ function startVideo1() {
 
     // Words Sequence
     const words = [
-        { text: 'From', img: 'From.png', time: 500, pos: { top: '10%', left: '50%' } },
+        { text: 'From', img: 'From.png', time: 500, pos: { top: '10%', left: '10%' } }, // 10% from left
         { text: 'the', img: 'The.png', time: 1000, pos: { top: '20%', right: '20%' } },
         { text: 'seed', img: 'Seed.png', time: 1500, pos: { bottom: '20%', right: '20%' } },
         { text: 'of', img: 'Of.png', time: 2000, pos: { bottom: '10%', left: '50%' } },
@@ -145,7 +145,7 @@ function startVideo2Setup() {
     video.src = videos.v2;
     video.style.transform = 'scale(1)';
     video.currentTime = 0;
-    video.muted = false; // Ensure sound on for V2
+    // video.muted = false; // REMOVED: Respect global mute state (default muted)
 
     // Apply blend mode for "explosion over words" effect
     video.style.zIndex = '30';
@@ -212,22 +212,29 @@ function startVideo2Setup() {
 
 function startVideo3() {
     video.src = videos.v3;
+    // Fix: Ensure V3 doesn't loop via recycled onended handler
+    video.onended = null;
+
     video.muted = true; // Video itself is muted, using bgAudio
     video.loop = false;
 
-    // 17% left shift and 0.5 speed
+    // 17% left shift and 0.5 speed -> User requested 1.5x current (0.5 * 1.5 = 0.75)
     // User Update: Move head back to midpoint (remove left shift)
-    // video.style.transform = 'translateX(-17%)'; 
     video.style.transform = 'translateX(0)';
-    video.playbackRate = 0.5;
+    video.playbackRate = 0.75;
 
     video.play();
 
     // Background Audio Logic
-    bgAudio.muted = video.muted; // Sync with global mute state
+    // Sync with global mute state (unmuteBtn hidden = sound ON)
+    const isUnmuted = unmuteBtn.classList.contains('hidden');
+    bgAudio.muted = !isUnmuted;
     bgAudio.currentTime = 0;
     bgAudio.volume = 0;
     bgAudio.loop = false; // Play once
+
+    // Only play if unmuted, or prepare to play if user unmutes later? 
+    // The unmuteBtn handler will unmute bgAudio if playing.
     bgAudio.play().catch(e => console.log("Audio play failed", e));
 
     // Fade up to 0.7
@@ -249,8 +256,9 @@ function startVideo3() {
         pow.classList.remove('hidden');
         // Drift left 37% from left AND Rotate -37deg
         // CSS transition updated to 0.8s
+        // User requested: Move 2% right (37% -> 39%)
         setTimeout(() => {
-            pow.style.left = '37%';
+            pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-37deg)';
         }, 50);
     }, 1000);
