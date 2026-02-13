@@ -131,8 +131,8 @@ html {
 
 .letter-row {
     display: flex;
-    gap: 2.5px;
-    /* Reduced by 50% from 5px */
+    gap: 1.25px;
+    /* Reduced by 50% again from 2.5px */
 }
 
 /* Video 3 Words */
@@ -209,11 +209,11 @@ html {
 #veo-blocker {
     position: absolute;
     bottom: 0px;
-    right: 50px;
+    right: 55px;
     /* Shifted left to cover Veo letters specifically, avoiding icon */
     width: 60px;
     /* Approximate width of 'Veo' */
-    height: 30px;
+    height: 50px;
     background-color: black;
     z-index: 5;
     /* Above video (0/auto), below contact links (20) */

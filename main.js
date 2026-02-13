@@ -70,26 +70,27 @@ function startVideo1() {
 
     // Words Sequence
     const words = [
-        // Clock starts at 11 (240 deg). Spacing 30 + (90/9) = 40 deg.
-        // Radius approx 35%. Center 50,50. 
-        // 1. From (11): 240 deg. x=32.5, y=19.7
+        // Clock starts at 11. 
+        // 1. From (11): 500ms
         { text: 'From', img: 'From.png', time: 500, pos: { top: '19.7%', left: '32.5%' } },
-        // 2. the (12:20): 280 deg. x=56.1, y=15.5
-        { text: 'the', img: 'The.png', time: 1000, pos: { top: '15.5%', left: '56.1%' } },
-        // 3. seed (1:40): 320 deg. x=76.8, y=27.5
-        { text: 'seed', img: 'Seed.png', time: 1500, pos: { top: '27.5%', left: '76.8%' } },
-        // 4. of (3:00): 0 deg. x=85, y=50
-        { text: 'of', img: 'Of.png', time: 2000, pos: { top: '50%', left: '85%' } },
-        // 5. a (4:20): 40 deg. x=76.8, y=72.5
-        { text: 'a', img: 'A.png', time: 2500, pos: { top: '72.5%', left: '76.8%' } },
-        // 6. bean (5:40): 80 deg. x=56.1, y=84.5
-        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '84.5%', left: '56.1%' } },
-        // 7. of (7:00): 120 deg. x=32.5, y=80.3
-        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '80.3%', left: '32.5%' } },
-        // 8. an (8:20): 160 deg. x=17.1, y=62
-        { text: 'an', img: 'An.png', time: 4000, pos: { top: '62%', left: '17.1%' } },
-        // 9. idea: Center.
-        { text: 'idea', img: 'Idea.png', time: 4500, pos: { top: '50%', left: '50%' } }
+        // Subsequent words speed increased by 5%. 
+        // Original interval 500ms -> New interval 475ms (500 * 0.95)
+        // 2. the (12:20): 500 + 475 = 975
+        { text: 'the', img: 'The.png', time: 975, pos: { top: '15.5%', left: '56.1%' } },
+        // 3. seed (1:40): 975 + 475 = 1450
+        { text: 'seed', img: 'Seed.png', time: 1450, pos: { top: '27.5%', left: '76.8%' } },
+        // 4. of (3:00): 1450 + 475 = 1925
+        { text: 'of', img: 'Of.png', time: 1925, pos: { top: '50%', left: '85%' } },
+        // 5. a (4:20): 1925 + 475 = 2400
+        { text: 'a', img: 'A.png', time: 2400, pos: { top: '72.5%', left: '76.8%' } },
+        // 6. bean (5:40): 2400 + 475 = 2875
+        { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
+        // 7. of (7:00): 2875 + 475 = 3350
+        { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
+        // 8. an (8:20): 3350 + 475 = 3825
+        { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
+        // 9. idea: Center. 3825 + 475 = 4300
+        { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '50%', left: '50%' } }
     ];
 
     words.forEach(w => {
@@ -266,6 +267,7 @@ function startVideo3() {
 
     // 1s Pow -> 0.8s transition handled in CSS
     // User requested: Start 700ms later (1000 + 700 = 1700ms)
+    // User requested: Increase speed (appear earlier) by 177ms -> 1700 - 177 = 1523ms
     setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
@@ -277,7 +279,7 @@ function startVideo3() {
             pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
-    }, 1700);
+    }, 1523);
 
     // 2s Wow
     // User requested: Start 700ms later (2000 + 700 = 2700ms)
