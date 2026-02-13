@@ -186,7 +186,7 @@ function startVideo2Setup() {
             overlayV2.classList.add('hidden');
         }, 500); // 3.5s + 0.5s fade = 4.0s
 
-    }, 3600);
+    }, 3000);
 
 
     video.onended = () => {
@@ -221,8 +221,8 @@ function startVideo3() {
     // 17% left shift and 0.5 speed -> User requested 1.5x current (0.5 * 1.5 = 0.75)
     // User Update: Move head back to midpoint (remove left shift)
     video.style.transform = 'translateX(0)';
-    // User requested: video 3 speed increased to 0.77
-    video.playbackRate = 0.77;
+    // User requested: video 3 speed increased to 1.2
+    video.playbackRate = 1.2;
 
     video.play();
 

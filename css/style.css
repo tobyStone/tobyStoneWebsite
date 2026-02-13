@@ -148,8 +148,8 @@ html {
 
 #word-pow,
 #word-wow {
-    top: 65%;
-    /* Moved down by 5% from 60% */
+    top: 70%;
+    /* Moved down by 5% from 65% */
     left: 50%;
     /* Initial center */
     transform: translate(-50%, -50%);
