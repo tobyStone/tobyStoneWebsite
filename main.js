@@ -547,9 +547,4 @@ function skipIntro() {
     startVideo3(true); // pass true for 'skipped'
 }
 
-// Modify startVideo3 to accept 'skipped' param
-// We need to update the function definition. Since we can't easily change signature in multi-replace
-// without replacing the whole function head, we'll assume it handles it or we modify it below.
-
-// Wait, I need to modify startVideo3 signature and logic.
-// See next chunk.
+init();
