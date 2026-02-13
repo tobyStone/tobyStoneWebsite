@@ -131,8 +131,8 @@ html {
 
 .letter-row {
     display: flex;
-    gap: 0.625px;
-    /* Reduced by 50% again from 1.25px */
+    gap: 0.3125px;
+    /* Reduced by 50% again from 0.625px */
 }
 
 /* Video 3 Words */

@@ -22,7 +22,7 @@ const music = '/music/musicfx-dj-1770309373761.wav';
 const bgAudio = new Audio(music);
 
 // Config
-const V1_DURATION = 6113; // Adjusted for 1.145x speed (7000 / 1.145)
+const V1_DURATION = 5713; // Adjusted for 1.225x speed (7000 / 1.225)
 const V2_PAUSE_DURATION = 1200;
 
 // --- Initialization ---
@@ -33,8 +33,8 @@ async function init() {
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
-    // User requested: increase speed by another 7%. 1.07 * 1.07 = ~1.145
-    video.playbackRate = 1.145;
+    // User requested: increase speed by another 7%. 1.145 * 1.07 = ~1.225
+    video.playbackRate = 1.225;
 
     video.onloadeddata = () => {
         // Bugfix: Ensure this only runs once so V1 setup doesn't re-trigger for V2/V3
@@ -250,9 +250,9 @@ function startVideo3() {
     bgAudio.muted = !isUnmuted;
 
     // Start at 75% for initial play (as per previous request), or 63% (last 37%)? 
-    // Previous: "starting from 0.75". New: "loop the last 33%".
-    // 1.0 - 0.33 = 0.67
-    const loopStartRatio = 0.67;
+    // Previous: "loop the last 33%". New: "loop the last 27%".
+    // 1.0 - 0.27 = 0.73
+    const loopStartRatio = 0.73;
 
     if (bgAudio.duration) {
         bgAudio.currentTime = bgAudio.duration * loopStartRatio;
@@ -285,7 +285,7 @@ function startVideo3() {
     // If metadata wasn't loaded for currentTime calc:
     // If metadata wasn't loaded for currentTime calc:
     bgAudio.onloadedmetadata = () => {
-        bgAudio.currentTime = bgAudio.duration * 0.67;
+        bgAudio.currentTime = bgAudio.duration * 0.73;
     };
 
     overlayV3.classList.remove('hidden');
