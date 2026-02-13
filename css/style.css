@@ -279,4 +279,24 @@ button {
     /* 1.5x of 1.5rem */
     width: auto;
     object-fit: contain;
+    display: block;
+}
+
+#skip-intro-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2000;
+    /* High z-index to be clickable */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 6rem;
+    /* Adjust as needed */
+    height: auto;
+}
+
+#skip-intro-btn img {
+    width: 100%;
+    height: auto;
 }

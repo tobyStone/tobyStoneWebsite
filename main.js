@@ -27,6 +27,8 @@ const V2_PAUSE_DURATION = 1200;
 
 // --- Initialization ---
 const unmuteBtn = document.getElementById('unmute-btn');
+const skipIntroBtn = document.getElementById('skip-intro-btn');
+let skipIntroTimeout;
 
 async function init() {
     console.log('Initializing...');
@@ -41,6 +43,11 @@ async function init() {
         video.onloadeddata = null;
         startVideo1();
     };
+
+    skipIntroBtn.addEventListener('click', () => {
+        // Skip Intro Logic
+        skipIntro();
+    });
 }
 
 // --- Video 1 Logic ---
@@ -91,8 +98,8 @@ function startVideo1() {
         // 8. an (8:20): 3350 + 475 = 3825
         { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
         // 9. idea: Center. 3825 + 475 = 4300
-        // User requested: 3% lower -> 50% + 3% = 53%
-        { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '53%', left: '50%' } }
+        // User requested: 3% lower -> 53% + 3% = 56%
+        { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '56%', left: '50%' } }
     ];
 
     words.forEach(w => {
@@ -254,7 +261,7 @@ function startVideo2Setup() {
     // }, 200);
 }
 
-function startVideo3() {
+function startVideo3(skipped = false) {
     video.src = videos.v3;
     // Fix: Ensure V3 doesn't loop via recycled onended handler
     video.onended = null;
@@ -420,6 +427,45 @@ function startVideo3() {
         }, 50);
     }, 2700);
 
+    // If skipped, we fast-forward animations
+    if (skipped) {
+        // Show 'Let's'
+        document.getElementById('word-lets').classList.remove('hidden');
+
+        // Show 'Pow' in final state
+        const pow = document.getElementById('word-pow');
+        pow.classList.remove('hidden');
+        pow.style.transition = 'none'; // Instant
+        pow.style.left = '39%';
+        pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
+
+        // Show 'Wow' in final state
+        const wow = document.getElementById('word-wow');
+        wow.classList.remove('hidden');
+        wow.style.transition = 'none'; // Instant
+        wow.style.left = '63%';
+        wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+
+        // Hide Skip Button immediately
+        skipIntroBtn.classList.add('hidden');
+
+        // Show Links immediately? "fading in of the contact wording... if button is pressed"
+        // Request: "skip to... just before the fading in". 
+        // So we should start the contact fade in NOW.
+        contactLinks.classList.remove('hidden');
+        contactLinks.style.opacity = '1';
+        contactLinks.style.left = '84%';
+
+        return; // Skip the timeouts below
+    }
+
+    // Normal Flow
+    // ... items below ...
+    // Calculate when to hide Skip Button: 4200ms
+    skipIntroTimeout = setTimeout(() => {
+        skipIntroBtn.classList.add('hidden');
+    }, 4200);
+
     // Links Fade In
     // Play 700ms after Wow stops transitioning.
     // Wow starts at 2700ms. Transition is 0.8s (800ms).
@@ -465,4 +511,31 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-init();
+function skipIntro() {
+    // 1. Stop current video / audio
+    video.pause();
+    bgAudio.pause();
+
+    // Clear any pending timeouts/intervals/animations if possible
+    // (Ideally we track IDs, but simplistic approach: rely on state switch)
+
+    // 2. Hide overlays
+    overlayV1.classList.add('hidden');
+    overlayV1.innerHTML = '';
+    overlayV2.classList.add('hidden');
+
+    // 3. Setup V3 state immediately
+    // Jump to the state where WOW has finished and contacts are about to appear.
+    // "disappear at the point Wow stops transitioning and just before the fading in of the contact wording"
+    // Wow stops at 3500ms (2700 + 800). Contacts appear at 4200ms.
+    // So we want to be effectively at approx 4200ms of V3 timeline.
+
+    startVideo3(true); // pass true for 'skipped'
+}
+
+// Modify startVideo3 to accept 'skipped' param
+// We need to update the function definition. Since we can't easily change signature in multi-replace
+// without replacing the whole function head, we'll assume it handles it or we modify it below.
+
+// Wait, I need to modify startVideo3 signature and logic.
+// See next chunk.
