@@ -243,23 +243,40 @@ function startVideo3() {
     // Background Audio Logic
     // Sync with global mute state (unmuteBtn hidden = sound ON)
     const isUnmuted = unmuteBtn.classList.contains('hidden');
-    bgAudio.muted = !isUnmuted;
-    bgAudio.currentTime = 0;
-    bgAudio.volume = 0;
-    bgAudio.loop = false; // Play once
 
-    // Only play if unmuted, or prepare to play if user unmutes later? 
-    // The unmuteBtn handler will unmute bgAudio if playing.
+    // Switch to Video 2 audio track
+    bgAudio.src = videos.v2;
+    bgAudio.muted = !isUnmuted;
+
+    // Start 75% of the way through
+    // We try to set it immediately, and also on metadata load just in case
+    if (bgAudio.duration) {
+        bgAudio.currentTime = bgAudio.duration * 0.75;
+    }
+
+    // "75% softer initially" -> 0.25 volume
+    bgAudio.volume = 0.25;
+    bgAudio.loop = false;
+
+    // Only play if unmuted, or prepare to play if user unmutes later
     bgAudio.play().catch(e => console.log("Audio play failed", e));
 
     // Fade up to 0.7
-    const audioFade = setInterval(() => {
-        if (bgAudio.volume < 0.7) {
-            bgAudio.volume = Math.min(0.7, bgAudio.volume + 0.05);
-        } else {
-            clearInterval(audioFade);
-        }
-    }, 200);
+    // Fade logic requested: "reduce ... to 25% volume by the end"
+    // Since we start at 25% (0.25), and want to end at 25%, no fade needed?
+    // "75% softer initially" means 0.25 volume. 
+    // "reduce ... to 25% volume by the end" means end at 0.25 volume.
+    // So distinct fade is not requested, just constant low volume? 
+    // Or did user mean "reduce current volume by ANOTHER 75%"?
+    // "play... 75% softer initially" -> 0.25.
+    // "reduce... to 25% volume by end" -> 0.25.
+    // Interpreting as: Start at 0.25 and stay there (or ensure it ends there).
+    // Removing the volume increase interval.
+
+    // If metadata wasn't loaded for currentTime calc:
+    bgAudio.onloadedmetadata = () => {
+        bgAudio.currentTime = bgAudio.duration * 0.75;
+    };
 
     overlayV3.classList.remove('hidden');
 
