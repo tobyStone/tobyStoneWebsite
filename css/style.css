@@ -243,27 +243,61 @@ html {
 }
 
 #interest-form {
-    background: #222;
-    padding: 40px;
-    border-radius: 10px;
+    position: relative;
+    background: url('/images/subBox.png') no-repeat center center;
+    background-size: 100% 100%;
+    /* Fixed dimensions to match image aspect ratio approx */
+    width: 500px;
+    height: 450px;
+    padding: 110px 50px 80px 50px;
+    /* Top padding clears header, Bottom clears buttons */
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: 90%;
-    max-width: 400px;
+    box-shadow: none;
 }
 
 input,
 textarea {
     padding: 10px;
-    background: #333;
-    border: 1px solid #444;
+    background: rgba(0, 0, 0, 0.6);
+    /* Dark semi-transparent */
+    border: 1px solid #555;
     color: white;
+    font-size: 1rem;
+    border-radius: 5px;
 }
 
-button {
-    padding: 10px;
+/* Invisible Overlay Buttons */
+#interest-form button[type="submit"] {
+    position: absolute;
+    bottom: 95px;
+    /* Adjust based on image "Submit" button position */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    /* Approx width of Submit button on image */
+    height: 50px;
+    opacity: 0;
+    /* Invisible */
     cursor: pointer;
+    z-index: 10;
+}
+
+#close-form {
+    position: absolute;
+    bottom: 35px;
+    /* Adjust based on image "Close" button position */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    /* Approx width of Close button on image */
+    height: 40px;
+    opacity: 0;
+    /* Invisible */
+    cursor: pointer;
+    z-index: 10;
 }
 
 /* Mobile Responsiveness */
