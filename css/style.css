@@ -284,10 +284,10 @@ button {
 
 #skip-intro-btn {
     position: absolute;
-    bottom: calc(20px + 3vh);
-    /* Moved 3% high from ~20px */
-    right: calc(20px + 7vw);
-    /* Moved 7% left from ~20px */
+    bottom: calc(20px + 1vh);
+    /* Moved 2% down from 3vh */
+    right: calc(20px + 3vw);
+    /* Moved 4% right from 7vw */
     z-index: 2000;
     /* High z-index to be clickable */
     background: transparent;
