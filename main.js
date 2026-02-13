@@ -70,13 +70,13 @@ function startVideo1() {
     // Words Sequence
     const words = [
         { text: 'From', img: 'From.png', time: 500, pos: { top: '10%', left: '10%' } }, // 10% from left
-        { text: 'the', img: 'The.png', time: 1000, pos: { top: '20%', right: '20%' } },
-        { text: 'seed', img: 'Seed.png', time: 1500, pos: { bottom: '20%', right: '20%' } },
-        { text: 'of', img: 'Of.png', time: 2000, pos: { bottom: '10%', left: '50%' } },
-        { text: 'a', img: 'A.png', time: 2500, pos: { bottom: '20%', left: '20%' } },
-        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '20%', left: '20%' } },
-        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '5%', left: '40%' } },
-        { text: 'an', img: 'An.png', time: 4000, pos: { top: '5%', right: '40%' } },
+        { text: 'the', img: 'The.png', time: 1000, pos: { top: '7%', left: '7%' } }, // Top-Left start of spiral
+        { text: 'seed', img: 'Seed.png', time: 1500, pos: { top: '7%', left: '34%' } }, // Moving right...
+        { text: 'of', img: 'Of.png', time: 2000, pos: { top: '7%', left: '61%' } },
+        { text: 'a', img: 'A.png', time: 2500, pos: { top: '7%', left: '88%' } }, // Top-Rightish
+        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '34%', left: '88%' } }, // Moving down...
+        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '61%', left: '88%' } },
+        { text: 'an', img: 'An.png', time: 4000, pos: { top: '88%', left: '88%' } }, // Bottom-Rightish
         { text: 'idea', img: 'Idea.png', time: 4500, pos: { top: '50%', left: '50%', center: true } }
     ];
 
@@ -199,15 +199,15 @@ function startVideo2Setup() {
         startVideo3();
     };
 
-    // Audio Fade
-    const monitor = setInterval(() => {
-        if (video.duration && video.currentTime >= video.duration - 1.0) {
-            if (video.volume > 0.1) video.volume -= 0.1;
-            if (bgAudio.paused) bgAudio.play();
-            if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
-        }
-        if (video.ended) clearInterval(monitor);
-    }, 200);
+    // Audio Fade (REMOVED: Do not play bgAudio/music in V2)
+    // const monitor = setInterval(() => {
+    //     if (video.duration && video.currentTime >= video.duration - 1.0) {
+    //         if (video.volume > 0.1) video.volume -= 0.1;
+    //         if (bgAudio.paused) bgAudio.play();
+    //         if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
+    //     }
+    //     if (video.ended) clearInterval(monitor);
+    // }, 200);
 }
 
 function startVideo3() {
@@ -252,6 +252,7 @@ function startVideo3() {
     document.getElementById('word-lets').classList.remove('hidden');
 
     // 1s Pow -> 0.8s transition handled in CSS
+    // User requested: Start 700ms later (1000 + 700 = 1700ms)
     setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
@@ -262,9 +263,10 @@ function startVideo3() {
             pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-37deg)';
         }, 50);
-    }, 1000);
+    }, 1700);
 
     // 2s Wow
+    // User requested: Start 700ms later (2000 + 700 = 2700ms)
     setTimeout(() => {
         const wow = document.getElementById('word-wow');
         wow.classList.remove('hidden');
@@ -273,7 +275,7 @@ function startVideo3() {
             wow.style.left = '63%';
             wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
         }, 50);
-    }, 2000);
+    }, 2700);
 
     // Links Fade In
     setTimeout(() => {
