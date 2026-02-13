@@ -250,10 +250,9 @@ function startVideo3() {
     bgAudio.muted = !isUnmuted;
 
     // Start at 75% for initial play (as per previous request), or 63% (last 37%)? 
-    // Previous: "starting from 0.75". New: "loop the last 37%".
-    // I will start at 0.63 to match the loop region. 
-    // 1.0 - 0.37 = 0.63
-    const loopStartRatio = 0.63;
+    // Previous: "starting from 0.75". New: "loop the last 33%".
+    // 1.0 - 0.33 = 0.67
+    const loopStartRatio = 0.67;
 
     if (bgAudio.duration) {
         bgAudio.currentTime = bgAudio.duration * loopStartRatio;
@@ -286,7 +285,7 @@ function startVideo3() {
     // If metadata wasn't loaded for currentTime calc:
     // If metadata wasn't loaded for currentTime calc:
     bgAudio.onloadedmetadata = () => {
-        bgAudio.currentTime = bgAudio.duration * 0.63;
+        bgAudio.currentTime = bgAudio.duration * 0.67;
     };
 
     overlayV3.classList.remove('hidden');
