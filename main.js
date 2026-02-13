@@ -266,6 +266,30 @@ function startVideo3(skipped = false) {
     // Fix: Ensure V3 doesn't loop via recycled onended handler
     video.onended = null;
 
+    // Helper to start playback and apply skip logic if needed
+    const runVideo = () => {
+        video.play().catch(e => console.log("Video 3 play failed", e));
+
+        if (skipped) {
+            // Jump to end of animations (approx 3.5s)
+            // Wow ends transition at 3.5s.
+            video.currentTime = 3.5;
+        }
+    };
+
+    // If source changed, we might need to wait for metadata to seek safely?
+    // Usually play() handles loading, but currentTime might need metadata.
+    if (video.readyState >= 1) {
+        runVideo();
+    } else {
+        video.onloadedmetadata = () => {
+            video.onloadedmetadata = null; // Cleanup
+            runVideo();
+        };
+    }
+
+    video.style.transform = 'scale(1)'; // Reset scale just in case
+
     video.muted = true; // Video itself is muted, using bgAudio
     video.loop = false;
 
@@ -274,8 +298,6 @@ function startVideo3(skipped = false) {
     video.style.transform = 'translateX(0)';
     // User requested: video 3 speed increased to 1.2
     video.playbackRate = 1.2;
-
-    video.play();
 
     // Background Audio Logic
     // Sync with global mute state (unmuteBtn hidden = sound ON)
@@ -297,9 +319,8 @@ function startVideo3(skipped = false) {
     // We need a counter or state for loop count
     let loopCount = 0;
     const maxLoops = 2; // "repeat ... twice" means play once, then repeat twice? OR play total 2 times? 
-    // "repeat the short sound track ... twice". Usually means: Play, Repeat 1, Repeat 2 (Total 3). 
-    // OR "play ... twice".
     // "repeat ... twice" implies play, repeat, repeat. Total 3.
+    // OR "play ... twice".
     // "each time at 50% of the volume of the iteration before."
     // 1: 0.25
     // 2: 0.125
@@ -384,10 +405,6 @@ function startVideo3(skipped = false) {
     // Since we start at 25% (0.25), and want to end at 25%, no fade needed?
     // "75% softer initially" means 0.25 volume. 
     // "reduce ... to 25% volume by the end" means end at 0.25 volume.
-    // So distinct fade is not requested, just constant low volume? 
-    // Or did user mean "reduce current volume by ANOTHER 75%"?
-    // "play... 75% softer initially" -> 0.25.
-    // "reduce... to 25% volume by end" -> 0.25.
     // Interpreting as: Start at 0.25 and stay there (or ensure it ends there).
     // Removing the volume increase interval.
 
@@ -405,10 +422,7 @@ function startVideo3(skipped = false) {
     setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
-        // Drift left 37% from left AND Rotate -37deg
-        // CSS transition updated to 0.8s
-        // User requested: Move 2% right (37% -> 39%)
-        // User requested: Reduce rotation from 34deg to 31deg (3% less)
+        // Drift left 39% from left -> right: 61% AND Rotate -31deg
         setTimeout(() => {
             pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
