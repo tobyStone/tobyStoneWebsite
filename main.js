@@ -249,15 +249,24 @@ function startVideo3() {
     bgAudio.src = videos.v2;
     bgAudio.muted = !isUnmuted;
 
-    // Start 75% of the way through
-    // We try to set it immediately, and also on metadata load just in case
+    // Start at 75% for initial play (as per previous request), or 63% (last 37%)? 
+    // Previous: "starting from 0.75". New: "loop the last 37%".
+    // I will start at 0.63 to match the loop region. 
+    // 1.0 - 0.37 = 0.63
+    const loopStartRatio = 0.63;
+
     if (bgAudio.duration) {
-        bgAudio.currentTime = bgAudio.duration * 0.75;
+        bgAudio.currentTime = bgAudio.duration * loopStartRatio;
     }
 
     // "75% softer initially" -> 0.25 volume
     bgAudio.volume = 0.25;
-    bgAudio.loop = true; // User requested: Keep playing in a loop
+    bgAudio.loop = false; // We handle loop manually
+
+    bgAudio.onended = () => {
+        bgAudio.currentTime = bgAudio.duration * loopStartRatio;
+        bgAudio.play();
+    };
 
     // Only play if unmuted, or prepare to play if user unmutes later
     bgAudio.play().catch(e => console.log("Audio play failed", e));
@@ -275,8 +284,9 @@ function startVideo3() {
     // Removing the volume increase interval.
 
     // If metadata wasn't loaded for currentTime calc:
+    // If metadata wasn't loaded for currentTime calc:
     bgAudio.onloadedmetadata = () => {
-        bgAudio.currentTime = bgAudio.duration * 0.75;
+        bgAudio.currentTime = bgAudio.duration * 0.63;
     };
 
     overlayV3.classList.remove('hidden');
@@ -286,6 +296,7 @@ function startVideo3() {
     // 1s Pow -> 0.8s transition handled in CSS
     // User requested: Start 700ms later (1000 + 700 = 1700ms)
     // User requested: Increase speed (appear earlier) by 177ms -> 1700 - 177 = 1523ms
+    // User requested: Appear 100ms *earlier* -> 1523 - 100 = 1423ms
     setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
@@ -297,7 +308,7 @@ function startVideo3() {
             pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
-    }, 1523);
+    }, 1423);
 
     // 2s Wow
     // User requested: Start 700ms later (2000 + 700 = 2700ms)
@@ -315,7 +326,7 @@ function startVideo3() {
     setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
-        contactLinks.style.left = '80%';
+        contactLinks.style.left = '83%'; // Moved 3% right from 80%
     }, 4000);
 }
 
