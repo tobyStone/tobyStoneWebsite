@@ -91,7 +91,8 @@ function startVideo1() {
         // 8. an (8:20): 3350 + 475 = 3825
         { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
         // 9. idea: Center. 3825 + 475 = 4300
-        { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '50%', left: '50%' } }
+        // User requested: 3% lower -> 50% + 3% = 53%
+        { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '53%', left: '50%' } }
     ];
 
     words.forEach(w => {
@@ -301,14 +302,46 @@ function startVideo3() {
         if (loopCount > 2) return; // Stop after 2 repeats (Total 3 plays).
 
         // Loop 0
-        if (loopCount === 0) bgAudio.volume = 0.25;
+        if (loopCount === 0) bgAudio.volume = 0; // Start silent for fade-in
         // Loop 1
-        else if (loopCount === 1) bgAudio.volume = 0.125;
+        else if (loopCount === 1) bgAudio.volume = 0;
         // Loop 2
-        else if (loopCount === 2) bgAudio.volume = 0.0625;
+        else if (loopCount === 2) bgAudio.volume = 0;
+
+        const targetVolume = [0.25, 0.125, 0.0625][loopCount];
 
         bgAudio.currentTime = bgAudio.duration * loopStartRatio;
-        bgAudio.play().catch(e => console.log("Audio play failed", e));
+
+        bgAudio.play().then(() => {
+            // Fade In (50ms duration? "quick fade")
+            // Let's fade in over 200ms
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += (targetVolume / 5); // 5 steps of 40ms = 200ms
+                if (vol >= targetVolume) {
+                    vol = targetVolume;
+                    clearInterval(fadeIn);
+                }
+                bgAudio.volume = vol;
+            }, 40);
+
+            // Schedule Fade Out
+            // Loop duration?
+            const duration = bgAudio.duration - bgAudio.currentTime;
+            // Fade out last 300ms
+            setTimeout(() => {
+                let volOut = bgAudio.volume;
+                const fadeOut = setInterval(() => {
+                    volOut -= (targetVolume / 5);
+                    if (volOut <= 0) {
+                        volOut = 0;
+                        clearInterval(fadeOut);
+                    }
+                    bgAudio.volume = volOut;
+                }, 40); // 5 steps * 40ms = 200ms fade out
+            }, (duration * 1000) - 300); // Start fade out 300ms before end
+
+        }).catch(e => console.log("Audio play failed", e));
 
         loopCount++;
     };

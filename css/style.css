@@ -37,8 +37,8 @@ html {
     border: none;
     padding: 0;
     cursor: pointer;
-    width: 108.5px;
-    /* 50px * 2.17 (100% + 117% = 217%) = 108.5px */
+    width: 192px;
+    /* 108.5px * 1.77 = 192px */
     height: auto;
 }
 
