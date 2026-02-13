@@ -318,8 +318,8 @@ textarea {
 
 #skip-intro-btn {
     position: absolute;
-    bottom: calc(20px - 1vh);
-    /* Moved 2% down from 1vh */
+    bottom: calc(20px - 4vh);
+    /* Moved 3% down from -1vh */
     right: calc(20px + 2vw);
     /* Moved 1% right from 3vw */
     z-index: 2000;
