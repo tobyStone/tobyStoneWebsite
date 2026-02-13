@@ -56,8 +56,8 @@ html {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transform: scale(0.1);
-    /* Start small */
+    transform: scale(0.12);
+    /* Start small (1.2x larger: 0.1 * 1.2 = 0.12) */
     transition: transform 0.1s linear;
     /* Smoothness for JS updates */
     margin-left: -2vw;
