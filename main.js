@@ -22,7 +22,7 @@ const music = '/music/musicfx-dj-1770309373761.wav';
 const bgAudio = new Audio(music);
 
 // Config
-const V1_DURATION = 6542; // Adjusted for 1.07x speed (7000 / 1.07)
+const V1_DURATION = 6113; // Adjusted for 1.145x speed (7000 / 1.145)
 const V2_PAUSE_DURATION = 1200;
 
 // --- Initialization ---
@@ -33,7 +33,8 @@ async function init() {
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
-    video.playbackRate = 1.07; // User requested 1.07x speed
+    // User requested: increase speed by another 7%. 1.07 * 1.07 = ~1.145
+    video.playbackRate = 1.145;
 
     video.onloadeddata = () => {
         // Bugfix: Ensure this only runs once so V1 setup doesn't re-trigger for V2/V3
@@ -256,7 +257,7 @@ function startVideo3() {
 
     // "75% softer initially" -> 0.25 volume
     bgAudio.volume = 0.25;
-    bgAudio.loop = false;
+    bgAudio.loop = true; // User requested: Keep playing in a loop
 
     // Only play if unmuted, or prepare to play if user unmutes later
     bgAudio.play().catch(e => console.log("Audio play failed", e));
