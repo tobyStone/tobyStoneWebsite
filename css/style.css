@@ -147,14 +147,18 @@ html {
     width: 20vw;
 }
 
-#word-pow,
+#word-pow {
+    top: 70%;
+    /* Moved up by 3% from 73% */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 25vw;
+}
+
 #word-wow {
     top: 73%;
-    /* Moved down by 3% from 70% */
     left: 50%;
-    /* Initial center */
     transform: translate(-50%, -50%);
-    /* Center origin */
     width: 25vw;
 }
 

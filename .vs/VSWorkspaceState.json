@@ -5,12 +5,9 @@
     "\\config",
     "\\models",
     "\\public",
-    "\\public\\css",
-    "\\public\\images",
     "\\public\\javascript",
-    "\\public\\music",
-    "\\public\\videos"
+    "\\public\\music"
   ],
-  "SelectedNode": "\\main.js",
+  "SelectedNode": "\\.gitkeep",
   "PreviewInSolutionExplorer": false
 }

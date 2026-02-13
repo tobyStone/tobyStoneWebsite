@@ -271,10 +271,10 @@ function startVideo3() {
         // Drift left 37% from left AND Rotate -37deg
         // CSS transition updated to 0.8s
         // User requested: Move 2% right (37% -> 39%)
-        // User requested: Reduce rotation from 37deg to 34deg
+        // User requested: Reduce rotation from 34deg to 31deg (3% less)
         setTimeout(() => {
             pow.style.left = '39%';
-            pow.style.transform = 'translate(-50%, -50%) rotate(-34deg)';
+            pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
     }, 1700);
 
