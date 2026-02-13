@@ -129,7 +129,8 @@ html {
 
 .letter-row {
     display: flex;
-    gap: 5px;
+    gap: 2.5px;
+    /* Reduced by 50% from 5px */
 }
 
 /* Video 3 Words */
@@ -148,8 +149,8 @@ html {
 
 #word-pow,
 #word-wow {
-    top: 70%;
-    /* Moved down by 5% from 65% */
+    top: 73%;
+    /* Moved down by 3% from 70% */
     left: 50%;
     /* Initial center */
     transform: translate(-50%, -50%);

@@ -186,7 +186,7 @@ function startVideo2Setup() {
             overlayV2.classList.add('hidden');
         }, 500); // 3.5s + 0.5s fade = 4.0s
 
-    }, 3000);
+    }, 2770); // 2000ms pause + 770ms slow-mo = 2770ms
 
 
     video.onended = () => {
@@ -259,9 +259,10 @@ function startVideo3() {
         // Drift left 37% from left AND Rotate -37deg
         // CSS transition updated to 0.8s
         // User requested: Move 2% right (37% -> 39%)
+        // User requested: Reduce rotation from 37deg to 34deg
         setTimeout(() => {
             pow.style.left = '39%';
-            pow.style.transform = 'translate(-50%, -50%) rotate(-37deg)';
+            pow.style.transform = 'translate(-50%, -50%) rotate(-34deg)';
         }, 50);
     }, 1700);
 
