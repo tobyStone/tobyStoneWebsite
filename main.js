@@ -119,7 +119,7 @@ function animateV1() {
 
     // "indication: 1st 800ms enlarge to 1.3... 2nd 800ms shrink to 0.8... 3rd 800ms enlarge to 1.5"
     // We define keyframes relative to the Previous Step's End Scale.
-    // Step 0 (Start): 0.24 (Increased by 1.2x from 0.2)
+    // Step 0 (Start): 0.2
 
     // Define the sequence of multiplicative factors
     const factors = [1.3, 0.8, 1.5, 0.8, 1.7, 0.8, 1.9, 0.8, 2.1];
@@ -130,7 +130,7 @@ function animateV1() {
     const stepProgress = (elapsed % stepDuration) / stepDuration; // 0.0 -> 1.0
 
     // Calculate the Scale at the START of the current step
-    let startScale = 0.24; // Initial (1.2x of 0.2)
+    let startScale = 0.2; // Initial
     for (let i = 0; i < stepIndex; i++) {
         if (i < factors.length) startScale *= factors[i];
     }
@@ -158,8 +158,7 @@ function stopVideo1() {
 
 function startVideo2Setup() {
     video.src = videos.v2;
-    /* Start small (updated to 1.2x larger) */
-    video.style.transform = 'scale(0.12)'; /* 0.1 * 1.2 = 0.12 */
+    video.style.transform = 'scale(1)';
     video.currentTime = 0;
     // video.muted = false; // REMOVED: Respect global mute state (default muted)
 
@@ -171,9 +170,8 @@ function startVideo2Setup() {
     // Set initial playback rate to 1/3 speed
     video.playbackRate = 0.333;
 
-    // Start unmuted if global audio is ON
-    const isUserUnmuted = unmuteBtn.classList.contains('hidden');
-    video.muted = !isUserUnmuted;
+    // Start Muted (Audio Delay)
+    video.muted = true;
 
     // Show overlay immediately
     overlayV2.classList.remove('hidden');
@@ -191,9 +189,12 @@ function startVideo2Setup() {
     setTimeout(() => {
         video.playbackRate = 1.0;
 
-        // Unmute logic moved to start for sync.
-        // We only need to ensure it STAYS unmuted if it was unmuted. 
-        // No change needed here if we handle it at start.
+        // Unmute Video 2 IF user has globally unmuted
+        // Check if the Unmute button is HIDDEN (meaning user clicked it)
+        const isUserUnmuted = unmuteBtn.classList.contains('hidden');
+        if (isUserUnmuted) {
+            video.muted = false;
+        }
 
         // Ensure overlay is hidden after fade
         setTimeout(() => {
@@ -261,42 +262,13 @@ function startVideo3() {
     bgAudio.volume = 0.25;
     bgAudio.loop = false; // We handle loop manually
 
-    // Only play if unmuted, or prepare to play if user unmutes later
-    const playWithFade = () => {
-        bgAudio.currentTime = bgAudio.duration * loopStartRatio;
-        bgAudio.volume = 0; // Start silent
-        bgAudio.play().then(() => {
-            // Fade In (over 0.5s ?). Target 0.25 volume.
-            let fadeIn = setInterval(() => {
-                if (bgAudio.volume < 0.25) {
-                    bgAudio.volume = Math.min(0.25, bgAudio.volume + 0.05);
-                } else {
-                    clearInterval(fadeIn);
-                }
-            }, 100);
-
-            // Schedule Fade Out before end?
-            // Duration of loop section: TotalDuration * (1 - 0.73) = ~27% duration.
-            const timeLeft = (bgAudio.duration - bgAudio.currentTime);
-            // Start fade out 0.5s before end
-            setTimeout(() => {
-                let fadeOut = setInterval(() => {
-                    if (bgAudio.volume > 0.05) {
-                        bgAudio.volume = Math.max(0, bgAudio.volume - 0.05);
-                    } else {
-                        clearInterval(fadeOut);
-                    }
-                }, 100);
-            }, (timeLeft * 1000) - 600); // 600ms before end
-
-        }).catch(e => console.log("Audio play failed", e));
-    };
-
     bgAudio.onended = () => {
-        playWithFade();
+        bgAudio.currentTime = bgAudio.duration * loopStartRatio;
+        bgAudio.play();
     };
 
-    playWithFade();
+    // Only play if unmuted, or prepare to play if user unmutes later
+    bgAudio.play().catch(e => console.log("Audio play failed", e));
 
     // Fade up to 0.7
     // Fade logic requested: "reduce ... to 25% volume by the end"
