@@ -179,6 +179,8 @@ html {
     opacity: 0;
     transition: opacity 1s, left 1s;
     /* Animate left position */
+    z-index: 20;
+    /* Ensure above Veo Blocker */
 }
 
 .contact-item {
@@ -202,6 +204,19 @@ html {
     width: 60px;
     /* 1.5x of 40px */
     height: 60px;
+}
+
+#veo-blocker {
+    position: absolute;
+    bottom: 0px;
+    right: 50px;
+    /* Shifted left to cover Veo letters specifically, avoiding icon */
+    width: 60px;
+    /* Approximate width of 'Veo' */
+    height: 30px;
+    background-color: black;
+    z-index: 5;
+    /* Above video (0/auto), below contact links (20) */
 }
 
 /* Form Modal */

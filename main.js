@@ -22,7 +22,7 @@ const music = '/music/musicfx-dj-1770309373761.wav';
 const bgAudio = new Audio(music);
 
 // Config
-const V1_DURATION = 7000;
+const V1_DURATION = 6542; // Adjusted for 1.07x speed (7000 / 1.07)
 const V2_PAUSE_DURATION = 1200;
 
 // --- Initialization ---
@@ -33,6 +33,7 @@ async function init() {
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
+    video.playbackRate = 1.07; // User requested 1.07x speed
 
     video.onloadeddata = () => {
         // Bugfix: Ensure this only runs once so V1 setup doesn't re-trigger for V2/V3
@@ -177,10 +178,10 @@ function startVideo2Setup() {
 
     video.play();
 
-    // Fade out text starting at 3.5s to be gone by 4.0s
+    // Fade out text starting at 3.5s + 377ms = 3877ms
     setTimeout(() => {
         overlayV2.style.opacity = '0';
-    }, 3500);
+    }, 3877);
 
     // Switch to normal speed at 3.6s (1.2s of video content * 3)
     setTimeout(() => {
@@ -196,7 +197,7 @@ function startVideo2Setup() {
         // Ensure overlay is hidden after fade
         setTimeout(() => {
             overlayV2.classList.add('hidden');
-        }, 500); // 3.5s + 0.5s fade = 4.0s
+        }, 3000); // Delayed to ensure text lingers as requested (377ms extra visible time logic)
 
     }, 1900); // 1200ms pause + 700ms slow-mo = 1900ms
 
