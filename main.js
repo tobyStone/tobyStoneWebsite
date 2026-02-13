@@ -203,8 +203,36 @@ function startVideo2Setup() {
 
     }, 1900); // 1200ms pause + 700ms slow-mo = 1900ms
 
+    // User requested: Shorten second video by 300ms.
+    // We can do this by checking timeupdate or setting a timeout to end it early?
+    // video.onended fires naturally. To shorten, we need to manually stop/trigger onended.
+    // We don't know exact duration easily without metadata, but assuming we let it play until near end - 300ms.
+    // Or we can subtract 300ms from the end check if we were using timeupdate.
+    // Since we rely on onended for transition, let's use timeupdate to detect end - 0.3s.
 
+    const checkEndTime = () => {
+        if (video.duration && video.currentTime >= video.duration - 0.3) {
+            video.pause();
+            // Trigger transition manually
+            video.removeEventListener('timeupdate', checkEndTime);
+            video.onended = null; // Prevent double firing
+            // Perform the "onended" logic here
+            // Cleanup V2 styles
+            video.style.zIndex = '';
+            video.style.mixBlendMode = '';
+            video.playbackRate = 1.0; // Reset for V3
+            overlayV2.classList.add('hidden');
+            overlayV2.style.opacity = ''; // Reset opacity
+            startVideo3();
+        }
+    };
+    video.addEventListener('timeupdate', checkEndTime);
+
+
+    // video.onended is now handled/overridden by the early exit check above.
+    // But keep a fallback just in case duration is short or update misses.
     video.onended = () => {
+        video.removeEventListener('timeupdate', checkEndTime);
         // Cleanup V2 styles
         video.style.zIndex = '';
         video.style.mixBlendMode = '';
@@ -326,7 +354,7 @@ function startVideo3() {
     setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
-        contactLinks.style.left = '86%'; // Moved 3% right from 83%
+        contactLinks.style.left = '84%'; // Matches CSS update: Moved 2% left from 86%
     }, 4200);
 }
 
