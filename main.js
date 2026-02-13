@@ -69,15 +69,26 @@ function startVideo1() {
 
     // Words Sequence
     const words = [
-        { text: 'From', img: 'From.png', time: 500, pos: { top: '10%', left: '10%' } }, // 10% from left
-        { text: 'the', img: 'The.png', time: 1000, pos: { top: '7%', left: '7%' } }, // Top-Left start of spiral
-        { text: 'seed', img: 'Seed.png', time: 1500, pos: { top: '7%', left: '34%' } }, // Moving right...
-        { text: 'of', img: 'Of.png', time: 2000, pos: { top: '7%', left: '61%' } },
-        { text: 'a', img: 'A.png', time: 2500, pos: { top: '7%', left: '88%' } }, // Top-Rightish
-        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '34%', left: '88%' } }, // Moving down...
-        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '61%', left: '88%' } },
-        { text: 'an', img: 'An.png', time: 4000, pos: { top: '88%', left: '88%' } }, // Bottom-Rightish
-        { text: 'idea', img: 'Idea.png', time: 4500, pos: { top: '50%', left: '50%', center: true } }
+        // Clock starts at 11 (240 deg). Spacing 30 + (90/9) = 40 deg.
+        // Radius approx 35%. Center 50,50. 
+        // 1. From (11): 240 deg. x=32.5, y=19.7
+        { text: 'From', img: 'From.png', time: 500, pos: { top: '19.7%', left: '32.5%' } },
+        // 2. the (12:20): 280 deg. x=56.1, y=15.5
+        { text: 'the', img: 'The.png', time: 1000, pos: { top: '15.5%', left: '56.1%' } },
+        // 3. seed (1:40): 320 deg. x=76.8, y=27.5
+        { text: 'seed', img: 'Seed.png', time: 1500, pos: { top: '27.5%', left: '76.8%' } },
+        // 4. of (3:00): 0 deg. x=85, y=50
+        { text: 'of', img: 'Of.png', time: 2000, pos: { top: '50%', left: '85%' } },
+        // 5. a (4:20): 40 deg. x=76.8, y=72.5
+        { text: 'a', img: 'A.png', time: 2500, pos: { top: '72.5%', left: '76.8%' } },
+        // 6. bean (5:40): 80 deg. x=56.1, y=84.5
+        { text: 'bean', img: 'Bean.png', time: 3000, pos: { top: '84.5%', left: '56.1%' } },
+        // 7. of (7:00): 120 deg. x=32.5, y=80.3
+        { text: 'of', img: 'Of.png', time: 3500, pos: { top: '80.3%', left: '32.5%' } },
+        // 8. an (8:20): 160 deg. x=17.1, y=62
+        { text: 'an', img: 'An.png', time: 4000, pos: { top: '62%', left: '17.1%' } },
+        // 9. idea: Center.
+        { text: 'idea', img: 'Idea.png', time: 4500, pos: { top: '50%', left: '50%' } }
     ];
 
     words.forEach(w => {
@@ -87,7 +98,8 @@ function startVideo1() {
             el.className = 'v1-word';
             el.onerror = () => { el.style.display = 'none'; };
             Object.assign(el.style, w.pos);
-            if (w.pos.center) el.style.transform = 'translate(-50%, -50%)';
+            // Center all words for precise clock positioning
+            el.style.transform = 'translate(-50%, -50%)';
             overlayV1.appendChild(el);
         }, w.time);
     });
