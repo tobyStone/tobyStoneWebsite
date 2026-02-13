@@ -130,7 +130,7 @@ function animateV1() {
     const stepProgress = (elapsed % stepDuration) / stepDuration; // 0.0 -> 1.0
 
     // Calculate the Scale at the START of the current step
-    let startScale = 0.2; // Initial
+    let startScale = 0.24; // Initial (1.2x of 0.2)
     for (let i = 0; i < stepIndex; i++) {
         if (i < factors.length) startScale *= factors[i];
     }
@@ -159,7 +159,7 @@ function stopVideo1() {
 function startVideo2Setup() {
     video.src = videos.v2;
     video.style.transform = 'scale(1)';
-    video.currentTime = 0;
+    video.currentTime = 0.3; // Start 300ms earlier (skip first 0.3s)
     // video.muted = false; // REMOVED: Respect global mute state (default muted)
 
     // Apply blend mode for "explosion over words" effect
@@ -262,10 +262,7 @@ function startVideo3() {
     bgAudio.volume = 0.25;
     bgAudio.loop = false; // We handle loop manually
 
-    bgAudio.onended = () => {
-        bgAudio.currentTime = bgAudio.duration * loopStartRatio;
-        bgAudio.play();
-    };
+    bgAudio.onended = null; // Remove looping logic to play only once
 
     // Only play if unmuted, or prepare to play if user unmutes later
     bgAudio.play().catch(e => console.log("Audio play failed", e));
