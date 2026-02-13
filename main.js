@@ -221,8 +221,8 @@ function startVideo3() {
     // 17% left shift and 0.5 speed -> User requested 1.5x current (0.5 * 1.5 = 0.75)
     // User Update: Move head back to midpoint (remove left shift)
     video.style.transform = 'translateX(0)';
-    // User requested: video 3 speed returned to original (0.5) 
-    video.playbackRate = 0.5;
+    // User requested: video 3 speed increased to 0.77
+    video.playbackRate = 0.77;
 
     video.play();
 
