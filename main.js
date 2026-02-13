@@ -130,7 +130,7 @@ function animateV1() {
     const stepProgress = (elapsed % stepDuration) / stepDuration; // 0.0 -> 1.0
 
     // Calculate the Scale at the START of the current step
-    let startScale = 0.24; // Initial (1.2x of 0.2)
+    let startScale = 0.36; // Initial (1.5x of 0.24)
     for (let i = 0; i < stepIndex; i++) {
         if (i < factors.length) startScale *= factors[i];
     }
@@ -319,11 +319,15 @@ function startVideo3() {
     }, 2700);
 
     // Links Fade In
+    // Play 700ms after Wow stops transitioning.
+    // Wow starts at 2700ms. Transition is 0.8s (800ms).
+    // Wow stops at 2700 + 800 = 3500ms.
+    // Appear at 3500 + 700 = 4200ms.
     setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
-        contactLinks.style.left = '83%'; // Moved 3% right from 80%
-    }, 4000);
+        contactLinks.style.left = '86%'; // Moved 3% right from 83%
+    }, 4200);
 }
 
 document.getElementById('link-form').addEventListener('click', () => {
