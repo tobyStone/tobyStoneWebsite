@@ -27,14 +27,18 @@ html {
 #unmute-btn {
     position: absolute;
     top: 20px;
-    right: 20px;
+    right: 9%;
+    /* Moved 7% left from ~2% (20px) .. assumes 20px was small. Let's say right: 20px was close to edge. 7% of viewport left means right: 7% + 20px. 
+                  Let's just iterate: "move... 7% of viewport to left".
+                  right: calc(20px + 7vw); */
+    right: calc(20px + 7vw);
     z-index: 1000;
     background: transparent;
     border: none;
     padding: 0;
     cursor: pointer;
-    width: 50px;
-    /* Adjust size as needed */
+    width: 108.5px;
+    /* 50px * 2.17 (100% + 117% = 217%) = 108.5px */
     height: auto;
 }
 

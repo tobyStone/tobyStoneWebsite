@@ -282,18 +282,62 @@ function startVideo3() {
     // 1.0 - 0.27 = 0.73
     const loopStartRatio = 0.73;
 
-    if (bgAudio.duration) {
+    // Logic: Repeat short soundtrack (last 27%) twice.
+    // 1st time: volume 0.25 (as set before, "75% softer").
+    // 2nd time: volume 0.125 (50% of previous).
+
+    // We need a counter or state for loop count
+    let loopCount = 0;
+    const maxLoops = 2; // "repeat ... twice" means play once, then repeat twice? OR play total 2 times? 
+    // "repeat the short sound track ... twice". Usually means: Play, Repeat 1, Repeat 2 (Total 3). 
+    // OR "play ... twice".
+    // "repeat ... twice" implies play, repeat, repeat. Total 3.
+    // "each time at 50% of the volume of the iteration before."
+    // 1: 0.25
+    // 2: 0.125
+    // 3: 0.0625
+
+    const playNextLoop = () => {
+        if (loopCount > 2) return; // Stop after 2 repeats (Total 3 plays).
+
+        // Loop 0
+        if (loopCount === 0) bgAudio.volume = 0.25;
+        // Loop 1
+        else if (loopCount === 1) bgAudio.volume = 0.125;
+        // Loop 2
+        else if (loopCount === 2) bgAudio.volume = 0.0625;
+
         bgAudio.currentTime = bgAudio.duration * loopStartRatio;
+        bgAudio.play().catch(e => console.log("Audio play failed", e));
+
+        loopCount++;
+    };
+
+    bgAudio.onended = () => {
+        if (loopCount < 3) { // 0, 1, 2
+            playNextLoop();
+        }
+    };
+
+    // If bgAudio metadata loaded, set time and play first loop
+    if (bgAudio.duration) {
+        // reset count
+        loopCount = 0;
+        playNextLoop();
+    } else {
+        bgAudio.onloadedmetadata = () => {
+            loopCount = 0;
+            playNextLoop();
+        };
     }
 
     // "75% softer initially" -> 0.25 volume
-    bgAudio.volume = 0.25;
-    bgAudio.loop = false; // We handle loop manually
-
-    bgAudio.onended = null; // Remove looping logic to play only once
-
-    // Only play if unmuted, or prepare to play if user unmutes later
-    bgAudio.play().catch(e => console.log("Audio play failed", e));
+    // Initial play handled by playNextLoop logic or loadedmetadata above.
+    // If we call play() here blindly, we might duplicate or mess up the count.
+    // We already call playNextLoop() inside the checks.
+    // But we need to ensure it starts if metadata was ALREADY loaded.
+    // The "if (bgAudio.duration)" block above checks that. 
+    // We can remove the loose play() call and the volume set.
 
     // Fade up to 0.7
     // Fade logic requested: "reduce ... to 25% volume by the end"
@@ -308,10 +352,7 @@ function startVideo3() {
     // Removing the volume increase interval.
 
     // If metadata wasn't loaded for currentTime calc:
-    // If metadata wasn't loaded for currentTime calc:
-    bgAudio.onloadedmetadata = () => {
-        bgAudio.currentTime = bgAudio.duration * 0.73;
-    };
+    // Removed onloadedmetadata duplications since we handled it above.
 
     overlayV3.classList.remove('hidden');
 
