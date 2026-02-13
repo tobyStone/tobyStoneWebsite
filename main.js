@@ -23,7 +23,7 @@ const bgAudio = new Audio(music);
 
 // Config
 const V1_DURATION = 7000;
-const V2_PAUSE_DURATION = 2000;
+const V2_PAUSE_DURATION = 1200;
 
 // --- Initialization ---
 const unmuteBtn = document.getElementById('unmute-btn');
@@ -198,7 +198,7 @@ function startVideo2Setup() {
             overlayV2.classList.add('hidden');
         }, 500); // 3.5s + 0.5s fade = 4.0s
 
-    }, 2770); // 2000ms pause + 770ms slow-mo = 2770ms
+    }, 1900); // 1200ms pause + 700ms slow-mo = 1900ms
 
 
     video.onended = () => {

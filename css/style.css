@@ -60,6 +60,8 @@ html {
     /* Start small */
     transition: transform 0.1s linear;
     /* Smoothness for JS updates */
+    margin-left: -2vw;
+    /* Shift left by 2% of viewport width */
 }
 
 /* Overlays */
