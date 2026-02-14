@@ -546,50 +546,58 @@ function startVideo3(skipped = false) {
 
 function startTestimonials() {
     overlayV4.classList.remove('hidden');
-    // Ensure contact links are clickable/visible
     overlayV4.style.pointerEvents = 'none';
-    document.getElementById('contact-links').style.zIndex = '30'; // Above overlayV4
+    document.getElementById('contact-links').style.zIndex = '30';
 
     const quotes = [
         'friendly and approachable',
         'listened to our needs',
         'translated them into a website',
         'looks great',
-        'works brilliantly too',
-        // Author handled separately
+        'works brilliantly too,"', // Added punctuation
+        'Karen Simpson, Tutors Alliance Scotland.' // Added author to loop
     ];
 
     const quoteEl = document.getElementById('testimonial-quote');
-    const authorEl = document.getElementById('testimonial-author');
+    // We don't need separate authorEl logic anymore if it's just text in the center
+    // Wait, user said "render at the end and then loop back around".
+    // Does Author display in the same place as quotes? Or separate?
+    // "render at the end and then loop back around all the previous testimonial words"
+    // Usually testimonials have author at bottom. But if it's part of the loop sequence of "words", maybe it replaces the quote text?
+    // "All following words will be in white and will fade in and fade out... 'Karen Simpson...'"
+    // Implies it's just another item in the sequence.
 
-    let delay = 1000; // Start 1s after appearing
+    // Let's assume it replaces the quote text for now.
 
-    quotes.forEach((text, index) => {
+    let currentIndex = 0;
+
+    const showNextQuote = () => {
+        const text = quotes[currentIndex];
+
         // Fade In
-        timeoutManager.setTimeout(() => {
-            quoteEl.textContent = text;
-            quoteEl.style.opacity = '1';
-        }, delay);
+        quoteEl.textContent = text;
+        quoteEl.style.opacity = '1';
 
-        // Duration visible: 2s
-        delay += 2500;
+        // Duration
+        // 2s duration for text
+        // Maybe longer for author?
+        const duration = 2500;
 
-        // Fade Out (except see note below if we want last one to stay? "fade in and fade out")
-        // User said: "All following words will be in white and will fade in and fade out"
-        // So they all fade out.
         timeoutManager.setTimeout(() => {
+            // Fade Out
             quoteEl.style.opacity = '0';
-        }, delay);
 
-        delay += 1000; // Wait 1s before next
-    });
+            timeoutManager.setTimeout(() => {
+                // Next
+                currentIndex = (currentIndex + 1) % quotes.length;
+                showNextQuote();
+            }, 1000); // 1s gap between words
 
-    // Show Author at end (REMOVED as per request)
-    timeoutManager.setTimeout(() => {
-        // authorEl.textContent = 'Karen Simpson, Tutors Alliance Scotland';
-        // authorEl.classList.remove('hidden');
-        // authorEl.style.opacity = '1';
-    }, delay);
+        }, duration);
+    };
+
+    // Start delay
+    timeoutManager.setTimeout(showNextQuote, 1000);
 }
 
 document.getElementById('link-form').addEventListener('click', () => {
