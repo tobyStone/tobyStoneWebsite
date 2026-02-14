@@ -158,6 +158,28 @@ function animateV1() {
 }
 
 function stopVideo1() {
+    // Overlap V1 Audio into V2 (Fade out)
+    // Only if currently unmuted
+    if (!video.muted) {
+        const v1Audio = new Audio(videos.v1);
+        v1Audio.currentTime = video.currentTime;
+        v1Audio.volume = video.volume; // Should be 1.0 or set value
+        v1Audio.play().catch(e => console.log("V1 fade audio failed", e));
+
+        let steps = 0;
+        const fadeInterval = setInterval(() => {
+            steps++;
+            if (v1Audio.volume > 0.01) {
+                v1Audio.volume = v1Audio.volume * 0.5; // Reduce by 50%
+            }
+            if (steps >= 5) { // 500ms (5 * 100ms)
+                clearInterval(fadeInterval);
+                v1Audio.pause();
+                v1Audio.src = '';
+            }
+        }, 100);
+    }
+
     video.pause();
     overlayV1.classList.add('hidden');
     overlayV1.innerHTML = ''; // Clear all text elements immediately
@@ -268,12 +290,13 @@ function startVideo3(skipped = false) {
 
     // Helper to start playback and apply skip logic if needed
     const runVideo = () => {
-        video.play().catch(e => console.log("Video 3 play failed", e));
-
         if (skipped) {
-            // Jump to end of animations (approx 3.5s)
+            // Jump to end state. Do not play.
             // Wow ends transition at 3.5s.
             video.currentTime = 3.5;
+            video.pause(); // Ensure paused
+        } else {
+            video.play().catch(e => console.log("Video 3 play failed", e));
         }
     };
 
@@ -318,7 +341,9 @@ function startVideo3(skipped = false) {
 
     // We need a counter or state for loop count
     let loopCount = 0;
-    const maxLoops = 2; // "repeat ... twice" means play once, then repeat twice? OR play total 2 times? 
+    const maxLoops = 3; // "one more time" -> Total 4 plays? Original: 3 plays. Now: 4 plays.
+    // "repeat ... twice" -> 3 plays.
+    // "loop ... one more time" -> 4 plays. 
     // "repeat ... twice" implies play, repeat, repeat. Total 3.
     // OR "play ... twice".
     // "each time at 50% of the volume of the iteration before."
@@ -327,16 +352,13 @@ function startVideo3(skipped = false) {
     // 3: 0.0625
 
     const playNextLoop = () => {
-        if (loopCount > 2) return; // Stop after 2 repeats (Total 3 plays).
+        if (loopCount > 3) return; // Stop after 3 repeats (Total 4 plays).
 
-        // Loop 0
-        if (loopCount === 0) bgAudio.volume = 0; // Start silent for fade-in
-        // Loop 1
-        else if (loopCount === 1) bgAudio.volume = 0;
-        // Loop 2
-        else if (loopCount === 2) bgAudio.volume = 0;
+        // Loop 0-3: Start silent for fade-in
+        bgAudio.volume = 0;
 
-        const targetVolume = [0.25, 0.125, 0.0625][loopCount];
+        // 1: 0.25 -> 2: 0.125 -> 3: 0.0625 -> 4: 0.03125
+        const targetVolume = [0.25, 0.125, 0.0625, 0.03125][loopCount];
 
         bgAudio.currentTime = bgAudio.duration * loopStartRatio;
 
@@ -374,22 +396,29 @@ function startVideo3(skipped = false) {
         loopCount++;
     };
 
-    bgAudio.onended = () => {
-        if (loopCount < 3) { // 0, 1, 2
-            playNextLoop();
-        }
-    };
+    if (!skipped) {
+        bgAudio.onended = () => {
+            if (loopCount < 4) { // 0, 1, 2, 3
+                playNextLoop();
+            }
+        };
+    }
 
     // If bgAudio metadata loaded, set time and play first loop
-    if (bgAudio.duration) {
-        // reset count
-        loopCount = 0;
-        playNextLoop();
-    } else {
-        bgAudio.onloadedmetadata = () => {
+    if (!skipped) {
+        if (bgAudio.duration) {
+            // reset count
             loopCount = 0;
             playNextLoop();
-        };
+        } else {
+            bgAudio.onloadedmetadata = () => {
+                loopCount = 0;
+                playNextLoop();
+            };
+        }
+    } else {
+        // If skipped, ensure bgAudio is stopped
+        bgAudio.pause();
     }
 
     // "75% softer initially" -> 0.25 volume
