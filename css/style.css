@@ -116,11 +116,19 @@ html {
 }
 
 /* Text positioning for Video 2 */
-.v2-left,
-.v2-right {
+.v2-left {
+    flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
+    align-items: center;
+    /* Removed padding-right and transform to use cleaner relative positioning */
+}
+
+/* Specific rule for the text container inside the left box */
+.v2-left .word-stack {
+    position: relative;
+    left: 7vw;
+    /* Move 7% of viewport to the RIGHT */
 }
 
 .word-stack {
