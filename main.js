@@ -8,7 +8,6 @@ const state = {
 const video = document.getElementById('main-video');
 const overlayV1 = document.getElementById('overlay-v1');
 const overlayV2 = document.getElementById('overlay-v2');
-const overlayV2 = document.getElementById('overlay-v2');
 const overlayV3 = document.getElementById('overlay-v3');
 const overlayV4 = document.getElementById('overlay-v4');
 const contactLinks = document.getElementById('contact-links');
