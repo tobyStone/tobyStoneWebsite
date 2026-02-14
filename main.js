@@ -539,7 +539,57 @@ function startVideo3(skipped = false) {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
         contactLinks.style.left = '84%'; // Matches CSS update: Moved 2% left from 86%
+        // Start Testimonials after contacts appear
+        startTestimonials();
     }, 4200);
+}
+
+function startTestimonials() {
+    overlayV4.classList.remove('hidden');
+    // Ensure contact links are clickable/visible
+    overlayV4.style.pointerEvents = 'none';
+    document.getElementById('contact-links').style.zIndex = '30'; // Above overlayV4
+
+    const quotes = [
+        'friendly and approachable',
+        'listened to our needs',
+        'translated them into a website',
+        'looks great',
+        'works brilliantly too',
+        // Author handled separately
+    ];
+
+    const quoteEl = document.getElementById('testimonial-quote');
+    const authorEl = document.getElementById('testimonial-author');
+
+    let delay = 1000; // Start 1s after appearing
+
+    quotes.forEach((text, index) => {
+        // Fade In
+        timeoutManager.setTimeout(() => {
+            quoteEl.textContent = text;
+            quoteEl.style.opacity = '1';
+        }, delay);
+
+        // Duration visible: 2s
+        delay += 2500;
+
+        // Fade Out (except see note below if we want last one to stay? "fade in and fade out")
+        // User said: "All following words will be in white and will fade in and fade out"
+        // So they all fade out.
+        timeoutManager.setTimeout(() => {
+            quoteEl.style.opacity = '0';
+        }, delay);
+
+        delay += 1000; // Wait 1s before next
+    });
+
+    // Show Author at end (REMOVED as per request)
+    timeoutManager.setTimeout(() => {
+        // authorEl.textContent = 'Karen Simpson, Tutors Alliance Scotland';
+        // authorEl.classList.remove('hidden');
+        // authorEl.style.opacity = '1';
+    }, delay);
 }
 
 document.getElementById('link-form').addEventListener('click', () => {
