@@ -643,10 +643,24 @@ function skipIntro() {
     // Usually means last frame.
     // Set src to V3, seek to end, pause.
     video.src = videos.v3;
-    video.onloadedmetadata = () => {
-        video.currentTime = 3.5; // End of animations
-        // Or duration?
+    const seekToEnd = () => {
+        // Seek to the very end. Setting currentTime to duration usually shows the last frame.
+        // Or a tiny bit before if some browsers loop/reset.
+        // Let's safe bet: duration - 0.1? Or just duration. 
+        // User asked for "end of the playing time".
+        if (video.duration) {
+            video.currentTime = video.duration;
+        }
     };
+
+    if (video.readyState >= 1) {
+        seekToEnd();
+    } else {
+        video.onloadedmetadata = () => {
+            seekToEnd();
+            video.onloadedmetadata = null;
+        };
+    }
     // Force transform to reset
     video.style.transform = 'translateX(0) scale(1)';
     video.style.zIndex = '';
