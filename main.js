@@ -8,7 +8,9 @@ const state = {
 const video = document.getElementById('main-video');
 const overlayV1 = document.getElementById('overlay-v1');
 const overlayV2 = document.getElementById('overlay-v2');
+const overlayV2 = document.getElementById('overlay-v2');
 const overlayV3 = document.getElementById('overlay-v3');
+const overlayV4 = document.getElementById('overlay-v4');
 const contactLinks = document.getElementById('contact-links');
 
 // Assets
@@ -646,6 +648,9 @@ function skipIntro() {
     contactLinks.classList.remove('hidden');
     contactLinks.style.opacity = '1';
     contactLinks.style.left = '84%';
+
+    // START TESTIMONIALS IMMEDIATELY
+    startTestimonials();
 
     // Ensure V3 Video Background is visible?
     // We effectively stopped the video. If we want the V3 *frame* to be visible as background, we need to set it.
