@@ -131,7 +131,8 @@ html {
 
 .word-img,
 .letter-img {
-    max-height: 10vh;
+    max-height: 17vh;
+    /* 10vh * 1.7 = 17vh */
     margin: 5px 0;
 }
 

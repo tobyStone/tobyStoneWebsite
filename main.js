@@ -65,6 +65,7 @@ const timeoutManager = {
 
 // --- Animation Frame Manager ---
 let v1AnimationId = null; // Track requestAnimationFrame for V1
+let v2TimeUpdateHandler = null; // Track V2 listener for lookup/removal
 
 // --- Initialization ---
 const unmuteBtn = document.getElementById('unmute-btn');
@@ -286,6 +287,8 @@ function startVideo2Setup() {
             video.pause();
             // Trigger transition manually
             video.removeEventListener('timeupdate', checkEndTime);
+            v2TimeUpdateHandler = null; // Clear global ref
+
             video.onended = null; // Prevent double firing
             // Perform the "onended" logic here
             // Cleanup V2 styles
@@ -297,6 +300,7 @@ function startVideo2Setup() {
             startVideo3();
         }
     };
+    v2TimeUpdateHandler = checkEndTime; // Store ref
     video.addEventListener('timeupdate', checkEndTime);
 
 
@@ -304,6 +308,8 @@ function startVideo2Setup() {
     // But keep a fallback just in case duration is short or update misses.
     video.onended = () => {
         video.removeEventListener('timeupdate', checkEndTime);
+        v2TimeUpdateHandler = null;
+
         // Cleanup V2 styles
         video.style.zIndex = '';
         video.style.mixBlendMode = '';
@@ -595,6 +601,11 @@ function skipIntro() {
     // We replace the node to strip listeners or just nullify properties we attached
     video.onended = null;
     video.ontimeupdate = null;
+    if (v2TimeUpdateHandler) {
+        video.removeEventListener('timeupdate', v2TimeUpdateHandler);
+        v2TimeUpdateHandler = null;
+    }
+
     video.onloadeddata = null;
     video.onloadedmetadata = null;
     bgAudio.onended = null;
