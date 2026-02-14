@@ -25,6 +25,47 @@ const bgAudio = new Audio(music);
 const V1_DURATION = 5713; // Adjusted for 1.225x speed (7000 / 1.225)
 const V2_PAUSE_DURATION = 1200;
 
+// --- Timeout Manager ---
+const timeoutManager = {
+    timeouts: [],
+    intervals: [],
+
+    setTimeout: function (cb, delay) {
+        const id = setTimeout(() => {
+            cb();
+            this.clearTimeout(id); // Cleanup after execution
+        }, delay);
+        this.timeouts.push(id);
+        return id;
+    },
+
+    clearTimeout: function (id) {
+        clearTimeout(id);
+        this.timeouts = this.timeouts.filter(t => t !== id);
+    },
+
+    setInterval: function (cb, delay) {
+        const id = setInterval(cb, delay);
+        this.intervals.push(id);
+        return id;
+    },
+
+    clearInterval: function (id) {
+        clearInterval(id);
+        this.intervals = this.intervals.filter(i => i !== id);
+    },
+
+    clearAll: function () {
+        this.timeouts.forEach(id => clearTimeout(id));
+        this.timeouts = [];
+        this.intervals.forEach(id => clearInterval(id));
+        this.intervals = [];
+    }
+};
+
+// --- Animation Frame Manager ---
+let v1AnimationId = null; // Track requestAnimationFrame for V1
+
 // --- Initialization ---
 const unmuteBtn = document.getElementById('unmute-btn');
 const skipIntroBtn = document.getElementById('skip-intro-btn');
@@ -70,7 +111,7 @@ function startVideo1() {
         // Play started
         if (!v1StartTime) {
             v1StartTime = Date.now();
-            requestAnimationFrame(animateV1);
+            v1AnimationId = requestAnimationFrame(animateV1);
         }
     }).catch(e => {
         console.log("Autoplay failed even muted?", e);
@@ -103,7 +144,7 @@ function startVideo1() {
     ];
 
     words.forEach(w => {
-        setTimeout(() => {
+        timeoutManager.setTimeout(() => {
             const el = document.createElement('img');
             el.src = `/images/${w.img}`;
             el.className = 'v1-word';
@@ -154,7 +195,7 @@ function animateV1() {
 
     video.style.transform = `scale(${currentScale})`;
 
-    requestAnimationFrame(animateV1);
+    v1AnimationId = requestAnimationFrame(animateV1);
 }
 
 function stopVideo1() {
@@ -167,13 +208,13 @@ function stopVideo1() {
         v1Audio.play().catch(e => console.log("V1 fade audio failed", e));
 
         let steps = 0;
-        const fadeInterval = setInterval(() => {
+        const fadeInterval = timeoutManager.setInterval(() => {
             steps++;
             if (v1Audio.volume > 0.01) {
                 v1Audio.volume = v1Audio.volume * 0.5; // Reduce by 50%
             }
             if (steps >= 5) { // 500ms (5 * 100ms)
-                clearInterval(fadeInterval);
+                timeoutManager.clearInterval(fadeInterval);
                 v1Audio.pause();
                 v1Audio.src = '';
             }
@@ -211,12 +252,12 @@ function startVideo2Setup() {
     video.play();
 
     // Fade out text starting at 3.5s + 377ms = 3877ms
-    setTimeout(() => {
+    timeoutManager.setTimeout(() => {
         overlayV2.style.opacity = '0';
     }, 3877);
 
     // Switch to normal speed at 3.6s (1.2s of video content * 3)
-    setTimeout(() => {
+    timeoutManager.setTimeout(() => {
         video.playbackRate = 1.0;
 
         // Unmute Video 2 IF user has globally unmuted
@@ -227,7 +268,7 @@ function startVideo2Setup() {
         }
 
         // Ensure overlay is hidden after fade
-        setTimeout(() => {
+        timeoutManager.setTimeout(() => {
             overlayV2.classList.add('hidden');
         }, 3000); // Delayed to ensure text lingers as requested (377ms extra visible time logic)
 
@@ -366,11 +407,11 @@ function startVideo3(skipped = false) {
             // Fade In (50ms duration? "quick fade")
             // Let's fade in over 200ms
             let vol = 0;
-            const fadeIn = setInterval(() => {
+            const fadeIn = timeoutManager.setInterval(() => {
                 vol += (targetVolume / 5); // 5 steps of 40ms = 200ms
                 if (vol >= targetVolume) {
                     vol = targetVolume;
-                    clearInterval(fadeIn);
+                    timeoutManager.clearInterval(fadeIn);
                 }
                 bgAudio.volume = vol;
             }, 40);
@@ -379,13 +420,13 @@ function startVideo3(skipped = false) {
             // Loop duration?
             const duration = bgAudio.duration - bgAudio.currentTime;
             // Fade out last 300ms
-            setTimeout(() => {
+            timeoutManager.setTimeout(() => {
                 let volOut = bgAudio.volume;
-                const fadeOut = setInterval(() => {
+                const fadeOut = timeoutManager.setInterval(() => {
                     volOut -= (targetVolume / 5);
                     if (volOut <= 0) {
                         volOut = 0;
-                        clearInterval(fadeOut);
+                        timeoutManager.clearInterval(fadeOut);
                     }
                     bgAudio.volume = volOut;
                 }, 40); // 5 steps * 40ms = 200ms fade out
@@ -448,11 +489,11 @@ function startVideo3(skipped = false) {
     // User requested: Start 700ms later (1000 + 700 = 1700ms)
     // User requested: Increase speed (appear earlier) by 177ms -> 1700 - 177 = 1523ms
     // User requested: Appear 100ms *earlier* -> 1523 - 100 = 1423ms
-    setTimeout(() => {
+    timeoutManager.setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
         // Drift left 39% from left -> right: 61% AND Rotate -31deg
-        setTimeout(() => {
+        timeoutManager.setTimeout(() => {
             pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
@@ -460,11 +501,11 @@ function startVideo3(skipped = false) {
 
     // 2s Wow
     // User requested: Start 700ms later (2000 + 700 = 2700ms)
-    setTimeout(() => {
+    timeoutManager.setTimeout(() => {
         const wow = document.getElementById('word-wow');
         wow.classList.remove('hidden');
         // Drift right 37% from right -> left: 63% AND Rotate 37deg
-        setTimeout(() => {
+        timeoutManager.setTimeout(() => {
             wow.style.left = '63%';
             wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
         }, 50);
@@ -472,40 +513,13 @@ function startVideo3(skipped = false) {
 
     // If skipped, we fast-forward animations
     if (skipped) {
-        // Show 'Let's'
-        document.getElementById('word-lets').classList.remove('hidden');
-
-        // Show 'Pow' in final state
-        const pow = document.getElementById('word-pow');
-        pow.classList.remove('hidden');
-        pow.style.transition = 'none'; // Instant
-        pow.style.left = '39%';
-        pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
-
-        // Show 'Wow' in final state
-        const wow = document.getElementById('word-wow');
-        wow.classList.remove('hidden');
-        wow.style.transition = 'none'; // Instant
-        wow.style.left = '63%';
-        wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
-
-        // Hide Skip Button immediately
-        skipIntroBtn.classList.add('hidden');
-
-        // Show Links immediately? "fading in of the contact wording... if button is pressed"
-        // Request: "skip to... just before the fading in". 
-        // So we should start the contact fade in NOW.
-        contactLinks.classList.remove('hidden');
-        contactLinks.style.opacity = '1';
-        contactLinks.style.left = '84%';
-
-        return; // Skip the timeouts below
+        // Skip Logic moved to skipIntro function proper or handled via clearing
     }
 
     // Normal Flow
     // ... items below ...
     // Calculate when to hide Skip Button: 4200ms
-    skipIntroTimeout = setTimeout(() => {
+    skipIntroTimeout = timeoutManager.setTimeout(() => {
         skipIntroBtn.classList.add('hidden');
     }, 4200);
 
@@ -514,7 +528,7 @@ function startVideo3(skipped = false) {
     // Wow starts at 2700ms. Transition is 0.8s (800ms).
     // Wow stops at 2700 + 800 = 3500ms.
     // Appear at 3500 + 700 = 4200ms.
-    setTimeout(() => {
+    timeoutManager.setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
         contactLinks.style.left = '84%'; // Matches CSS update: Moved 2% left from 86%
@@ -555,25 +569,89 @@ form.addEventListener('submit', async (e) => {
 });
 
 function skipIntro() {
-    // 1. Stop current video / audio
+    console.log("Skipping Intro - Cleaning up and enforcing final state");
+
+    // 1. CLEAR ALL TIMERS
+    // This stops future events (V2 start, V3 words, audio fades, etc.)
+    timeoutManager.clearAll();
+
+    // 2. STOP V1 ANIMATION LOOP
+    if (v1AnimationId) {
+        cancelAnimationFrame(v1AnimationId);
+    }
+
+    // 3. STOP ALL MEDIA
     video.pause();
+    // Use try/catch to avoid errors if src is empty
+    try {
+        video.src = ''; // Stops downloading/buffering
+        video.load();
+    } catch (e) { }
+
     bgAudio.pause();
+    bgAudio.src = ''; // Stop audio completely
 
-    // Clear any pending timeouts/intervals/animations if possible
-    // (Ideally we track IDs, but simplistic approach: rely on state switch)
+    // 4. REMOVE EVENT LISTENERS (Clean Slate)
+    // We replace the node to strip listeners or just nullify properties we attached
+    video.onended = null;
+    video.ontimeupdate = null;
+    video.onloadeddata = null;
+    video.onloadedmetadata = null;
+    bgAudio.onended = null;
+    bgAudio.onloadedmetadata = null;
 
-    // 2. Hide overlays
+    // 5. CLEAR OVERLAYS / HIDE OLD ELEMENTS
     overlayV1.classList.add('hidden');
     overlayV1.innerHTML = '';
+
     overlayV2.classList.add('hidden');
+    overlayV2.style.opacity = '';
 
-    // 3. Setup V3 state immediately
-    // Jump to the state where WOW has finished and contacts are about to appear.
-    // "disappear at the point Wow stops transitioning and just before the fading in of the contact wording"
-    // Wow stops at 3500ms (2700 + 800). Contacts appear at 4200ms.
-    // So we want to be effectively at approx 4200ms of V3 timeline.
+    skipIntroBtn.classList.add('hidden');
 
-    startVideo3(true); // pass true for 'skipped'
+    // 6. ENFORCE V3 FINAL STATE
+    overlayV3.classList.remove('hidden');
+
+    // 'Let's'
+    const wordLets = document.getElementById('word-lets');
+    wordLets.classList.remove('hidden');
+    wordLets.style.transition = 'none';
+
+    // 'Pow'
+    const pow = document.getElementById('word-pow');
+    pow.classList.remove('hidden');
+    pow.style.transition = 'none';
+    pow.style.left = '39%';
+    pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
+
+    // 'Wow'
+    const wow = document.getElementById('word-wow');
+    wow.classList.remove('hidden');
+    wow.style.transition = 'none';
+    wow.style.left = '63%';
+    wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+
+    // Contact Links
+    contactLinks.classList.remove('hidden');
+    contactLinks.style.opacity = '1';
+    contactLinks.style.left = '84%';
+
+    // Ensure V3 Video Background is visible?
+    // We effectively stopped the video. If we want the V3 *frame* to be visible as background, we need to set it.
+    // "skip to the end of all three videos playing... and not play any videos"
+    // Does this mean black background? Or the last frame of V3?
+    // Usually means last frame.
+    // Set src to V3, seek to end, pause.
+    video.src = videos.v3;
+    video.onloadedmetadata = () => {
+        video.currentTime = 3.5; // End of animations
+        // Or duration?
+    };
+    // Force transform to reset
+    video.style.transform = 'translateX(0) scale(1)';
+    video.style.zIndex = '';
+    video.style.mixBlendMode = '';
+    video.style.opacity = '1';
 }
 
 init();
