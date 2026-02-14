@@ -345,6 +345,8 @@ textarea {
     /* On top of V3 */
     pointer-events: none;
     /* Let clicks pass through if needed, though mostly visual */
+    font-family: 'Komika Axis', sans-serif !important;
+    /* Ensure superhero font application */
 }
 
 #testimonial-arrow {

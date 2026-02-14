@@ -553,7 +553,7 @@ function startTestimonials() {
         'friendly and approachable',
         'listened to our needs',
         'translated them into a website',
-        'looks great',
+        'that looks great', // Added 'that'
         'works brilliantly too,"', // Added punctuation
         'Karen Simpson, Tutors Alliance Scotland.' // Added author to loop
     ];
