@@ -389,7 +389,9 @@ textarea {
     left: 75%;
     /* 25% right of center (50% + 25% = 75%) */
     transform: translate(-50%, -50%);
-    width: 80%;
+    max-width: 20vw;
+    /* Wrap if over 20% viewport width */
+    width: auto;
     text-align: center;
     font-size: 2.5rem;
     color: white;
