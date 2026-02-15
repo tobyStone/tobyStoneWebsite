@@ -228,27 +228,8 @@ function animateV1() {
 }
 
 function stopVideo1() {
-    // Overlap V1 Audio into V2 (Fade out)
-    // Only if currently unmuted
-    if (!video.muted) {
-        const v1Audio = new Audio(videos.v1);
-        v1Audio.currentTime = video.currentTime;
-        v1Audio.volume = video.volume; // Should be 1.0 or set value
-        v1Audio.play().catch(e => console.log("V1 fade audio failed", e));
-
-        // Play full volume for 750ms
-        timeoutManager.setTimeout(() => {
-            const fadeInterval = timeoutManager.setInterval(() => {
-                if (v1Audio.volume > 0.01) {
-                    v1Audio.volume = v1Audio.volume * 0.75; // Reduce by 25%
-                } else {
-                    timeoutManager.clearInterval(fadeInterval);
-                    v1Audio.pause();
-                    v1Audio.src = '';
-                }
-            }, 50); // Every 50ms
-        }, 750);
-    }
+    // Overlap V1 Audio into V2 (Fade out) - REMOVED per request
+    // if (!video.muted) { ... }
 
     video.pause();
     overlayV1.classList.add('hidden');
@@ -427,13 +408,14 @@ function startVideo3(skipped = false) {
     // 3: 0.0625
 
     const playNextLoop = () => {
-        if (loopCount > 3) return; // Stop after 3 repeats (Total 4 plays).
+        if (loopCount > 4) return; // Stop after 4 repeats (Total 5 plays).
 
         // Loop 0-3: Start silent for fade-in
         bgAudio.volume = 0;
 
         // 1: 0.25 -> 2: 0.125 -> 3: 0.0625 -> 4: 0.03125
-        const targetVolume = [0.25, 0.125, 0.0625, 0.03125][loopCount];
+        // 1: 0.25 -> 2: 0.125 -> 3: 0.0625 -> 4: 0.03125 -> 5: 0.015625
+        const targetVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625][loopCount];
 
         bgAudio.currentTime = bgAudio.duration * loopStartRatio;
 
@@ -473,7 +455,7 @@ function startVideo3(skipped = false) {
 
     if (!skipped) {
         bgAudio.onended = () => {
-            if (loopCount < 4) { // 0, 1, 2, 3
+            if (loopCount < 5) { // 0, 1, 2, 3, 4
                 playNextLoop();
             }
         };
@@ -618,9 +600,9 @@ function startTestimonials() {
                 // Next
                 currentIndex = (currentIndex + 1) % quotes.length;
                 showNextQuote();
-            }, 1000); // 1s gap between words
+            }, 1000 / 1.2); // 1s gap between words (speed increased by 1.2)
 
-        }, duration);
+        }, 2500 / 1.2); // 2.5s duration (speed increased by 1.2)
     };
 
     // Start delay
