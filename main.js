@@ -209,18 +209,18 @@ function stopVideo1() {
         v1Audio.volume = video.volume; // Should be 1.0 or set value
         v1Audio.play().catch(e => console.log("V1 fade audio failed", e));
 
-        let steps = 0;
-        const fadeInterval = timeoutManager.setInterval(() => {
-            steps++;
-            if (v1Audio.volume > 0.01) {
-                v1Audio.volume = v1Audio.volume * 0.5; // Reduce by 50%
-            }
-            if (steps >= 3) { // 750ms (3 * 250ms)
-                timeoutManager.clearInterval(fadeInterval);
-                v1Audio.pause();
-                v1Audio.src = '';
-            }
-        }, 250);
+        // Play full volume for 750ms
+        timeoutManager.setTimeout(() => {
+            const fadeInterval = timeoutManager.setInterval(() => {
+                if (v1Audio.volume > 0.01) {
+                    v1Audio.volume = v1Audio.volume * 0.75; // Reduce by 25%
+                } else {
+                    timeoutManager.clearInterval(fadeInterval);
+                    v1Audio.pause();
+                    v1Audio.src = '';
+                }
+            }, 50); // Every 50ms
+        }, 750);
     }
 
     video.pause();
