@@ -360,7 +360,8 @@ textarea {
 #testimonial-arrow {
     position: absolute;
     top: 15%;
-    left: 15%;
+    left: 20%;
+    /* Moved 5% right from 15% */
     width: 15vw;
     /* Adjust size as needed */
     transform: rotate(45deg);
@@ -383,9 +384,10 @@ textarea {
 
 #testimonial-quote {
     position: absolute;
-    top: 50%;
-    /* Top half */
-    left: 50%;
+    top: 25%;
+    /* 25% vertical from center (50% - 25% = 25%) */
+    left: 75%;
+    /* 25% right of center (50% + 25% = 75%) */
     transform: translate(-50%, -50%);
     width: 80%;
     text-align: center;

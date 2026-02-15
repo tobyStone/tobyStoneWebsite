@@ -215,12 +215,12 @@ function stopVideo1() {
             if (v1Audio.volume > 0.01) {
                 v1Audio.volume = v1Audio.volume * 0.5; // Reduce by 50%
             }
-            if (steps >= 5) { // 500ms (5 * 100ms)
+            if (steps >= 3) { // 750ms (3 * 250ms)
                 timeoutManager.clearInterval(fadeInterval);
                 v1Audio.pause();
                 v1Audio.src = '';
             }
-        }, 100);
+        }, 250);
     }
 
     video.pause();
@@ -550,7 +550,7 @@ function startTestimonials() {
     document.getElementById('contact-links').style.zIndex = '30';
 
     const quotes = [
-        'friendly and approachable',
+        'is friendly and approachable', // Added 'is'
         'listened to our needs',
         'translated them into a website',
         'that looks great', // Added 'that'
