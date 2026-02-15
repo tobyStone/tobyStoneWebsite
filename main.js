@@ -26,6 +26,55 @@ const bgAudio = new Audio(music);
 const V1_DURATION = 5713; // Adjusted for 1.225x speed (7000 / 1.225)
 const V2_PAUSE_DURATION = 1200;
 
+// --- Layout Configuration ---
+const LayoutConfig = {
+    MOBILE_BREAKPOINT: 768,
+
+    get current() {
+        return window.innerWidth <= this.MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
+    },
+
+    mobile: {
+        videoScaleMultiplier: 2.5,
+        contactLinksLeft: '50%',
+        wordRing: [
+            { text: 'From', img: 'From.png', time: 500, pos: { top: '20%', left: '30%' } },
+            { text: 'the', img: 'The.png', time: 1260, pos: { top: '20%', left: '70%' } },
+            { text: 'seed', img: 'Seed.png', time: 2020, pos: { top: '45%', left: '85%' } },
+            { text: 'of', img: 'Of.png', time: 2780, pos: { top: '70%', left: '70%' } },
+            { text: 'an', img: 'An.png', time: 3540, pos: { top: '70%', left: '30%' } },
+            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '56%', left: '50%' } }
+        ]
+    },
+
+    desktop: {
+        videoScaleMultiplier: 1.0,
+        contactLinksLeft: '84%',
+        wordRing: [
+            { text: 'From', img: 'From.png', time: 500, pos: { top: '19.7%', left: '32.5%' } },
+            { text: 'the', img: 'The.png', time: 975, pos: { top: '15.5%', left: '56.1%' } },
+            { text: 'seed', img: 'Seed.png', time: 1450, pos: { top: '27.5%', left: '76.8%' } },
+            { text: 'of', img: 'Of.png', time: 1925, pos: { top: '50%', left: '85%' } },
+            { text: 'a', img: 'A.png', time: 2400, pos: { top: '72.5%', left: '76.8%' } },
+            { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
+            { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
+            { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
+            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '56%', left: '50%' } }
+        ]
+    }
+};
+
+// --- Reflow Contract ---
+function handleResize() {
+    const config = LayoutConfig[LayoutConfig.current];
+
+    // Update Contact Links if visible
+    if (!contactLinks.classList.contains('hidden')) {
+        contactLinks.style.left = config.contactLinksLeft;
+    }
+}
+window.addEventListener('resize', handleResize);
+
 // --- Timeout Manager ---
 const timeoutManager = {
     timeouts: [],
@@ -120,30 +169,7 @@ function startVideo1() {
     });
 
     // Words Sequence
-    const words = [
-        // Clock starts at 11. 
-        // 1. From (11): 500ms
-        { text: 'From', img: 'From.png', time: 500, pos: { top: '19.7%', left: '32.5%' } },
-        // Subsequent words speed increased by 5%. 
-        // Original interval 500ms -> New interval 475ms (500 * 0.95)
-        // 2. the (12:20): 500 + 475 = 975
-        { text: 'the', img: 'The.png', time: 975, pos: { top: '15.5%', left: '56.1%' } },
-        // 3. seed (1:40): 975 + 475 = 1450
-        { text: 'seed', img: 'Seed.png', time: 1450, pos: { top: '27.5%', left: '76.8%' } },
-        // 4. of (3:00): 1450 + 475 = 1925
-        { text: 'of', img: 'Of.png', time: 1925, pos: { top: '50%', left: '85%' } },
-        // 5. a (4:20): 1925 + 475 = 2400
-        { text: 'a', img: 'A.png', time: 2400, pos: { top: '72.5%', left: '76.8%' } },
-        // 6. bean (5:40): 2400 + 475 = 2875
-        { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
-        // 7. of (7:00): 2875 + 475 = 3350
-        { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
-        // 8. an (8:20): 3350 + 475 = 3825
-        { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
-        // 9. idea: Center. 3825 + 475 = 4300
-        // User requested: 3% lower -> 53% + 3% = 56%
-        { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '56%', left: '50%' } }
-    ];
+    const words = LayoutConfig[LayoutConfig.current].wordRing;
 
     words.forEach(w => {
         timeoutManager.setTimeout(() => {
@@ -193,7 +219,8 @@ function animateV1() {
     }
 
     // Interpolate Linear
-    const currentScale = startScale + (targetScale - startScale) * stepProgress;
+    const baseScale = startScale + (targetScale - startScale) * stepProgress;
+    const currentScale = baseScale * LayoutConfig[LayoutConfig.current].videoScaleMultiplier;
 
     video.style.transform = `scale(${currentScale})`;
 
@@ -538,7 +565,7 @@ function startVideo3(skipped = false) {
     timeoutManager.setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
-        contactLinks.style.left = '84%'; // Matches CSS update: Moved 2% left from 86%
+        contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
         // Start Testimonials after contacts appear
         startTestimonials();
     }, 4200);
@@ -704,7 +731,7 @@ function skipIntro() {
     // Contact Links
     contactLinks.classList.remove('hidden');
     contactLinks.style.opacity = '1';
-    contactLinks.style.left = '84%';
+    contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
 
     // START TESTIMONIALS IMMEDIATELY
     startTestimonials();

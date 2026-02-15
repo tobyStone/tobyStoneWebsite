@@ -311,8 +311,60 @@ textarea {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+
+    /* Reset Video bias */
+    #main-video {
+        margin-left: 0;
+    }
+
+    /* Video 2: Vertical Stack Layout */
     .v2-content {
-        gap: 10px;
+        flex-direction: column;
+        gap: 2vh;
+    }
+
+    .v2-left .word-stack {
+        left: 0;
+    }
+
+    /* Stack "S I T E" letters vertically */
+    .v2-right .letter-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Adjust image sizes for vertical stack */
+    .word-img,
+    .letter-img {
+        max-height: 10vh;
+    }
+
+    /* Testimonial Wrapping */
+    #testimonial-quote {
+        max-width: 85vw;
+        font-size: clamp(1.2rem, 4vw, 2rem);
+    }
+
+    #testimonial-toby {
+        font-size: 2rem;
+        left: 20%;
+    }
+
+    #testimonial-arrow {
+        width: 20vw;
+        left: 5%;
+    }
+
+    /* Contact Links: Bottom Center */
+    #contact-links {
+        /* Initial CSS state - JS will synchronise */
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: 50px;
+        flex-direction: column;
+        width: max-content;
     }
 }
 
