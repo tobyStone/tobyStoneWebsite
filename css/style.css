@@ -374,7 +374,9 @@ textarea {
     position: absolute;
     top: 12%;
     /* Near tail of arrow */
-    left: 19%;
+    left: 26%;
+    /* Moved another 7% right (19 + 7 = 26%) */
+    font-size: 3rem;
     /* Moved 7% right from 12% */
     font-size: 3rem;
     color: white;
