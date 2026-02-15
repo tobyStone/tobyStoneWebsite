@@ -374,7 +374,8 @@ textarea {
     position: absolute;
     top: 12%;
     /* Near tail of arrow */
-    left: 12%;
+    left: 19%;
+    /* Moved 7% right from 12% */
     font-size: 3rem;
     color: white;
     font-family: 'Komika Axis', sans-serif;
