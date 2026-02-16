@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.3 (Image)');
+    console.log('Initializing... Version: Contact Transition Update 1.4 (Loop Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -595,6 +595,7 @@ function startTestimonials() {
         // Fade In
         // Special check for "Contact Him Here"
         if (text === 'Contact Him Here') {
+            currentIndex = (currentIndex + 1) % quotes.length;
             runContactTransition(quoteEl, quotes, showNextQuote);
             return;
         }
