@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.5 (Resize)');
+    console.log('Initializing... Version: Contact Transition Update 1.6 (Hide Unmute)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -811,6 +811,8 @@ function skipIntro() {
 
     overlayV2.classList.add('hidden');
     overlayV2.style.opacity = '';
+
+    unmuteBtn.classList.add('hidden'); // Ensure unmute button is hidden on skip
 
     skipIntroBtn.classList.add('hidden');
 
