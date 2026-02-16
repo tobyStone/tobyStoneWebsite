@@ -564,7 +564,8 @@ function startTestimonials() {
         'translated them into a website',
         'that looks great', // Added 'that'
         'works brilliantly too,"', // Added punctuation
-        'Karen Simpson, Tutors Alliance Scotland.' // Added author to loop
+        'Karen Simpson, Tutors Alliance Scotland.', // Added author to loop
+        'Contact Him Here' // Added "Contact Him Here"
     ];
 
     const quoteEl = document.getElementById('testimonial-quote');
@@ -584,13 +585,19 @@ function startTestimonials() {
         const text = quotes[currentIndex];
 
         // Fade In
+        // Special check for "Contact Him Here"
+        if (text === 'Contact Him Here') {
+            runContactTransition(quoteEl, quotes, showNextQuote);
+            return;
+        }
+
         quoteEl.textContent = text;
         quoteEl.style.opacity = '1';
 
         // Duration
         // 2s duration for text
         // Maybe longer for author?
-        const duration = 2500;
+        const duration = 2500 / 1.2 / 1.2;
 
         timeoutManager.setTimeout(() => {
             // Fade Out
@@ -600,13 +607,112 @@ function startTestimonials() {
                 // Next
                 currentIndex = (currentIndex + 1) % quotes.length;
                 showNextQuote();
-            }, 1000 / 1.2); // 1s gap between words (speed increased by 1.2)
+            }, 1000 / 1.2 / 1.2); // 1s gap between words (speed increased by 1.2 twice)
 
-        }, 2500 / 1.2); // 2.5s duration (speed increased by 1.2)
+        }, duration);
     };
 
     // Start delay
     timeoutManager.setTimeout(showNextQuote, 1000);
+}
+
+function runContactTransition(quoteEl, quotes, loopCallback) {
+    // 1. Show "Contact Him Here"
+    quoteEl.innerHTML = '<span id="trans-contact">Contact</span> <span id="trans-him-here">Him Here</span>';
+    quoteEl.style.opacity = '1';
+
+    // 2. Show Arrow
+    const arrow = document.getElementById('testimonial-arrow');
+    const contactHeader = document.getElementById('contact-header');
+
+    // Calculate Midpoint
+    // We need element rects.
+    // Note: rects might be zero if hidden. But contactHeader is hidden (display none vs opacity 0? css says hidden is display none).
+    // We need to show contactHeader invisibly to get rect?
+    // css .hidden has display: none !important. We need to remove that class but keep opacity 0.
+    contactHeader.classList.remove('hidden');
+    // Ensure arrow is visible for rect but opacity 0 (default css for arrow?)
+    // Arrow in V4 overlay is visible by default? No, it's just an img in overlay.
+    // Let's set arrow style
+    arrow.style.opacity = '0';
+    arrow.style.display = 'block'; // Ensure it's not hidden
+
+    // Get Rects
+    const qRect = quoteEl.getBoundingClientRect();
+    const hRect = contactHeader.getBoundingClientRect();
+
+    // Midpoint
+    const midX = (qRect.left + qRect.width / 2 + hRect.left + hRect.width / 2) / 2;
+    const midY = (qRect.top + qRect.height / 2 + hRect.top + hRect.height / 2) / 2;
+
+    // Position Arrow
+    arrow.style.left = midX + 'px';
+    arrow.style.top = midY + 'px';
+    arrow.style.transform = 'translate(-50%, -50%) rotate(83deg)'; // 83deg clockwise from Up (assuming arrow image is Up?)
+    // If arrow image is Right (standard), 83deg is Down-Right. 
+    // User said "start bearing at upwards", implying 0 is Up.
+
+    // Fade In Arrow
+    arrow.style.transition = 'opacity 0.5s';
+    arrow.style.opacity = '1';
+
+    // Wait for reading time (approx same as other words? ~1.7s)
+    const readTime = 2500 / 1.2 / 1.2;
+
+    timeoutManager.setTimeout(() => {
+        // 3. Transition "Contact"
+        const transContact = document.getElementById('trans-contact');
+        const transHimHere = document.getElementById('trans-him-here');
+
+        // Get positions for transition
+        // We need to move transContact to contactHeader position.
+        // Easier to make transContact fixed/absolute to animate it across DOM?
+        // Or just transform translate.
+
+        const cRect = transContact.getBoundingClientRect();
+        const destRect = contactHeader.getBoundingClientRect();
+
+        const deltaX = destRect.left - cRect.left;
+        const deltaY = destRect.top - cRect.top;
+
+        transContact.style.display = 'inline-block';
+        transContact.style.transition = 'transform 1s ease-in-out';
+        transContact.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+        // 4. Fade out "Him Here" and Arrow
+        transHimHere.style.transition = 'opacity 1s ease-in-out';
+        transHimHere.style.opacity = '0';
+
+        arrow.style.transition = 'opacity 1s ease-in-out';
+        arrow.style.opacity = '0';
+
+        // 5. When transition ends
+        timeoutManager.setTimeout(() => {
+            // Show real header, hide Transition Contact
+            contactHeader.style.opacity = '1';
+            quoteEl.style.opacity = '0'; // Hide the whole quote container
+
+            // Wait a moment then restart loop
+            timeoutManager.setTimeout(() => {
+                // Reset stuff for next loop?
+                // Hide arrow? It's already opacity 0.
+                // Reset Quote El text?
+                quoteEl.textContent = '';
+
+                // Restart Loop (index is handled by caller logic? No, we need to reset/increment)
+                // loopCallback expects to be called to show NEXT quote.
+                // We should reset index to 0 for next loop?
+                // "restart the loop of the testimonial wording"
+                // Do we restart from 'friendly'?
+                // Caller `showNextQuote` calculates `currentIndex = (currentIndex + 1)`.
+                // We are at `quotes.length - 1` (Contact Him Here).
+                // Next call will wrap to 0. Perfect.
+                loopCallback();
+            }, 1000); // 1s pause before restarting "is friendly..."
+
+        }, 1000); // 1s transition time
+
+    }, readTime);
 }
 
 document.getElementById('link-form').addEventListener('click', () => {
