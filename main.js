@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.0');
+    console.log('Initializing... Version: Contact Transition Update 1.1');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -457,6 +457,9 @@ function startVideo3(skipped = false) {
         bgAudio.onended = () => {
             if (loopCount < 5) { // 0, 1, 2, 3, 4
                 playNextLoop();
+            } else {
+                // Audio finished completely
+                unmuteBtn.classList.add('hidden');
             }
         };
     }
@@ -558,6 +561,11 @@ function startTestimonials() {
     overlayV4.style.pointerEvents = 'none';
     document.getElementById('contact-links').style.zIndex = '30';
 
+    // Show static Contact Header immediately ("with Toby")
+    const contactHeader = document.getElementById('contact-header');
+    contactHeader.classList.remove('hidden');
+    contactHeader.style.opacity = '1';
+
     const quotes = [
         'is friendly and approachable', // Added 'is'
         'listened to our needs',
@@ -627,10 +635,8 @@ function runContactTransition(quoteEl, quotes, loopCallback) {
 
     // Calculate Midpoint
     // We need element rects.
-    // Note: rects might be zero if hidden. But contactHeader is hidden (display none vs opacity 0? css says hidden is display none).
-    // We need to show contactHeader invisibly to get rect?
-    // css .hidden has display: none !important. We need to remove that class but keep opacity 0.
-    contactHeader.classList.remove('hidden');
+    // contactHeader is already visible (from startTestimonials), so rect is valid.
+
     // Ensure arrow is visible for rect but opacity 0 (default css for arrow?)
     // Arrow in V4 overlay is visible by default? No, it's just an img in overlay.
     // Let's set arrow style
