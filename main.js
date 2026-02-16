@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.4 (Loop Fix)');
+    console.log('Initializing... Version: Contact Transition Update 1.5 (Resize)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -573,7 +573,7 @@ function startTestimonials() {
         'that looks great', // Added 'that'
         'works brilliantly too,"', // Added punctuation
         'Karen Simpson, Tutors Alliance Scotland.', // Added author to loop
-        'Contact Him Here' // Added "Contact Him Here"
+        'Contact him here' // Added "Contact Him Here"
     ];
 
     const quoteEl = document.getElementById('testimonial-quote');
@@ -593,8 +593,8 @@ function startTestimonials() {
         const text = quotes[currentIndex];
 
         // Fade In
-        // Special check for "Contact Him Here"
-        if (text === 'Contact Him Here') {
+        // Special check for "Contact him here"
+        if (text === 'Contact him here') {
             currentIndex = (currentIndex + 1) % quotes.length;
             runContactTransition(quoteEl, quotes, showNextQuote);
             return;
@@ -626,8 +626,9 @@ function startTestimonials() {
 }
 
 function runContactTransition(quoteEl, quotes, loopCallback) {
-    // 1. Show "Contact Him Here"
-    quoteEl.innerHTML = '<img src="/images/contact.png" id="trans-contact" style="height: 2.5rem; width: auto; vertical-align: middle;"> <span id="trans-him-here" style="vertical-align: middle;">Him Here</span>';
+    // 1. Show "Contact him here"
+    // Image size: 0.75x of final 200px = 150px
+    quoteEl.innerHTML = '<img src="/images/contact.png" id="trans-contact" style="width: 150px; height: auto; vertical-align: middle;"> <span id="trans-him-here" style="vertical-align: middle;">him here</span>';
     quoteEl.style.opacity = '1';
 
     // 2. Show Arrow
