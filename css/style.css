@@ -182,8 +182,8 @@ html {
 /* Contact Links */
 #contact-header {
     position: absolute;
-    top: 62%;
-    /* Above links (67%) */
+    top: 60%;
+    /* Moved up 2% (62 -> 60) */
     left: 84%;
     font-size: 2.5rem;
     font-family: 'Komika Axis', sans-serif;
