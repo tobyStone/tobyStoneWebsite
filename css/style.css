@@ -489,3 +489,26 @@ textarea {
     opacity: 0;
     transition: opacity 1s ease-in-out;
 }
+
+/* Mobile Landscape Tweaks */
+@media (max-width: 900px) and (orientation: landscape) {
+
+    /* 1. Unmute Button: Move 5% Right, 3% Up */
+    #unmute-btn {
+        right: calc(20px + 2vw);
+        /* Moved 5% right from 7vw -> 2vw */
+        top: calc(20px - 3vh);
+        /* Moved 3% up from 0 -> -3vh (relative to 20px) */
+    }
+
+    /* 2. Skip Intro Button */
+    #skip-intro-btn {
+        /* Size: 0.77x of 19rem */
+        width: 14.6rem;
+        /* Position: Bottom Left */
+        left: 20px;
+        right: auto;
+        /* Reset right */
+        bottom: 20px;
+    }
+}
