@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.2');
+    console.log('Initializing... Version: Contact Transition Update 1.3 (Image)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -626,7 +626,7 @@ function startTestimonials() {
 
 function runContactTransition(quoteEl, quotes, loopCallback) {
     // 1. Show "Contact Him Here"
-    quoteEl.innerHTML = '<span id="trans-contact">Contact</span> <span id="trans-him-here">Him Here</span>';
+    quoteEl.innerHTML = '<img src="/images/contact.png" id="trans-contact" style="height: 2.5rem; width: auto; vertical-align: middle;"> <span id="trans-him-here" style="vertical-align: middle;">Him Here</span>';
     quoteEl.style.opacity = '1';
 
     // 2. Show Arrow
@@ -682,8 +682,20 @@ function runContactTransition(quoteEl, quotes, loopCallback) {
         const deltaY = destRect.top - cRect.top;
 
         transContact.style.display = 'inline-block';
-        transContact.style.transition = 'transform 1s ease-in-out';
-        transContact.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        transContact.style.position = 'relative'; // Ensure transform works
+        transContact.style.transition = 'transform 1s ease-in-out, width 1s, height 1s';
+
+        // Match destination dimensions if needed? Or just let it fly.
+        // If destination image is larger (width 200px vs 2.5rem), we should scale it.
+        // 2.5rem approx 40px. 200px is 5x larger.
+        // We can scale transform? Or just let it translate.
+        // Actually, let's scale it to match the destination size roughly.
+        // destination width (destRect.width) / source width (cRect.width)
+        const scaleX = destRect.width / cRect.width;
+        const scaleY = destRect.height / cRect.height;
+        // Apply scale in transform
+        transContact.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
+        transContact.style.transformOrigin = 'top left'; // Grow from top-left corner (matches translation vector logic better)
 
         // 4. Fade out "Him Here" and Arrow
         transHimHere.style.transition = 'opacity 1s ease-in-out';
