@@ -182,7 +182,7 @@ html {
 /* Contact Links */
 #contact-header {
     position: absolute;
-    top: 60%;
+    top: 57%;
     /* Moved up 2% (62 -> 60) */
     left: 84%;
     font-size: 2.5rem;
