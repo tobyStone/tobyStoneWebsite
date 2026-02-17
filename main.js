@@ -389,6 +389,10 @@ function startVideo3(skipped = false) {
     bgAudio.src = videos.v2;
     bgAudio.muted = !isUnmuted;
 
+    // Check for Mobile Landscape to add delay offset
+    const isMobileLandscape = window.matchMedia('(max-width: 900px) and (orientation: landscape)').matches;
+    const delayOffset = isMobileLandscape ? 1000 : 0; // 1000ms delay if mobile landscape (600 + 400)
+
     // Start at 75% for initial play (as per previous request), or 63% (last 37%)? 
     // Previous: "loop the last 33%". New: "loop the last 27%".
     // 1.0 - 0.27 = 0.73
@@ -519,19 +523,21 @@ function startVideo3(skipped = false) {
             pow.style.left = '39%';
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
-    }, 1423);
+    }, 1423 + delayOffset);
 
     // 2s Wow
     // User requested: Start 700ms later (2000 + 700 = 2700ms)
     timeoutManager.setTimeout(() => {
         const wow = document.getElementById('word-wow');
-        wow.classList.remove('hidden');
-        // Drift right 37% from right -> left: 63% AND Rotate 37deg
-        timeoutManager.setTimeout(() => {
-            wow.style.left = '63%';
-            wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
-        }, 50);
-    }, 2700);
+        if (wow) {
+            wow.classList.remove('hidden');
+            // Drift right 37% from right -> left: 63% AND Rotate 37deg
+            timeoutManager.setTimeout(() => {
+                wow.style.left = '63%';
+                wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+            }, 50);
+        }
+    }, 2700 + delayOffset);
 
     // If skipped, we fast-forward animations
     if (skipped) {
@@ -553,13 +559,16 @@ function startVideo3(skipped = false) {
     timeoutManager.setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
-        contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
+        if (contactLinks) {
+            contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
+        }
+
         // Start Testimonials after contacts appear
-        startTestimonials();
-    }, 4200);
+        startTestimonials(delayOffset);
+    }, 4200 + delayOffset);
 }
 
-function startTestimonials() {
+function startTestimonials(delayOffset = 0) {
     overlayV4.classList.remove('hidden');
     overlayV4.style.pointerEvents = 'none';
     document.getElementById('contact-links').style.zIndex = '30';
