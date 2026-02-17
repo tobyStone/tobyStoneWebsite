@@ -511,4 +511,68 @@ textarea {
         /* Reset right */
         bottom: 20px;
     }
+
+    /* Video 3 Landscape Overrides */
+
+    /* 1. Unmute Button: Top Left */
+    /* Target via body class .v3-mode */
+    .v3-mode #unmute-btn {
+        right: auto;
+        left: 20px;
+        top: 20px;
+    }
+
+    /* 2. Testimonial Text & Contact Image: 0.77x of current size */
+    /* Contact Image (inside text span) override */
+    .v3-mode #testimonial-quote img#trans-contact {
+        width: 115px !important;
+        /* 150px * 0.77 */
+    }
+
+    .v3-mode #testimonial-quote {
+        /* Reduce font size */
+        font-size: clamp(0.9rem, 3vw, 1.5rem);
+        /* Example reduction from 1.2rem base */
+        /* Or scale transform? Transform might affect centering. Font-size is safer. */
+        /* Current mobile portrait: clamp(1.2rem, 4vw, 2rem) */
+        /* 0.77x -> clamp(0.9rem, 3vw, 1.5rem) approx */
+    }
+
+    /* 3. Contact Header: Move Up 7% (from 60% -> 53%) */
+    .v3-mode #contact-header {
+        top: 53%;
+        /* 60 - 7 */
+        /* Resize image if needed? User asked: "reduce size of ... contact.png ... to 0.77" -- Assuming this refers to the testimonial inline one? */
+        /* Request 3) "Move original placement of Contact ... up by 7%" */
+        /* Request 4) "reduce size of all contact wording and icons to 0.7" */
+        /* Does "contact wording" include "Contact" header? Probably. */
+        /* Let's scale it. */
+        width: 140px;
+        /* 200px * 0.7 */
+    }
+
+    /* 4. Contact Links (Icons & Wording): Resize 0.7x, Move Up 7% */
+    .v3-mode #contact-links {
+        top: 60%;
+        /* 67% (mobile usually auto/bottom? No, mobile portrait uses bottom: 300px. What about landscape?) */
+        /* Desktop/Landscape default is top: 67%. */
+        /* Mobile Portrait overrides to top: auto, bottom: 50px. */
+        /* Here we are in Landscape Mobile. Does it use the desktop default? Yes, unless (max-width: 768px) matches. */
+        /* If landscape width > 768px (e.g. 844px), it uses desktop top:67%. */
+        /* If landscape width < 768px (e.g. iPhone SE landscape 667px), it uses mobile bottom:50px. */
+
+        /* WE NEED TO FORCE TOP positioning for this specific request? */
+        top: 60% !important;
+        bottom: auto !important;
+
+        /* Resize 0.7x */
+        transform: translateX(-50%) scale(0.7);
+        /* Maintain centering (-50%) if applicable, or left positioning */
+        /* Desktop left: 84%. Mobile portrait left: 50%. */
+        /* In landscape mobile, we probably want desktop-like positioning (right side) or centered? */
+        /* "Move... up by 7%". Implicitly keeping horizontal same? */
+        /* If users see desktop layout (side-by-side), then left: 84%. */
+        /* Scale from center might shift it. transform-origin: top left? */
+        transform-origin: center top;
+    }
 }

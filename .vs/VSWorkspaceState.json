@@ -5,8 +5,10 @@
     "\\config",
     "\\models",
     "\\public",
+    "\\public\\images",
     "\\public\\javascript",
     "\\public\\music"
   ],
+  "SelectedNode": "\\main.js",
   "PreviewInSolutionExplorer": false
 }
