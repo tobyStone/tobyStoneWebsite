@@ -124,7 +124,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.17 (Animation Recovery)');
+    console.log('Initializing... Version: Contact Transition Update 1.18 (Crash Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -379,10 +379,7 @@ function startVideo3(skipped = false) {
         };
     }
 
-    if (finalScaleCheck) {
-        // Re-apply if media query changed? 
-        // Actually, startVideo3 is called only once.
-    }
+    // (Removed undefined finalScaleCheck block)
 
     const staticScale = LayoutConfig[LayoutConfig.current].staticVideoScale || 1.0;
     video.style.transform = `scale(${staticScale})`; // Reset scale with multiplier
