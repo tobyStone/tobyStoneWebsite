@@ -124,7 +124,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.15 (Portrait Layout & Landscape Fixes)');
+    console.log('Initializing... Version: Contact Transition Update 1.16 (Animation Cleanup Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -305,6 +305,7 @@ function startVideo2Setup() {
             // Cleanup V2 styles
             video.style.zIndex = '';
             video.style.mixBlendMode = '';
+            video.style.position = ''; // Reset position to default (static)
             video.playbackRate = 1.0; // Reset for V3
             overlayV2.classList.add('hidden');
             overlayV2.style.opacity = ''; // Reset opacity
@@ -324,6 +325,7 @@ function startVideo2Setup() {
         // Cleanup V2 styles
         video.style.zIndex = '';
         video.style.mixBlendMode = '';
+        video.style.position = ''; // Reset position
         video.playbackRate = 1.0; // Reset for V3
         overlayV2.classList.add('hidden');
         overlayV2.style.opacity = ''; // Reset opacity
@@ -351,6 +353,9 @@ function startVideo3(skipped = false) {
         // So adding the class safely helps triggers those styles IF the media query matches.
         document.body.classList.add('v3-mode');
     }
+
+    // Ensure Overlay V3 is ABOVE video
+    overlayV3.style.zIndex = '50';
 
     video.src = videos.v3;
     // Fix: Ensure V3 doesn't loop via recycled onended handler
@@ -810,6 +815,11 @@ function skipIntro() {
 
     // 3. STOP ALL MEDIA
     video.pause();
+    // Ensure styles are reset if skipping from V2
+    video.style.zIndex = '';
+    video.style.mixBlendMode = '';
+    video.style.position = '';
+
     // Use try/catch to avoid errors if src is empty
     try {
         video.src = ''; // Stops downloading/buffering
