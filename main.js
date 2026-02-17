@@ -36,6 +36,7 @@ const LayoutConfig = {
 
     mobile: {
         videoScaleMultiplier: 2.5,
+        staticVideoScale: 1.5, // 1.5x enlargement for V2/V3
         contactLinksLeft: '50%',
         wordRing: [
             { text: 'From', img: 'From.png', time: 500, pos: { top: '20%', left: '30%' } },
@@ -123,7 +124,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.13 (Skip Intro Fix)');
+    console.log('Initializing... Version: Contact Transition Update 1.14 (Mobile Portrait Refinements)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -239,7 +240,8 @@ function stopVideo1() {
 
 function startVideo2Setup() {
     video.src = videos.v2;
-    video.style.transform = 'scale(1)';
+    const staticScale = LayoutConfig[LayoutConfig.current].staticVideoScale || 1.0;
+    video.style.transform = `scale(${staticScale})`;
     video.currentTime = 0.3; // Start 300ms earlier (skip first 0.3s)
     // video.muted = false; // REMOVED: Respect global mute state (default muted)
 
@@ -370,7 +372,14 @@ function startVideo3(skipped = false) {
         };
     }
 
-    video.style.transform = 'scale(1)'; // Reset scale just in case
+    if (finalScaleCheck) {
+        // Re-apply if media query changed? 
+        // Actually, startVideo3 is called only once.
+    }
+
+    const staticScale = LayoutConfig[LayoutConfig.current].staticVideoScale || 1.0;
+    video.style.transform = `scale(${staticScale})`; // Reset scale with multiplier
+
 
     video.muted = true; // Video itself is muted, using bgAudio
     video.loop = false;

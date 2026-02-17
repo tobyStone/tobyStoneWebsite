@@ -373,20 +373,27 @@ textarea {
     /* Contact Links: Bottom Center */
     #contact-header {
         top: auto;
-        bottom: 300px;
-        /* Adjust based on need */
+        bottom: 110px;
+        /* Above links (50px + height ~40px + gap) */
         left: 50%;
         transform: translateX(-50%);
+        width: 140px;
+        /* 0.7x of 200px */
     }
 
     #contact-links {
-        /* Initial CSS state - JS will synchronise */
-        left: 50%;
+        /* Initial CSS state - JS might override left, handled via class check? */
+        /* Force left: 50% for mobile */
+        left: 50% !important;
         transform: translateX(-50%);
         top: auto;
-        bottom: 50px;
-        flex-direction: column;
-        width: max-content;
+        bottom: 30px;
+        flex-direction: row;
+        /* Horizontal */
+        justify-content: center;
+        width: 100%;
+        gap: 15px;
+        /* Space between items */
     }
 }
 
