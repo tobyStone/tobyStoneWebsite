@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.8 (Mobile Landscape Tweaks)');
+    console.log('Initializing... Version: Contact Transition Update 1.9 (Mobile Landscape Refinements 2)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
