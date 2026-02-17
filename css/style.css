@@ -334,7 +334,16 @@ textarea {
     /* Video 2: Vertical Stack Layout */
     .v2-content {
         flex-direction: column;
-        gap: 2vh;
+        width: max-content;
+    }
+
+    /* Move Unmute to Left (Top Left generally, swapping from Right) */
+    #unmute-btn {
+        left: 20px;
+        right: auto;
+        /* Remove from right */
+        top: 20px;
+        /* Keeping top alignment */
     }
 
     .v2-left .word-stack {
@@ -408,10 +417,13 @@ textarea {
 
 #skip-intro-btn {
     position: absolute;
-    bottom: calc(20px - 4vh);
-    /* Moved 3% down from -1vh */
-    right: calc(20px + 2vw);
-    /* Moved 1% right from 3vw */
+    top: 20px;
+    /* Moved to Top */
+    bottom: auto;
+    /* Reset bottom */
+    right: 20px;
+    /* Right side */
+    /* Size adjustment if needed? Keeping 19rem width logic */
     z-index: 2000;
     /* High z-index to be clickable */
     background: transparent;
@@ -419,7 +431,6 @@ textarea {
     cursor: pointer;
     width: 19rem;
     /* 6rem * 3.17 (217% larger) = 19rem */
-    /* Adjust as needed */
     height: auto;
 }
 
@@ -506,6 +517,8 @@ textarea {
         /* Moved 5% right from 7vw -> 2vw */
         top: calc(20px - 3vh);
         /* Moved 3% up from 0 -> -3vh (relative to 20px) */
+        left: auto;
+        /* Reset left just in case */
     }
 
     /* 2. Skip Intro Button */

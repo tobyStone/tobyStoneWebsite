@@ -124,7 +124,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.14 (Mobile Portrait Refinements)');
+    console.log('Initializing... Version: Contact Transition Update 1.15 (Portrait Layout & Landscape Fixes)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -342,8 +342,15 @@ function startVideo2Setup() {
 }
 
 function startVideo3(skipped = false) {
-    // V3 Mobile Landscape Mode
-    document.body.classList.add('v3-mode');
+    // V3 Mobile Landscape Mode - apply immediately
+    // Note: If orientation changes during playback, we might want a listener, but for now apply on start.
+    const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+    if (isLandscape || window.innerWidth > 900) {
+        // Apply v3-mode class if appropriate? 
+        // Actually, v3-mode styles are scoped to (max-width: 900px) and (orientation: landscape).
+        // So adding the class safely helps triggers those styles IF the media query matches.
+        document.body.classList.add('v3-mode');
+    }
 
     video.src = videos.v3;
     // Fix: Ensure V3 doesn't loop via recycled onended handler
