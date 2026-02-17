@@ -325,6 +325,16 @@ textarea {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+    /* ... existing styles ... */
+
+    /* Skip Intro: Top Right */
+    #skip-intro-btn {
+        top: 20px;
+        right: 20px;
+        bottom: auto;
+        left: auto;
+    }
+
 
     /* Reset Video bias */
     #main-video {
@@ -417,13 +427,10 @@ textarea {
 
 #skip-intro-btn {
     position: absolute;
-    top: 20px;
-    /* Moved to Top */
-    bottom: auto;
-    /* Reset bottom */
+    bottom: 20px;
     right: 20px;
-    /* Right side */
-    /* Size adjustment if needed? Keeping 19rem width logic */
+    top: auto;
+    left: auto;
     z-index: 2000;
     /* High z-index to be clickable */
     background: transparent;
