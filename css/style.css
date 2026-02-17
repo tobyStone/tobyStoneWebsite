@@ -538,10 +538,12 @@ textarea {
         /* 0.77x -> clamp(0.9rem, 3vw, 1.5rem) approx */
     }
 
-    /* 3. Contact Header: Move Up 7% (from 60% -> 53%) */
+    /* 3. Contact Header: Move Up 3% (from 53% -> 50%), Move Left 3% (from 82% -> 79%) */
     .v3-mode #contact-header {
-        top: 53%;
-        /* 60 - 7 */
+        top: 50%;
+        /* 53 - 3 */
+        left: 79%;
+        /* 82 - 3 */
         /* Resize image if needed? User asked: "reduce size of ... contact.png ... to 0.77" -- Assuming this refers to the testimonial inline one? */
         /* Request 3) "Move original placement of Contact ... up by 7%" */
         /* Request 4) "reduce size of all contact wording and icons to 0.7" */
@@ -574,5 +576,12 @@ textarea {
         /* If users see desktop layout (side-by-side), then left: 84%. */
         /* Scale from center might shift it. transform-origin: top left? */
         transform-origin: center top;
+    }
+
+    /* 5. Toby Text: Match Testimonial Scale */
+    .v3-mode #testimonial-toby {
+        font-size: clamp(0.9rem, 3vw, 1.5rem);
+        /* Same as testimonial-quote */
+        /* Original: 3rem. 1.5rem is ~0.5x, well within request. */
     }
 }
