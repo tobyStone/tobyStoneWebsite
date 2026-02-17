@@ -578,10 +578,18 @@ textarea {
         transform-origin: center top;
     }
 
-    /* 5. Toby Text: Match Testimonial Scale */
+    /* 5. Toby Text: Match Testimonial Scale (Increased by 1.2x) */
     .v3-mode #testimonial-toby {
-        font-size: clamp(0.9rem, 3vw, 1.5rem);
-        /* Same as testimonial-quote */
-        /* Original: 3rem. 1.5rem is ~0.5x, well within request. */
+        font-size: clamp(1.1rem, 3.6vw, 1.8rem);
+        /* 1.2x of (0.9, 3vw, 1.5) */
+    }
+
+    /* 3. Contact Header: Move Up 3% (50 -> 47%), Move Left 3% (79 -> 76%) */
+    .v3-mode #contact-header {
+        top: 47%;
+        /* 50 - 3 */
+        left: 76%;
+        /* 79 - 3 */
+        width: 140px;
     }
 }
