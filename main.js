@@ -123,7 +123,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.12 (Mobile Landscape Delay 1000ms)');
+    console.log('Initializing... Version: Contact Transition Update 1.13 (Skip Intro Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -818,7 +818,7 @@ function skipIntro() {
     bgAudio.onloadedmetadata = null;
 
     // 5. CLEAR OVERLAYS / HIDE OLD ELEMENTS
-    document.body.classList.remove('v3-mode'); // Clean up V3 mode
+    document.body.classList.add('v3-mode'); // Ensure V3 mode is active for final state CSS
 
     overlayV1.classList.add('hidden');
     overlayV1.innerHTML = '';
