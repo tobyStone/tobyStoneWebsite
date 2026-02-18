@@ -36,7 +36,7 @@ const LayoutConfig = {
 
     mobile: {
         videoScaleMultiplier: 2.5,
-        staticVideoScale: 1.5, // 1.5x enlargement for V2/V3
+        staticVideoScale: 2.655, // 1.5 * 1.77 = 2.655 (Increased by 177%)
         contactLinksLeft: '50%',
         wordRing: [
             { text: 'From', img: 'From.png', time: 500, pos: { top: '20%', left: '30%' } },
@@ -124,7 +124,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.27 (V2 Horizontal Align)');
+    console.log('Initializing... Version: Contact Transition Update 1.28 (V3 Portrait Refinements)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first

@@ -398,11 +398,13 @@ textarea {
     /* Testimonial Wrapping */
     #testimonial-quote {
         max-width: 85vw;
-        font-size: clamp(1.2rem, 4vw, 2rem);
+        /* font-size: 0.7x of previous clamp(1.2rem, 4vw, 2rem) */
+        font-size: clamp(0.84rem, 2.8vw, 1.4rem);
     }
 
     #testimonial-toby {
-        font-size: 2rem;
+        /* 0.7x of 2rem */
+        font-size: 1.4rem;
         left: 20%;
     }
 
@@ -433,8 +435,32 @@ textarea {
         /* Horizontal */
         justify-content: center;
         width: 100%;
-        gap: 15px;
-        /* Space between items */
+        gap: 7.5px;
+        /* Space between items (Halved from 15px) */
+    }
+
+    .contact-item {
+        gap: 1px;
+        /* Halved from 2px */
+    }
+
+    /* V3 Words Positioning & Scaling for Mobile Portrait */
+    /* "Let's": Move Down 15% (10% -> 25%), Scale 177% (20vw -> 35.4vw) */
+    #word-lets {
+        top: 25%;
+        width: 35.4vw;
+    }
+
+    /* "Pow": Move Up 15% (70% -> 55%), Scale 177% (25vw -> 44.25vw) */
+    #word-pow {
+        top: 55%;
+        width: 44.25vw;
+    }
+
+    /* "Wow": Move Up 15% (73% -> 58%), Scale 177% (25vw -> 44.25vw) */
+    #word-wow {
+        top: 58%;
+        width: 44.25vw;
     }
 }
 
