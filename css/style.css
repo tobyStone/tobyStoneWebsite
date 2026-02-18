@@ -329,8 +329,8 @@ textarea {
 
     /* Skip Intro: Top Right */
     #skip-intro-btn {
-        top: calc(20px + 9vh);
-        /* Moved Down 9% (2% + 7%) */
+        top: calc(20px + 16vh);
+        /* Moved Down 16% (9% + 7%) */
         right: 20px;
         bottom: auto;
         left: auto;
@@ -384,7 +384,13 @@ textarea {
     /* Adjust image sizes for vertical stack */
     .word-img,
     .letter-img {
-        max-height: 10vh;
+        max-height: 5vh;
+    }
+
+    .v2-center-rect {
+        height: 45vh;
+        /* Increase gap for video in portrait */
+        width: 10px;
     }
 
     /* Testimonial Wrapping */
