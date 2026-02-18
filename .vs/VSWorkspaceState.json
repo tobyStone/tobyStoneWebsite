@@ -3,12 +3,12 @@
     "",
     "\\api",
     "\\config",
+    "\\css",
     "\\models",
     "\\public",
-    "\\public\\images",
     "\\public\\javascript",
     "\\public\\music"
   ],
-  "SelectedNode": "\\main.js",
+  "SelectedNode": "\\package.json",
   "PreviewInSolutionExplorer": false
 }
