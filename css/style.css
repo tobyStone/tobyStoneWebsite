@@ -329,11 +329,13 @@ textarea {
 
     /* Skip Intro: Top Right */
     #skip-intro-btn {
-        top: 20px;
+        top: calc(20px + 2vh);
+        /* Moved Down 2% */
         right: 20px;
         bottom: auto;
         left: auto;
     }
+
 
 
     /* Reset Video bias */
@@ -349,12 +351,19 @@ textarea {
 
     /* Move Unmute to Left (Top Left generally, swapping from Right) */
     #unmute-btn {
-        left: 20px;
+        left: calc(20px - 3vw);
+        /* Moved Left 3% */
         right: auto;
         /* Remove from right */
-        top: 20px;
-        /* Keeping top alignment */
+        top: calc(20px - 2vh);
+        /* Moved Up 2% */
     }
+
+    /* Enlarge V1 Words by 377% (15vw * 3.77 = 56.55vw) */
+    .v1-word {
+        max-width: 56.55vw;
+    }
+
 
     .v2-left .word-stack {
         left: 0;
