@@ -360,9 +360,12 @@ textarea {
     }
 
     /* Enlarge V1 Words by 377% (15vw * 3.77 = 56.55vw) */
+    /* Use width instead of max-width to force enlargement beyond intrinsic size */
     .v1-word {
-        max-width: 56.55vw;
+        width: 56.55vw;
+        max-width: none;
     }
+
 
 
     .v2-left .word-stack {

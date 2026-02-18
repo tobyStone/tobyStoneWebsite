@@ -124,7 +124,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.20 (Portrait Layout Tweaks)');
+    console.log('Initializing... Version: Contact Transition Update 1.21 (Force Portrait Sizes)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
