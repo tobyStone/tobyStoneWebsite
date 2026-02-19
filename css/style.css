@@ -500,36 +500,36 @@ textarea {
     #testimonial-quote {
         max-width: 50vw;
         /* Width: 50vw */
-        /* Size: 377% of v1.35 (0.28rem-0.48rem) -> 1.05rem-1.8rem */
-        font-size: clamp(1.05rem, 3.6vw, 1.8rem);
-        top: 28%;
-        /* Above central image */
+        /* Size: Increase by 177% from v1.38 (1.05rem-1.8rem) -> 1.86rem-3.18rem */
+        font-size: clamp(1.86rem, 6.4vw, 3.18rem);
+        /* Position: Move up 23% from 28% -> 5% */
+        top: 5%;
         left: 45%;
         /* Just left of center */
         text-align: left;
     }
 
     #testimonial-toby {
-        /* Size: 377% of v1.35 (0.48rem) -> 1.8rem */
-        font-size: 1.8rem;
+        /* Size: Increase by 177% from v1.38 (1.8rem) -> 3.18rem */
+        font-size: 3.18rem;
         left: 10%;
-        top: 30%;
-        /* Top Left of central image */
+        /* Position: Move up 23% from 30% -> 7% */
+        top: 7%;
     }
 
-    /* Testimonial Arrow Override - Specificity fix */
+    /* Testimonial Arrow: Show again and position */
     div#testimonial-arrow,
     img#testimonial-arrow,
     #testimonial-arrow {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        /* Force remove arrow altogether in portrait */
-    }
-
-    #testimonial-arrow {
-        width: 20vw;
-        left: 5%;
+        display: block !important;
+        /* Show arrow */
+        opacity: 1 !important;
+        visibility: visible !important;
+        /* Position: Beneath "Toby" (top 15%ish) and Central Image */
+        top: 18%;
+        left: 15%;
+        width: 15vw;
+        transform: rotate(45deg);
     }
 
     /* Contact Links: Bottom Center */
