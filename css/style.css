@@ -500,36 +500,42 @@ textarea {
     #testimonial-quote {
         max-width: 50vw;
         /* Width: 50vw */
-        /* Size: Increase by 177% from v1.38 (1.05rem-1.8rem) -> 1.86rem-3.18rem */
-        font-size: clamp(1.86rem, 6.4vw, 3.18rem);
-        /* Position: Move up 23% from 28% -> 5% */
-        top: 5%;
-        left: 45%;
-        /* Just left of center */
+        /* Size: 0.77x of v1.39 (1.86rem-3.18rem) -> 1.43rem-2.45rem */
+        font-size: clamp(1.43rem, 4.9vw, 2.45rem);
+        /* Position: Move down 17% from 5% -> 22% */
+        top: 22%;
+        /* Move right 7% from 45% -> 52% */
+        left: 52%;
         text-align: left;
     }
 
     #testimonial-toby {
-        /* Size: Increase by 177% from v1.38 (1.8rem) -> 3.18rem */
-        font-size: 3.18rem;
+        /* Size: 0.77x of v1.39 (3.18rem) -> 2.45rem */
+        font-size: 2.45rem;
         left: 10%;
-        /* Position: Move up 23% from 30% -> 7% */
-        top: 7%;
+        /* Position: Move down 14% from 7% -> 21% */
+        top: 21%;
     }
 
-    /* Testimonial Arrow: Show again and position */
+    /* Testimonial Arrow: Static Position Fix */
     div#testimonial-arrow,
     img#testimonial-arrow,
     #testimonial-arrow {
         display: block !important;
-        /* Show arrow */
         opacity: 1 !important;
         visibility: visible !important;
-        /* Position: Beneath "Toby" (top 15%ish) and Central Image */
-        top: 18%;
-        left: 15%;
+        /* Position: Fix arrow */
+        position: absolute;
+        top: 18% !important;
+        /* Ensure static top */
+        left: 15% !important;
+        /* Ensure static left */
         width: 15vw;
         transform: rotate(45deg);
+        animation: none !important;
+        /* Stop any inherited animations */
+        transition: none !important;
+        /* Stop JS transitions moving it */
     }
 
     /* Contact Links: Bottom Center */
