@@ -36,7 +36,8 @@ const LayoutConfig = {
 
     mobile: {
         videoScaleMultiplier: 2.5,
-        staticVideoScale: 2.655, // 1.5 * 1.77 = 2.655 (Increased by 177%)
+        staticVideoScale: 1.5, // Reverted to 1.5 for V2
+        v3VideoScale: 2.655, // 1.5 * 1.77 = 2.655 for V3
         contactLinksLeft: '50%',
         wordRing: [
             { text: 'From', img: 'From.png', time: 500, pos: { top: '20%', left: '30%' } },
@@ -124,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.28 (V3 Portrait Refinements)');
+    console.log('Initializing... Version: Contact Transition Update 1.29 (V3 Scaling Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -381,16 +382,14 @@ function startVideo3(skipped = false) {
 
     // (Removed undefined finalScaleCheck block)
 
-    const staticScale = LayoutConfig[LayoutConfig.current].staticVideoScale || 1.0;
-    video.style.transform = `scale(${staticScale})`; // Reset scale with multiplier
-
+    const config = LayoutConfig[LayoutConfig.current];
+    const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
 
     video.muted = true; // Video itself is muted, using bgAudio
     video.loop = false;
 
-    // 17% left shift and 0.5 speed -> User requested 1.5x current (0.5 * 1.5 = 0.75)
-    // User Update: Move head back to midpoint (remove left shift)
-    video.style.transform = 'translateX(0)';
+    // Apply Scale AND Translation together to avoid overwriting
+    video.style.transform = `scale(${v3Scale}) translateX(0)`;
     // User requested: video 3 speed increased to 1.2
     video.playbackRate = 1.2;
 
