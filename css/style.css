@@ -500,12 +500,12 @@ textarea {
     #testimonial-quote {
         max-width: 50vw;
         /* Width: 50vw */
-        /* Size: 0.77x of v1.39 (1.86rem-3.18rem) -> 1.43rem-2.45rem */
+        /* Size: 0.77x of v1.39 (1.43rem-2.45rem) */
         font-size: clamp(1.43rem, 4.9vw, 2.45rem);
-        /* Position: Move down 17% from 5% -> 22% */
-        top: 22%;
-        /* Move right 7% from 45% -> 52% */
-        left: 52%;
+        /* Position: Move up 7% from 22% -> 15% */
+        top: 15%;
+        /* Move right 3% from 52% -> 55% */
+        left: 55%;
         text-align: left;
     }
 
@@ -526,7 +526,8 @@ textarea {
         visibility: visible !important;
         /* Position: Fix arrow */
         position: absolute;
-        top: 18% !important;
+        /* Move down 6% from 18% -> 24% */
+        top: 24% !important;
         /* Ensure static top */
         left: 15% !important;
         /* Ensure static left */
