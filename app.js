@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.32 (Skip/Testimonial Refinements)');
+    console.log('Initializing... Version: Contact Transition Update 1.33 (V3 Adjustments)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -389,9 +389,9 @@ function startVideo3(skipped = false) {
     video.loop = false;
 
     // Apply Scale AND Translation together
-    // Portrait (Mobile): 4% Left (-4vw). Landscape/Desktop: Center (0).
+    // Portrait (Mobile): 3% Left (-3vw). Landscape/Desktop: Center (0).
     const isMobile = LayoutConfig.current === 'mobile';
-    const xShift = isMobile ? '-4vw' : '0';
+    const xShift = isMobile ? '-3vw' : '0';
     video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
     // User requested: video 3 speed increased to 1.2
     video.playbackRate = 1.2;

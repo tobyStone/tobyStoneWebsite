@@ -327,12 +327,10 @@ textarea {
 @media (max-width: 768px) {
     /* ... existing styles ... */
 
-    /* Skip Intro: Bottom Overlay */
+    /* Skip Intro: Top Right */
     #skip-intro-btn {
-        top: auto;
-        /* Unset top */
-        bottom: 3vh;
-        /* 3% from bottom */
+        top: 20px;
+        bottom: auto;
         right: 20px;
         left: auto;
     }
@@ -450,22 +448,26 @@ textarea {
     }
 
     /* V3 Words Positioning & Scaling for Mobile Portrait */
-    /* "Let's": Move Down 15% (10% -> 25%), Scale 177% (20vw -> 35.4vw) */
+    /* "Let's": Move Down 15% (10% -> 25%), Scale 177% * 1.2 = 212.4% (35.4vw * 1.2 = 42.48vw) */
     #word-lets {
         top: 25%;
-        width: 35.4vw;
+        width: 42.48vw;
     }
 
-    /* "Pow": Move Up 15% (70% -> 55%), Scale 177% (25vw -> 44.25vw) */
+    /* "Pow": Move Left 1%, Down 2% (55% -> 57%) */
     #word-pow {
-        top: 55%;
+        top: 57%;
         width: 44.25vw;
+        left: 49%;
+        /* Adjusted from default center */
     }
 
-    /* "Wow": Move Up 15% (73% -> 58%), Scale 177% (25vw -> 44.25vw) */
+    /* "Wow": Move Right 1%, Down 2% (58% -> 60%) */
     #word-wow {
-        top: 58%;
+        top: 60%;
         width: 44.25vw;
+        left: 51%;
+        /* Adjusted from default center */
     }
 }
 
