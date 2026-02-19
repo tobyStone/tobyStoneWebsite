@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.31 (V3 Position Fix)');
+    console.log('Initializing... Version: Contact Transition Update 1.32 (Skip/Testimonial Refinements)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first

@@ -331,8 +331,8 @@ textarea {
     #skip-intro-btn {
         top: auto;
         /* Unset top */
-        bottom: 7vh;
-        /* 7% from bottom */
+        bottom: 3vh;
+        /* 3% from bottom */
         right: 20px;
         left: auto;
     }
@@ -399,14 +399,18 @@ textarea {
     /* Testimonial Wrapping */
     #testimonial-quote {
         max-width: 85vw;
-        /* font-size: 0.7x of previous clamp(1.2rem, 4vw, 2rem) */
-        font-size: clamp(0.84rem, 2.8vw, 1.4rem);
+        /* font-size: 0.7x of previous clamp(0.84rem, 2.8vw, 1.4rem) */
+        font-size: clamp(0.58rem, 1.96vw, 0.98rem);
+        top: 15%;
+        /* Move within top 20% */
     }
 
     #testimonial-toby {
-        /* 0.7x of 2rem */
-        font-size: 1.4rem;
+        /* 0.7x of 1.4rem */
+        font-size: 0.98rem;
         left: 20%;
+        top: 10%;
+        /* Ensure within top 20% */
     }
 
     #testimonial-arrow {
