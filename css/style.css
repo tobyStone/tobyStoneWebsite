@@ -498,19 +498,23 @@ textarea {
 
     /* Testimonial Wrapping */
     #testimonial-quote {
-        max-width: 85vw;
-        /* font-size: 0.7x of previous clamp(0.40rem, 1.37vw, 0.69rem) */
-        font-size: clamp(0.28rem, 0.96vw, 0.48rem);
-        top: 15%;
-        /* Move within top 20% */
+        max-width: 50vw;
+        /* Width: 50vw */
+        /* Size: 377% of v1.35 (0.28rem-0.48rem) -> 1.05rem-1.8rem */
+        font-size: clamp(1.05rem, 3.6vw, 1.8rem);
+        top: 28%;
+        /* Above central image */
+        left: 45%;
+        /* Just left of center */
+        text-align: left;
     }
 
     #testimonial-toby {
-        /* 0.7x of 0.69rem */
-        font-size: 0.48rem;
-        left: 20%;
-        top: 10%;
-        /* Ensure within top 20% */
+        /* Size: 377% of v1.35 (0.48rem) -> 1.8rem */
+        font-size: 1.8rem;
+        left: 10%;
+        top: 30%;
+        /* Top Left of central image */
     }
 
     /* Testimonial Arrow Override - Specificity fix */
