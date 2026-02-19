@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.42 (V2 Enlarge + V3 Position)');
+    console.log('Initializing... Version: Contact Transition Update 1.43 (JS Drift Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -533,9 +533,16 @@ function startVideo3(skipped = false) {
     timeoutManager.setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
-        // Drift left 39% from left -> right: 61% AND Rotate -31deg
+
+        // Drift Targets
+        // Default (Desktop): Left 39%
+        // Portrait (Mobile): Requested +7% Right -> 39 + 7 = 46%
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const targetLeft = isMobile ? '46%' : '39%';
+
+        // Drift left/right AND Rotate -31deg
         timeoutManager.setTimeout(() => {
-            pow.style.left = '39%';
+            pow.style.left = targetLeft;
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
     }, 1423 + delayOffset);
@@ -546,9 +553,16 @@ function startVideo3(skipped = false) {
         const wow = document.getElementById('word-wow');
         if (wow) {
             wow.classList.remove('hidden');
-            // Drift right 37% from right -> left: 63% AND Rotate 37deg
+
+            // Drift Targets
+            // Default (Desktop): Left 63%
+            // Portrait (Mobile): Requested -7% Left -> 63 - 7 = 56%
+            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+            const targetLeft = isMobile ? '56%' : '63%';
+
+            // Drift right/left AND Rotate 37deg
             timeoutManager.setTimeout(() => {
-                wow.style.left = '63%';
+                wow.style.left = targetLeft;
                 wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
             }, 50);
         }
