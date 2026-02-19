@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.30 (V3/Skip Refinements)');
+    console.log('Initializing... Version: Contact Transition Update 1.31 (V3 Position Fix)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -388,9 +388,11 @@ function startVideo3(skipped = false) {
     video.muted = true; // Video itself is muted, using bgAudio
     video.loop = false;
 
-    // Apply Scale AND Translation together to avoid overwriting
-    // User requested: Move Left by 7% of viewport (-7vw)
-    video.style.transform = `scale(${v3Scale}) translateX(-7vw)`;
+    // Apply Scale AND Translation together
+    // Portrait (Mobile): 4% Left (-4vw). Landscape/Desktop: Center (0).
+    const isMobile = LayoutConfig.current === 'mobile';
+    const xShift = isMobile ? '-4vw' : '0';
+    video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
     // User requested: video 3 speed increased to 1.2
     video.playbackRate = 1.2;
 
