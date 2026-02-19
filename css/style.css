@@ -323,6 +323,27 @@ textarea {
     z-index: 10;
 }
 
+#skip-intro-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    top: auto;
+    left: auto;
+    z-index: 2000;
+    /* High z-index to be clickable */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 19rem;
+    /* 6rem * 3.17 (217% larger) = 19rem */
+    height: auto;
+}
+
+#skip-intro-btn img {
+    width: 100%;
+    height: auto;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     /* ... existing styles ... */
@@ -397,15 +418,15 @@ textarea {
     /* Testimonial Wrapping */
     #testimonial-quote {
         max-width: 85vw;
-        /* font-size: 0.7x of previous clamp(0.84rem, 2.8vw, 1.4rem) */
-        font-size: clamp(0.58rem, 1.96vw, 0.98rem);
+        /* font-size: 0.7x of previous clamp(0.58rem, 1.96vw, 0.98rem) */
+        font-size: clamp(0.40rem, 1.37vw, 0.69rem);
         top: 15%;
         /* Move within top 20% */
     }
 
     #testimonial-toby {
-        /* 0.7x of 1.4rem */
-        font-size: 0.98rem;
+        /* 0.7x of 0.98rem */
+        font-size: 0.69rem;
         left: 20%;
         top: 10%;
         /* Ensure within top 20% */
@@ -454,19 +475,19 @@ textarea {
         width: 42.48vw;
     }
 
-    /* "Pow": Move Left 1%, Down 2% (55% -> 57%) */
+    /* "Pow": Move Left 2%, Down 4% (55% -> 59%) */
     #word-pow {
-        top: 57%;
+        top: 59%;
         width: 44.25vw;
-        left: 49%;
+        left: 48%;
         /* Adjusted from default center */
     }
 
-    /* "Wow": Move Right 1%, Down 2% (58% -> 60%) */
+    /* "Wow": Move Right 2%, Down 4% (58% -> 62%) */
     #word-wow {
-        top: 60%;
+        top: 62%;
         width: 44.25vw;
-        left: 51%;
+        left: 52%;
         /* Adjusted from default center */
     }
 }
@@ -480,26 +501,7 @@ textarea {
     display: block;
 }
 
-#skip-intro-btn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    top: auto;
-    left: auto;
-    z-index: 2000;
-    /* High z-index to be clickable */
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    width: 19rem;
-    /* 6rem * 3.17 (217% larger) = 19rem */
-    height: auto;
-}
 
-#skip-intro-btn img {
-    width: 100%;
-    height: auto;
-}
 
 /* Testimonials Overlay (V4) */
 #overlay-v4 {
