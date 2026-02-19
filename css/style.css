@@ -487,7 +487,8 @@ textarea {
     /* Adjust image sizes for vertical stack */
     .word-img,
     .letter-img {
-        max-height: 5vh;
+        max-height: 6.5vh;
+        /* v1.42: 1.3x of 5vh */
     }
 
     .v2-center-rect {
@@ -577,20 +578,18 @@ textarea {
         width: 42.48vw;
     }
 
-    /* "Pow": Move Left 2%, Down 4% (55% -> 59%) */
+    /* "Pow": Move Right 7%, Down 3% (from 48%, 59%) -> (55%, 62%) */
     #word-pow {
-        top: 59%;
-        width: 44.25vw;
-        left: 48%;
-        /* Adjusted from default center */
-    }
-
-    /* "Wow": Move Right 2%, Down 4% (58% -> 62%) */
-    #word-wow {
         top: 62%;
         width: 44.25vw;
-        left: 52%;
-        /* Adjusted from default center */
+        left: 55%;
+    }
+
+    /* "Wow": Move Left 7%, Down 3% (from 52%, 62%) -> (45%, 65%) */
+    #word-wow {
+        top: 65%;
+        width: 44.25vw;
+        left: 45%;
     }
 }
 
