@@ -353,8 +353,18 @@ textarea {
         top: calc(20px - 7vh);
         /* Moved UP 7% from 20px */
         bottom: auto;
-        right: calc(20px + 9vw);
-        /* Moved 9% Right (Into the screen from right edge) -> i.e. 20px + 9vw */
+        /* Reverting left move, applying 9% RIGHT shift from ORIGINAL 20px */
+        /* Original right: 20px.  */
+        /* User Requirement: "move skipIntro further in to the top right corner by 9% right" */
+        /* "By 9% right" usually means shifting TO the right. But if it's already on the right, shifting further right pushes it off screen. */
+        /* User said: "You have moved it to the left... Please reverse this... and move to the right instead." */
+        /* Start Point: right: 20px. Move RIGHT means decreasing `right` value (closer to edge) or negative right. */
+        /* BUT user said "further IN to the top right corner". "IN" usually means away from edge? No, "IN to the corner" means tighter to the corner? */
+        /* Let's interpret "Move to the right" as shifting the element's position towards the right edge. */
+        /* If I used `right: calc(20px + 9vw)`, that increased spacing from right edge = moving LEFT. */
+        /* To move RIGHT, I should DECREASE right. */
+        /* Let's try `right: calc(20px - 9vw)`. */
+        right: calc(20px - 9vw);
         left: auto;
     }
 
@@ -434,9 +444,14 @@ textarea {
         /* Ensure within top 20% */
     }
 
+    /* Testimonial Arrow Override - Specificity fix */
+    div#testimonial-arrow,
+    img#testimonial-arrow,
     #testimonial-arrow {
-        display: none;
-        /* Remove arrow altogether in portrait */
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        /* Force remove arrow altogether in portrait */
     }
 
     #testimonial-arrow {
