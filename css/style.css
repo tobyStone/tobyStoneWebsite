@@ -327,12 +327,13 @@ textarea {
 @media (max-width: 768px) {
     /* ... existing styles ... */
 
-    /* Skip Intro: Top Right */
+    /* Skip Intro: Bottom Overlay */
     #skip-intro-btn {
-        top: calc(20px + 21vh);
-        /* Moved Down 21% (16% + 5%) */
+        top: auto;
+        /* Unset top */
+        bottom: 7vh;
+        /* 7% from bottom */
         right: 20px;
-        bottom: auto;
         left: auto;
     }
 

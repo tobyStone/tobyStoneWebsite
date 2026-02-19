@@ -37,7 +37,7 @@ const LayoutConfig = {
     mobile: {
         videoScaleMultiplier: 2.5,
         staticVideoScale: 1.5, // Reverted to 1.5 for V2
-        v3VideoScale: 2.655, // 1.5 * 1.77 = 2.655 for V3
+        v3VideoScale: 2.204, // 2.655 * 0.83 = 2.204
         contactLinksLeft: '50%',
         wordRing: [
             { text: 'From', img: 'From.png', time: 500, pos: { top: '20%', left: '30%' } },
@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.29 (V3 Scaling Fix)');
+    console.log('Initializing... Version: Contact Transition Update 1.30 (V3/Skip Refinements)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -389,7 +389,8 @@ function startVideo3(skipped = false) {
     video.loop = false;
 
     // Apply Scale AND Translation together to avoid overwriting
-    video.style.transform = `scale(${v3Scale}) translateX(0)`;
+    // User requested: Move Left by 7% of viewport (-7vw)
+    video.style.transform = `scale(${v3Scale}) translateX(-7vw)`;
     // User requested: video 3 speed increased to 1.2
     video.playbackRate = 1.2;
 
