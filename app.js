@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.43 (JS Drift Fix)');
+    console.log('Initializing... Version: Contact Transition Update 1.44 (Extend Drift Transitions)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -535,14 +535,20 @@ function startVideo3(skipped = false) {
         pow.classList.remove('hidden');
 
         // Drift Targets
-        // Default (Desktop): Left 39%
-        // Portrait (Mobile): Requested +7% Right -> 39 + 7 = 46%
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
-        const targetLeft = isMobile ? '46%' : '39%';
+
+        // Pow Left:
+        // Desktop: 39%
+        // Mobile: 42% (v1.43 was 46%, moved further left by 4%)
+        const targetLeft = isMobile ? '42%' : '39%';
 
         // Drift left/right AND Rotate -31deg
+        // v1.44: Also drift DOWN in mobile (Top: 62% -> 69%)
         timeoutManager.setTimeout(() => {
             pow.style.left = targetLeft;
+            if (isMobile) {
+                pow.style.top = '69%'; // Drift down 7% from 62%
+            }
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
     }, 1423 + delayOffset);
@@ -555,14 +561,20 @@ function startVideo3(skipped = false) {
             wow.classList.remove('hidden');
 
             // Drift Targets
-            // Default (Desktop): Left 63%
-            // Portrait (Mobile): Requested -7% Left -> 63 - 7 = 56%
             const isMobile = window.matchMedia('(max-width: 768px)').matches;
-            const targetLeft = isMobile ? '56%' : '63%';
+
+            // Wow Left:
+            // Desktop: 63%
+            // Mobile: 60% (v1.43 was 56%, moved further right by 4%)
+            const targetLeft = isMobile ? '60%' : '63%';
 
             // Drift right/left AND Rotate 37deg
+            // v1.44: Also drift DOWN in mobile (Top: 65% -> 72%)
             timeoutManager.setTimeout(() => {
                 wow.style.left = targetLeft;
+                if (isMobile) {
+                    wow.style.top = '72%'; // Drift down 7% from 65%
+                }
                 wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
             }, 50);
         }
