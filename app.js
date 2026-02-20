@@ -486,7 +486,7 @@ function startVideo3(skipped = false) {
             // Wait, if loop starts at 73%, then 100% of snippet is the end of the file.
             // 73% of the way through the snippet = 0.73 * (duration * 0.27)
             const snippetDuration = next.duration * (1 - loopStartRatio);
-            const fadeOutStartTime = snippetDuration * 0.73;
+            const fadeOutStartTime = snippetDuration * 0.57;
 
             timeoutManager.setTimeout(() => {
                 loopCount++;
