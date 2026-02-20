@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.44 (Extend Drift Transitions)');
+    console.log('Initializing... Version: Contact Transition Update 1.45 (Final Resting Tweaks)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -539,15 +539,15 @@ function startVideo3(skipped = false) {
 
         // Pow Left:
         // Desktop: 39%
-        // Mobile: 42% (v1.43 was 46%, moved further left by 4%)
-        const targetLeft = isMobile ? '42%' : '39%';
+        // Mobile: 38% (v1.44 was 42%, moved further left by 4% as requested)
+        const targetLeft = isMobile ? '38%' : '39%';
 
         // Drift left/right AND Rotate -31deg
-        // v1.44: Also drift DOWN in mobile (Top: 62% -> 69%)
+        // v1.45: Raise transition end point by 5% (69% -> 64%)
         timeoutManager.setTimeout(() => {
             pow.style.left = targetLeft;
             if (isMobile) {
-                pow.style.top = '69%'; // Drift down 7% from 62%
+                pow.style.top = '64%'; // Drift down from 62% to 64% (v1.44 was 69%)
             }
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
@@ -565,15 +565,15 @@ function startVideo3(skipped = false) {
 
             // Wow Left:
             // Desktop: 63%
-            // Mobile: 60% (v1.43 was 56%, moved further right by 4%)
-            const targetLeft = isMobile ? '60%' : '63%';
+            // Mobile: 64% (v1.44 was 60%, moved further right by 4% as requested)
+            const targetLeft = isMobile ? '64%' : '63%';
 
             // Drift right/left AND Rotate 37deg
-            // v1.44: Also drift DOWN in mobile (Top: 65% -> 72%)
+            // v1.45: Raise transition end point by 5% (72% -> 67%)
             timeoutManager.setTimeout(() => {
                 wow.style.left = targetLeft;
                 if (isMobile) {
-                    wow.style.top = '72%'; // Drift down 7% from 65%
+                    wow.style.top = '67%'; // Drift down from 65% to 67% (v1.44 was 72%)
                 }
                 wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
             }, 50);
@@ -593,10 +593,8 @@ function startVideo3(skipped = false) {
     }, 4200);
 
     // Links Fade In
-    // Play 700ms after Wow stops transitioning.
-    // Wow starts at 2700ms. Transition is 0.8s (800ms).
-    // Wow stops at 2700 + 800 = 3500ms.
-    // Appear at 3500 + 700 = 4200ms.
+    // v1.45 User: "give a 200ms pause before 'Toby and the testimonial writing' appears"
+    // Previously 4200ms, now 4400ms.
     timeoutManager.setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
@@ -606,7 +604,7 @@ function startVideo3(skipped = false) {
 
         // Start Testimonials after contacts appear
         startTestimonials(delayOffset);
-    }, 4200 + delayOffset);
+    }, 4400 + delayOffset);
 }
 
 function startTestimonials(delayOffset = 0) {
