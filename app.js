@@ -530,10 +530,6 @@ function startVideo3(skipped = false) {
     // User requested: Start 700ms later (1000 + 700 = 1700ms)
     // User requested: Increase speed (appear earlier) by 177ms -> 1700 - 177 = 1523ms
     // User requested: Appear 100ms *earlier* -> 1523 - 100 = 1423ms
-    // 1s Pow -> 0.8s transition handled in CSS
-    // User requested: Start 700ms later (1000 + 700 = 1700ms)
-    // User requested: Increase speed (appear earlier) by 177ms -> 1700 - 177 = 1523ms
-    // User requested: Appear 100ms *earlier* -> 1523 - 100 = 1423ms
     timeoutManager.setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
@@ -543,8 +539,8 @@ function startVideo3(skipped = false) {
 
         // Pow Left:
         // Desktop: 39%
-        // Mobile: 10% (v1.46 requested: 10% of viewport to the left)
-        const targetLeft = isMobile ? '10%' : '39%';
+        // Mobile: 14% (v1.47 requested: move back in by 4% -> 14%)
+        const targetLeft = isMobile ? '14%' : '39%';
 
         // Drift left/right AND Rotate -31deg
         // v1.45: Raise transition end point by 5% (69% -> 64%)
@@ -569,8 +565,8 @@ function startVideo3(skipped = false) {
 
             // Wow Left:
             // Desktop: 63%
-            // Mobile: 90% (v1.46 requested: 10% of viewport to the right -> 90%)
-            const targetLeft = isMobile ? '90%' : '63%';
+            // Mobile: 86% (v1.47 requested: move back in by 4% -> 86%)
+            const targetLeft = isMobile ? '86%' : '63%';
 
             // Drift right/left AND Rotate 37deg
             // v1.45: Raise transition end point by 5% (72% -> 67%)
