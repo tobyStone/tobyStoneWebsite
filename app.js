@@ -447,7 +447,11 @@ function startVideo3(skipped = false) {
     // 3: 0.0625
 
     const playNextLoop = () => {
-        if (loopCount > 5) {
+        // Target volume for this iteration: starts at 0.25, then 0.125, 0.0625, etc.
+        const targetVolume = 0.25 * Math.pow(0.5, loopCount);
+
+        // Threshold to stop: stop when volume is extremely low (e.g., < 0.001)
+        if (targetVolume < 0.001) {
             // All loops finished, hide the toggle button
             unmuteBtn.classList.add('hidden');
             return;
@@ -455,9 +459,6 @@ function startVideo3(skipped = false) {
 
         const current = bgAudio();
         const next = standbyAudio();
-
-        // Target volume for this iteration
-        const targetVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125][loopCount];
 
         // Prepare next audio
         if (!isFinite(next.duration)) {
@@ -483,7 +484,7 @@ function startVideo3(skipped = false) {
 
                 // Fade out current (if it's already playing)
                 if (loopCount > 0) {
-                    const prevVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125][loopCount - 1];
+                    const prevVolume = 0.25 * Math.pow(0.5, loopCount - 1);
                     current.volume = (1 - progress) * prevVolume;
                 }
 
@@ -498,12 +499,6 @@ function startVideo3(skipped = false) {
             }, fadeInterval);
 
             // Schedule the NEXT loop to start at 73% point of THIS loop
-            // Snippet duration = duration * (1 - 0.73) = duration * 0.27
-            // Fade out starts at 73% of snippet? 
-            // The user said: "fading out from about 73% of the way through any snippet of audio"
-            // Snippet is the loop. Loop length = duration * (1 - 0.73)
-            // Wait, if loop starts at 73%, then 100% of snippet is the end of the file.
-            // 73% of the way through the snippet = 0.73 * (duration * 0.27)
             const snippetDuration = next.duration * (1 - loopStartRatio);
             if (!isFinite(snippetDuration)) return;
             const fadeOutStartTime = snippetDuration * 0.47;
