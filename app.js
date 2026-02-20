@@ -436,13 +436,13 @@ function startVideo3(skipped = false) {
     // 3: 0.0625
 
     const playNextLoop = () => {
-        if (loopCount > 4) return;
+        if (loopCount > 5) return;
 
         const current = bgAudio();
         const next = standbyAudio();
 
         // Target volume for this iteration
-        const targetVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625][loopCount];
+        const targetVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125][loopCount];
 
         // Prepare next audio
         if (!isFinite(next.duration)) {
@@ -468,7 +468,7 @@ function startVideo3(skipped = false) {
 
                 // Fade out current (if it's already playing)
                 if (loopCount > 0) {
-                    const prevVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625][loopCount - 1];
+                    const prevVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125][loopCount - 1];
                     current.volume = (1 - progress) * prevVolume;
                 }
 
