@@ -503,8 +503,8 @@ textarea {
         /* Width: 50vw */
         /* Size: 0.77x of v1.39 (1.43rem-2.45rem) */
         font-size: clamp(1.43rem, 4.9vw, 2.45rem);
-        /* Position: Move up 7% from 22% -> 15% */
-        top: 15%;
+        /* Position: Move up 3% (15% -> 12%) */
+        top: 12%;
         /* Move right 3% from 52% -> 55% */
         left: 55%;
         text-align: left;
@@ -514,8 +514,8 @@ textarea {
         /* Size: 0.77x of v1.39 (3.18rem) -> 2.45rem */
         font-size: 2.45rem;
         left: 10%;
-        /* Position: Move down 14% from 7% -> 21% */
-        top: 21%;
+        /* Position: Move up 3% (21% -> 18%) */
+        top: 18%;
     }
 
     /* Testimonial Arrow: Static Position Fix */

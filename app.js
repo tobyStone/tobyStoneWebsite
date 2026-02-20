@@ -61,7 +61,7 @@ const LayoutConfig = {
             { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
             { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
             { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
-            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '56%', left: '50%' } }
+            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '58%', left: '50%' } }
         ]
     }
 };
@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.48 (Pow/Wow Center Tweak)');
+    console.log('Initializing... Version: Contact Transition Update 1.49 (Refinements)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -527,9 +527,10 @@ function startVideo3(skipped = false) {
     document.getElementById('word-lets').classList.remove('hidden');
 
     // 1s Pow -> 0.8s transition handled in CSS
-    // User requested: Start 700ms later (1000 + 700 = 1700ms)
-    // User requested: Increase speed (appear earlier) by 177ms -> 1700 - 177 = 1523ms
-    // User requested: Appear 100ms *earlier* -> 1523 - 100 = 1423ms
+    // v1.49: Delay by 200ms in portrait (1423 -> 1623, 2700 -> 2900)
+    const isMobileVal = window.matchMedia('(max-width: 768px)').matches;
+    const powTimeout = isMobileVal ? 1623 : 1423;
+    const wowTimeout = isMobileVal ? 2900 : 2700;
     timeoutManager.setTimeout(() => {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
@@ -551,10 +552,9 @@ function startVideo3(skipped = false) {
             }
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
-    }, 1423 + delayOffset);
+    }, powTimeout + delayOffset);
 
     // 2s Wow
-    // User requested: Start 700ms later (2000 + 700 = 2700ms)
     timeoutManager.setTimeout(() => {
         const wow = document.getElementById('word-wow');
         if (wow) {
@@ -578,7 +578,7 @@ function startVideo3(skipped = false) {
                 wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
             }, 50);
         }
-    }, 2700 + delayOffset);
+    }, wowTimeout + delayOffset);
 
     // If skipped, we fast-forward animations
     if (skipped) {
