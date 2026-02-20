@@ -447,7 +447,11 @@ function startVideo3(skipped = false) {
     // 3: 0.0625
 
     const playNextLoop = () => {
-        if (loopCount > 5) return;
+        if (loopCount > 5) {
+            // All loops finished, hide the toggle button
+            unmuteBtn.classList.add('hidden');
+            return;
+        }
 
         const current = bgAudio();
         const next = standbyAudio();
@@ -900,7 +904,7 @@ function skipIntro() {
     overlayV2.classList.add('hidden');
     overlayV2.style.opacity = '';
 
-    // Do NOT hide unmuteBtn anymore, let it toggle
+    unmuteBtn.classList.add('hidden'); // Hide the toggle as audio is stopped
 
     skipIntroBtn.classList.add('hidden');
 
