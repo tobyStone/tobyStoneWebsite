@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const password = process.env.databasePassword;
-const connectionString = `mongodb+srv://tstone4:${password}@cluster0.ntuqn.mongodb.net/?appName=Cluster0`;
+const connectionString = `mongodb+srv://tstone4:${password}@cluster0.ntuqn.mongodb.net/tobyStone?appName=Cluster0`;
 
 let cachedConnection = null;
 

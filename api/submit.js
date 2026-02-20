@@ -6,7 +6,7 @@ const SubmissionSchema = new mongoose.Schema({
     email: String,
     message: String,
     timestamp: { type: Date, default: Date.now }
-});
+}, { collection: 'tobyStone' });
 
 // Prevent model recompilation error in serverless
 const Submission = mongoose.models.Submission || mongoose.model('Submission', SubmissionSchema);
