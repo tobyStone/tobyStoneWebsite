@@ -878,8 +878,10 @@ function skipIntro() {
         video.load();
     } catch (e) { }
 
-    bgAudio.pause();
-    bgAudio.src = ''; // Stop audio completely
+    audioPool.forEach(a => {
+        a.pause();
+        a.src = ''; // Stop audio completely
+    });
 
     // 4. REMOVE EVENT LISTENERS (Clean Slate)
     // We replace the node to strip listeners or just nullify properties we attached
@@ -892,8 +894,10 @@ function skipIntro() {
 
     video.onloadeddata = null;
     video.onloadedmetadata = null;
-    bgAudio.onended = null;
-    bgAudio.onloadedmetadata = null;
+    audioPool.forEach(a => {
+        a.onended = null;
+        a.onloadedmetadata = null;
+    });
 
     // 5. CLEAR OVERLAYS / HIDE OLD ELEMENTS
     document.body.classList.add('v3-mode'); // Ensure V3 mode is active for final state CSS
