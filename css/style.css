@@ -609,12 +609,12 @@ textarea {
 /* Mobile Landscape Tweaks */
 @media (max-width: 900px) and (orientation: landscape) {
 
-    /* 1. Unmute Button: Move 5% Right, 3% Up */
+    /* 1. Unmute Button: Move 1% Right, 1% Up from previous (Total: 6% Right, 4% Up) */
     #unmute-btn {
-        right: calc(20px + 2vw);
-        /* Moved 5% right from 7vw -> 2vw */
-        top: calc(20px - 3vh);
-        /* Moved 3% up from 0 -> -3vh (relative to 20px) */
+        right: calc(20px + 1vw);
+        /* Moved 1% right from 2vw -> 1vw */
+        top: calc(20px - 4vh);
+        /* Moved 1% up from -3vh -> -4vh */
         left: auto;
         /* Reset left just in case */
     }
