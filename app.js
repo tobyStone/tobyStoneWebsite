@@ -2,6 +2,7 @@
 // State
 const state = {
     step: 1,
+    isMuted: true
 };
 
 // DOM Elements
@@ -158,9 +159,23 @@ function startVideo1() {
     unmuteBtn.classList.remove('hidden');
 
     unmuteBtn.onclick = () => {
-        video.muted = false;
-        unmuteBtn.classList.add('hidden');
-        if (!bgAudio().paused) bgAudio().muted = false;
+        state.isMuted = !state.isMuted;
+
+        // Update Video State
+        video.muted = state.isMuted;
+
+        // Update Pool State
+        audioPool.forEach(a => a.muted = state.isMuted);
+
+        // Update Icon
+        const btnImg = unmuteBtn.querySelector('img');
+        if (state.isMuted) {
+            btnImg.src = '/images/unmute.png';
+            btnImg.alt = 'Unmute';
+        } else {
+            btnImg.src = '/images/mute.png';
+            btnImg.alt = 'Mute';
+        }
     };
 
     video.play().then(() => {
@@ -276,12 +291,8 @@ function startVideo2Setup() {
     timeoutManager.setTimeout(() => {
         video.playbackRate = 1.0;
 
-        // Unmute Video 2 IF user has globally unmuted
-        // Check if the Unmute button is HIDDEN (meaning user clicked it)
-        const isUserUnmuted = unmuteBtn.classList.contains('hidden');
-        if (isUserUnmuted) {
-            video.muted = false;
-        }
+        // Respect global mute state for Video 2
+        video.muted = state.isMuted;
 
         // Ensure overlay is hidden after fade
         timeoutManager.setTimeout(() => {
@@ -407,7 +418,7 @@ function startVideo3(skipped = false) {
     // Switch to Video 2 audio track for both pool items
     audioPool.forEach(a => {
         a.src = videos.v2;
-        a.muted = !isUnmuted;
+        a.muted = state.isMuted;
     });
 
     // Check for Mobile Landscape to add delay offset
@@ -451,7 +462,7 @@ function startVideo3(skipped = false) {
         }
         next.currentTime = next.duration * loopStartRatio;
         next.volume = 0;
-        next.muted = !isUnmuted;
+        next.muted = state.isMuted;
 
         next.play().then(() => {
             // Fade In `next` and Fade Out `current` simultaneously
@@ -889,7 +900,7 @@ function skipIntro() {
     overlayV2.classList.add('hidden');
     overlayV2.style.opacity = '';
 
-    unmuteBtn.classList.add('hidden'); // Ensure unmute button is hidden on skip
+    // Do NOT hide unmuteBtn anymore, let it toggle
 
     skipIntroBtn.classList.add('hidden');
 
