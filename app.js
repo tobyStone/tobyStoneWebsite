@@ -967,8 +967,13 @@ function skipIntro() {
             video.onloadedmetadata = null;
         };
     }
-    // Force transform to reset
-    video.style.transform = 'translateX(0) scale(1)';
+    // Match Video 3 Scaling/Translation
+    const config = LayoutConfig[LayoutConfig.current];
+    const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
+    const isMobile = LayoutConfig.current === 'mobile';
+    const xShift = isMobile ? '-3vw' : '0';
+
+    video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
     video.style.zIndex = '';
     video.style.mixBlendMode = '';
     video.style.opacity = '1';
