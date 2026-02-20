@@ -920,18 +920,22 @@ function skipIntro() {
     wordLets.classList.remove('hidden');
     wordLets.style.transition = 'none';
 
+    const isMobileVal = window.matchMedia('(max-width: 768px)').matches;
+
     // 'Pow'
     const pow = document.getElementById('word-pow');
     pow.classList.remove('hidden');
     pow.style.transition = 'none';
-    pow.style.left = '39%';
+    pow.style.left = isMobileVal ? '16%' : '39%';
+    if (isMobileVal) pow.style.top = '64%';
     pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
 
     // 'Wow'
     const wow = document.getElementById('word-wow');
     wow.classList.remove('hidden');
     wow.style.transition = 'none';
-    wow.style.left = '63%';
+    wow.style.left = isMobileVal ? '84%' : '63%';
+    if (isMobileVal) wow.style.top = '67%';
     wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
 
     // Contact Links
