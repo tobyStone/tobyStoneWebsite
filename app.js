@@ -61,7 +61,7 @@ const LayoutConfig = {
             { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
             { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
             { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
-            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '58%', left: '50%' } }
+            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '59%', left: '50%' } }
         ]
     }
 };
@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.49 (Refinements)');
+    console.log('Initializing... Version: Contact Transition Update 1.50 (Refinements)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first

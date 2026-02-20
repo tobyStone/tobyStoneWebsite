@@ -503,8 +503,8 @@ textarea {
         /* Width: 50vw */
         /* Size: 0.77x of v1.39 (1.43rem-2.45rem) */
         font-size: clamp(1.43rem, 4.9vw, 2.45rem);
-        /* Position: Move up 3% (15% -> 12%) */
-        top: 12%;
+        /* Position: Move down 1% (12% -> 13%) */
+        top: 13%;
         /* Move right 3% from 52% -> 55% */
         left: 55%;
         text-align: left;
