@@ -20,7 +20,10 @@ const videos = {
 };
 
 const music = '/music/musicfx-dj-1770309373761.wav';
-const bgAudio = new Audio(music);
+const audioPool = [new Audio(music), new Audio(music)];
+let activeAudioIndex = 0;
+const bgAudio = () => audioPool[activeAudioIndex];
+const standbyAudio = () => audioPool[1 - activeAudioIndex];
 
 // Config
 const V1_DURATION = 5713; // Adjusted for 1.225x speed (7000 / 1.225)
@@ -157,7 +160,7 @@ function startVideo1() {
     unmuteBtn.onclick = () => {
         video.muted = false;
         unmuteBtn.classList.add('hidden');
-        if (!bgAudio.paused) bgAudio.muted = false;
+        if (!bgAudio().paused) bgAudio().muted = false;
     };
 
     video.play().then(() => {
@@ -401,8 +404,11 @@ function startVideo3(skipped = false) {
     const isUnmuted = unmuteBtn.classList.contains('hidden');
 
     // Switch to Video 2 audio track
-    bgAudio.src = videos.v2;
-    bgAudio.muted = !isUnmuted;
+    // Switch to Video 2 audio track for both pool items
+    audioPool.forEach(a => {
+        a.src = videos.v2;
+        a.muted = !isUnmuted;
+    });
 
     // Check for Mobile Landscape to add delay offset
     const isMobileLandscape = window.matchMedia('(max-width: 900px) and (orientation: landscape)').matches;
@@ -430,77 +436,79 @@ function startVideo3(skipped = false) {
     // 3: 0.0625
 
     const playNextLoop = () => {
-        if (loopCount > 4) return; // Stop after 4 repeats (Total 5 plays).
+        if (loopCount > 4) return;
 
-        // Loop 0-3: Start silent for fade-in
-        bgAudio.volume = 0;
+        const current = bgAudio();
+        const next = standbyAudio();
 
-        // 1: 0.25 -> 2: 0.125 -> 3: 0.0625 -> 4: 0.03125
-        // 1: 0.25 -> 2: 0.125 -> 3: 0.0625 -> 4: 0.03125 -> 5: 0.015625
+        // Target volume for this iteration
         const targetVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625][loopCount];
 
-        bgAudio.currentTime = bgAudio.duration * loopStartRatio;
+        // Prepare next audio
+        next.currentTime = next.duration * loopStartRatio;
+        next.volume = 0;
+        next.muted = !isUnmuted;
 
-        bgAudio.play().then(() => {
-            // Fade In (50ms duration? "quick fade")
-            // Let's fade in over 200ms
-            let vol = 0;
-            const fadeIn = timeoutManager.setInterval(() => {
-                vol += (targetVolume / 5); // 5 steps of 40ms = 200ms
-                if (vol >= targetVolume) {
-                    vol = targetVolume;
-                    timeoutManager.clearInterval(fadeIn);
+        next.play().then(() => {
+            // Fade In `next` and Fade Out `current` simultaneously
+            const fadeSteps = 10;
+            const fadeInterval = 40; // Total 400ms fade
+            let step = 0;
+
+            const crossfade = timeoutManager.setInterval(() => {
+                step++;
+                const progress = step / fadeSteps;
+
+                // Fade in next
+                next.volume = progress * targetVolume;
+
+                // Fade out current (if it's already playing)
+                if (loopCount > 0) {
+                    const prevVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625][loopCount - 1];
+                    current.volume = (1 - progress) * prevVolume;
                 }
-                bgAudio.volume = vol;
-            }, 40);
 
-            // Schedule Fade Out
-            // Loop duration?
-            const duration = bgAudio.duration - bgAudio.currentTime;
-            // Fade out last 300ms
-            timeoutManager.setTimeout(() => {
-                let volOut = bgAudio.volume;
-                const fadeOut = timeoutManager.setInterval(() => {
-                    volOut -= (targetVolume / 5);
-                    if (volOut <= 0) {
-                        volOut = 0;
-                        timeoutManager.clearInterval(fadeOut);
+                if (step >= fadeSteps) {
+                    timeoutManager.clearInterval(crossfade);
+                    if (loopCount > 0) {
+                        current.pause();
                     }
-                    bgAudio.volume = volOut;
-                }, 40); // 5 steps * 40ms = 200ms fade out
-            }, (duration * 1000) - 300); // Start fade out 300ms before end
+                    // Switch roles
+                    activeAudioIndex = 1 - activeAudioIndex;
+                }
+            }, fadeInterval);
+
+            // Schedule the NEXT loop to start at 73% point of THIS loop
+            // Snippet duration = duration * (1 - 0.73) = duration * 0.27
+            // Fade out starts at 73% of snippet? 
+            // The user said: "fading out from about 73% of the way through any snippet of audio"
+            // Snippet is the loop. Loop length = duration * (1 - 0.73)
+            // Wait, if loop starts at 73%, then 100% of snippet is the end of the file.
+            // 73% of the way through the snippet = 0.73 * (duration * 0.27)
+            const snippetDuration = next.duration * (1 - loopStartRatio);
+            const fadeOutStartTime = snippetDuration * 0.73;
+
+            timeoutManager.setTimeout(() => {
+                loopCount++;
+                playNextLoop();
+            }, fadeOutStartTime * 1000);
 
         }).catch(e => console.log("Audio play failed", e));
-
-        loopCount++;
     };
 
     if (!skipped) {
-        bgAudio.onended = () => {
-            if (loopCount < 5) { // 0, 1, 2, 3, 4
-                playNextLoop();
-            } else {
-                // Audio finished completely
-                unmuteBtn.classList.add('hidden');
-            }
-        };
-    }
-
-    // If bgAudio metadata loaded, set time and play first loop
-    if (!skipped) {
-        if (bgAudio.duration) {
-            // reset count
+        const primary = audioPool[0];
+        if (primary.duration) {
             loopCount = 0;
             playNextLoop();
         } else {
-            bgAudio.onloadedmetadata = () => {
+            primary.onloadedmetadata = () => {
                 loopCount = 0;
                 playNextLoop();
             };
         }
     } else {
-        // If skipped, ensure bgAudio is stopped
-        bgAudio.pause();
+        audioPool.forEach(a => a.pause());
     }
 
     // "75% softer initially" -> 0.25 volume
