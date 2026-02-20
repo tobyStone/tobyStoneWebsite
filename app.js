@@ -125,7 +125,7 @@ const skipIntroBtn = document.getElementById('skip-intro-btn');
 let skipIntroTimeout;
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.47 (Pow/Wow Center Move)');
+    console.log('Initializing... Version: Contact Transition Update 1.48 (Pow/Wow Center Tweak)');
     // Setup Video 1
     video.src = videos.v1;
     video.muted = false; // Try sound first
@@ -539,8 +539,8 @@ function startVideo3(skipped = false) {
 
         // Pow Left:
         // Desktop: 39%
-        // Mobile: 14% (v1.47 requested: move back in by 4% -> 14%)
-        const targetLeft = isMobile ? '14%' : '39%';
+        // Mobile: 16% (v1.48 requested: move back in by 2% -> 16%)
+        const targetLeft = isMobile ? '16%' : '39%';
 
         // Drift left/right AND Rotate -31deg
         // v1.45: Raise transition end point by 5% (69% -> 64%)
@@ -565,8 +565,8 @@ function startVideo3(skipped = false) {
 
             // Wow Left:
             // Desktop: 63%
-            // Mobile: 86% (v1.47 requested: move back in by 4% -> 86%)
-            const targetLeft = isMobile ? '86%' : '63%';
+            // Mobile: 84% (v1.48 requested: move back in by 2% -> 84%)
+            const targetLeft = isMobile ? '84%' : '63%';
 
             // Drift right/left AND Rotate 37deg
             // v1.45: Raise transition end point by 5% (72% -> 67%)
