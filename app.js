@@ -445,6 +445,10 @@ function startVideo3(skipped = false) {
         const targetVolume = [0.25, 0.125, 0.0625, 0.03125, 0.015625][loopCount];
 
         // Prepare next audio
+        if (!isFinite(next.duration)) {
+            console.log("Next audio duration not finite, skipping this loop tick");
+            return;
+        }
         next.currentTime = next.duration * loopStartRatio;
         next.volume = 0;
         next.muted = !isUnmuted;
@@ -486,7 +490,8 @@ function startVideo3(skipped = false) {
             // Wait, if loop starts at 73%, then 100% of snippet is the end of the file.
             // 73% of the way through the snippet = 0.73 * (duration * 0.27)
             const snippetDuration = next.duration * (1 - loopStartRatio);
-            const fadeOutStartTime = snippetDuration * 0.57;
+            if (!isFinite(snippetDuration)) return;
+            const fadeOutStartTime = snippetDuration * 0.47;
 
             timeoutManager.setTimeout(() => {
                 loopCount++;
@@ -497,16 +502,22 @@ function startVideo3(skipped = false) {
     };
 
     if (!skipped) {
-        const primary = audioPool[0];
-        if (primary.duration) {
-            loopCount = 0;
-            playNextLoop();
-        } else {
-            primary.onloadedmetadata = () => {
+        let readyCount = 0;
+        const checkReady = () => {
+            readyCount++;
+            if (readyCount === 2) {
                 loopCount = 0;
                 playNextLoop();
-            };
-        }
+            }
+        };
+
+        audioPool.forEach(a => {
+            if (a.readyState >= 1 && isFinite(a.duration)) {
+                checkReady();
+            } else {
+                a.onloadedmetadata = checkReady;
+            }
+        });
     } else {
         audioPool.forEach(a => a.pause());
     }
