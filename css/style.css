@@ -194,10 +194,10 @@ html {
 
 #contact-tagline {
     position: absolute;
-    top: 61.5%;
-    /* Lowered 0.5% from 61% */
-    right: 3.5%;
-    /* Moved 1.5% left from 2% */
+    top: 62%;
+    /* Lowered 0.5% from 61.5% */
+    right: 4%;
+    /* Moved 0.5% left from 3.5% */
     /* Positioned between header and links */
     font-family: 'Komika Axis', sans-serif;
     font-size: 1.433rem;
@@ -569,12 +569,12 @@ textarea {
 
     #contact-tagline {
         top: auto;
-        bottom: calc(105px - 1.5vh);
-        /* Lowered 0.5vh further from 1vh */
+        bottom: calc(105px - 2vh);
+        /* Lowered 0.5vh further from 1.5vh */
         /* Between header and links */
         left: 50%;
-        transform: translateX(calc(-50% - 1.5vw));
-        /* Moved 1.5% left */
+        transform: translateX(calc(-50% - 2vw));
+        /* Moved 0.5% left further from 1.5% */
         font-size: clamp(0.819rem, 2.8vw, 1.4rem);
         /* Increased 1.17x (0.7 * 1.17, 2.4 * 1.17 approx) */
         text-align: center;
@@ -740,11 +740,11 @@ textarea {
     }
 
     .v3-mode #contact-tagline {
-        top: 53.5%;
-        /* Lowered 0.5% from 53% */
+        top: 54%;
+        /* Lowered 0.5% from 53.5% */
         /* Between header and links (60%) */
-        right: 3.5%;
-        /* Moved 1.5% left from 2% */
+        right: 4%;
+        /* Moved 0.5% left from 3.5% */
         left: auto;
         font-size: clamp(0.515rem, 1.72vw, 0.86rem);
         /* Increased 1.17x of clamp(0.44rem, 1.47vw, 0.735rem) */
