@@ -627,6 +627,11 @@ function startVideo3(skipped = false) {
     timeoutManager.setTimeout(() => {
         contactLinks.classList.remove('hidden');
         contactLinks.style.opacity = '1';
+        const tagline = document.getElementById('contact-tagline');
+        if (tagline) {
+            tagline.classList.remove('hidden');
+            tagline.style.opacity = '1';
+        }
         if (contactLinks) {
             contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
         }
@@ -936,6 +941,11 @@ function skipIntro() {
     // Contact Links
     contactLinks.classList.remove('hidden');
     contactLinks.style.opacity = '1';
+    const tagline = document.getElementById('contact-tagline');
+    if (tagline) {
+        tagline.classList.remove('hidden');
+        tagline.style.opacity = '1';
+    }
     contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
 
     // START TESTIMONIALS IMMEDIATELY

@@ -182,16 +182,32 @@ html {
 /* Contact Links */
 #contact-header {
     position: absolute;
-    top: 57%;
-    /* Moved up 2% (62 -> 60) */
+    top: 50%;
+    /* Raised from 57% to make room for tagline */
     left: 82%;
-    /* Moved left 2% (84 -> 82) */
     width: 200px;
-    /* Adjust as needed */
     height: auto;
     opacity: 0;
     transition: opacity 1s;
     z-index: 20;
+}
+
+#contact-tagline {
+    position: absolute;
+    top: 60%;
+    /* Positioned between header and links */
+    left: 84%;
+    /* Slightly offset to match links alignment if needed, or 82 to match header */
+    transform: translateX(-0%);
+    font-family: 'Komika Axis', sans-serif;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 1s;
+    z-index: 20;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 #contact-links {
@@ -543,12 +559,21 @@ textarea {
     /* Contact Links: Bottom Center */
     #contact-header {
         top: auto;
-        bottom: 110px;
-        /* Above links (50px + height ~40px + gap) */
+        bottom: 155px;
+        /* Raised from 110px */
         left: 50%;
         transform: translateX(-50%);
         width: 140px;
-        /* 0.7x of 200px */
+    }
+
+    #contact-tagline {
+        top: auto;
+        bottom: 105px;
+        /* Between header and links */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: clamp(1.43rem, 4.9vw, 2.45rem);
+        text-align: center;
     }
 
     #contact-links {
@@ -704,10 +729,16 @@ textarea {
 
     /* 3. Contact Header: Move Up 3% (50 -> 47%), Move Left 3% (79 -> 76%) */
     .v3-mode #contact-header {
-        top: 47%;
-        /* 50 - 3 */
+        top: 40%;
+        /* Raised from 47% */
         left: 76%;
-        /* 79 - 3 */
         width: 140px;
+    }
+
+    .v3-mode #contact-tagline {
+        top: 52%;
+        /* Between header and links (60%) */
+        left: 76%;
+        font-size: clamp(0.9rem, 3vw, 1.5rem);
     }
 }
