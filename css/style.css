@@ -196,9 +196,8 @@ html {
     position: absolute;
     top: 60%;
     /* Positioned between header and links */
-    left: 84%;
-    /* Slightly offset to match links alignment if needed, or 82 to match header */
-    transform: translateX(-0%);
+    right: 2%;
+    /* 2% padding from the right edge to fit viewport */
     font-family: 'Komika Axis', sans-serif;
     font-size: 2.5rem;
     color: white;
@@ -738,7 +737,8 @@ textarea {
     .v3-mode #contact-tagline {
         top: 52%;
         /* Between header and links (60%) */
-        left: 76%;
+        right: 2%;
+        left: auto;
         font-size: clamp(0.9rem, 3vw, 1.5rem);
     }
 }
