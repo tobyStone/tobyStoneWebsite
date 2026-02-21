@@ -196,6 +196,7 @@ html {
     position: absolute;
     top: 60%;
     /* Positioned between header and links */
+    right: 2%;
     /* 2% padding from the right edge to fit viewport */
     font-family: 'Komika Axis', sans-serif;
     font-size: 1.75rem;
