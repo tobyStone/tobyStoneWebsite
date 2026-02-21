@@ -194,13 +194,14 @@ html {
 
 #contact-tagline {
     position: absolute;
-    top: 60%;
+    top: 61%;
+    /* Lowered 1% from 60% */
     /* Positioned between header and links */
     right: 2%;
     /* 2% padding from the right edge to fit viewport */
     font-family: 'Komika Axis', sans-serif;
-    font-size: 1.75rem;
-    /* Reduced to 0.7x (2.5rem * 0.7) */
+    font-size: 1.225rem;
+    /* Reduced to 0.7x of 1.75rem */
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     opacity: 0;
@@ -568,12 +569,13 @@ textarea {
 
     #contact-tagline {
         top: auto;
-        bottom: 105px;
+        bottom: calc(105px - 1vh);
+        /* Lowered 1vh from 105px */
         /* Between header and links */
         left: 50%;
         transform: translateX(-50%);
-        font-size: clamp(1rem, 3.43vw, 1.715rem);
-        /* Reduced to 0.7x of clamp(1.43rem, 4.9vw, 2.45rem) */
+        font-size: clamp(0.7rem, 2.4vw, 1.2rem);
+        /* Reduced to 0.7x of clamp(1rem, 3.43vw, 1.715rem) */
         text-align: center;
     }
 
@@ -737,11 +739,12 @@ textarea {
     }
 
     .v3-mode #contact-tagline {
-        top: 52%;
+        top: 53%;
+        /* Lowered 1% from 52% */
         /* Between header and links (60%) */
         right: 2%;
         left: auto;
-        font-size: clamp(0.63rem, 2.1vw, 1.05rem);
-        /* Reduced to 0.7x of clamp(0.9rem, 3vw, 1.5rem) */
+        font-size: clamp(0.44rem, 1.47vw, 0.735rem);
+        /* Reduced to 0.7x of clamp(0.63rem, 2.1vw, 1.05rem) */
     }
 }
