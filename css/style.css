@@ -572,8 +572,8 @@ textarea {
         bottom: calc(105px + 0.7vh);
         /* Between header and links */
         left: 50%;
-        transform: translateX(calc(-50% - 20.5vw));
-        /* Moved 20.5% to the left */
+        transform: translateX(calc(-50% + 1.5vw));
+        /* Moved 22% right from -20.5vw position (Total: +1.5vw) */
         font-size: clamp(1.2285rem, 4.2vw, 2.1rem);
         text-align: center;
     }
