@@ -573,8 +573,8 @@ textarea {
         /* Moved 0.7vh further up */
         /* Between header and links */
         left: 50%;
-        transform: translateX(calc(-50% - 1.5vw));
-        /* Moved 0.2vw further right from -1.7vw */
+        transform: translateX(calc(-50% - 1.3vw));
+        /* Moved 0.2vw further right from -1.5vw */
         font-size: clamp(1.2285rem, 4.2vw, 2.1rem);
         /* Increased 1.5x (0.819 * 1.5, 2.8 * 1.5, 1.4 * 1.5) */
         text-align: center;
