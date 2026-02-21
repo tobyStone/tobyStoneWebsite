@@ -301,8 +301,8 @@ html {
 input,
 textarea {
     padding: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    /* Dark semi-transparent */
+    background: #000;
+    /* Solid background to hide text on subBox.png */
     border: 1px solid #555;
     color: white;
     font-size: 1rem;
