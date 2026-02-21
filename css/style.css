@@ -569,12 +569,12 @@ textarea {
 
     #contact-tagline {
         top: auto;
-        bottom: calc(105px - 2vh);
-        /* Lowered 0.5vh further from 1.5vh */
+        bottom: 105px;
+        /* Moved 2vh up from calc(105px - 2vh) */
         /* Between header and links */
         left: 50%;
-        transform: translateX(calc(-50% - 2vw));
-        /* Moved 0.5% left further from 1.5% */
+        transform: translateX(calc(-50% - 1.7vw));
+        /* Moved 0.3vw right from -2vw */
         font-size: clamp(1.2285rem, 4.2vw, 2.1rem);
         /* Increased 1.5x (0.819 * 1.5, 2.8 * 1.5, 1.4 * 1.5) */
         text-align: center;
