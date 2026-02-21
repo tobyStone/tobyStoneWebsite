@@ -575,8 +575,8 @@ textarea {
         left: 50%;
         transform: translateX(calc(-50% - 2vw));
         /* Moved 0.5% left further from 1.5% */
-        font-size: clamp(0.819rem, 2.8vw, 1.4rem);
-        /* Increased 1.17x (0.7 * 1.17, 2.4 * 1.17 approx) */
+        font-size: clamp(1.2285rem, 4.2vw, 2.1rem);
+        /* Increased 1.5x (0.819 * 1.5, 2.8 * 1.5, 1.4 * 1.5) */
         text-align: center;
     }
 
