@@ -330,7 +330,7 @@ function startVideo2Setup() {
     // Since we rely on onended for transition, let's use timeupdate to detect end - 0.3s.
 
     const checkEndTime = () => {
-        if (video.duration && video.currentTime >= video.duration - 0.427) {
+        if (video.duration && video.currentTime >= video.duration - 0.35) {
             video.pause();
             // Trigger transition manually
             video.removeEventListener('timeupdate', checkEndTime);
