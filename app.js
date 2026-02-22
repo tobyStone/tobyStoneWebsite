@@ -309,7 +309,7 @@ function startVideo2Setup() {
     // Since we rely on onended for transition, let's use timeupdate to detect end - 0.3s.
 
     const checkEndTime = () => {
-        if (video.duration && video.currentTime >= video.duration - 0.3) {
+        if (video.duration && video.currentTime >= video.duration - 0.427) {
             video.pause();
             // Trigger transition manually
             video.removeEventListener('timeupdate', checkEndTime);
@@ -479,8 +479,8 @@ function startVideo3(skipped = false) {
                 step++;
                 const progress = step / fadeSteps;
 
-                // Fade in next
-                next.volume = progress * targetVolume;
+                // Fade in next (Skip fade-in for first loop to maintain volume consistency)
+                next.volume = loopCount === 0 ? targetVolume : progress * targetVolume;
 
                 // Fade out current (if it's already playing)
                 if (loopCount > 0) {
