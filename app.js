@@ -208,6 +208,14 @@ function startVideo1() {
             overlayV1.appendChild(el);
         }, w.time);
     });
+
+    // Optimize: Pre-load Video 2 in the background halfway through Video 1
+    // (V1_DURATION is 5713, so halfway is ~2856ms)
+    timeoutManager.setTimeout(() => {
+        const preloadV2 = document.createElement('video');
+        preloadV2.src = videos.v2;
+        preloadV2.preload = 'auto';
+    }, V1_DURATION / 2);
 }
 
 function animateV1() {
