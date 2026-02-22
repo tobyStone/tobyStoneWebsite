@@ -140,6 +140,11 @@ async function init() {
         // Bugfix: Ensure this only runs once so V1 setup doesn't re-trigger for V2/V3
         video.onloadeddata = null;
         startVideo1();
+
+        // Start pre-loading Video 3 in the background
+        const preloadV3 = document.createElement('video');
+        preloadV3.src = videos.v3;
+        preloadV3.preload = 'auto';
     };
 
     skipIntroBtn.addEventListener('click', () => {
@@ -282,6 +287,14 @@ function startVideo2Setup() {
 
     video.play();
 
+    // Optimize: Pre-load Video 3 audio track into the pool now 
+    // so it's ready and buffered when Video 3 starts.
+    audioPool.forEach(a => {
+        a.src = videos.v2;
+        a.load(); // Force start loading
+        a.muted = state.isMuted;
+    });
+
     // Fade out text starting at 3.5s + 377ms = 3877ms
     timeoutManager.setTimeout(() => {
         overlayV2.style.opacity = '0';
@@ -378,8 +391,16 @@ function startVideo3(skipped = false) {
             // Wow ends transition at 3.5s.
             video.currentTime = 3.5;
             video.pause(); // Ensure paused
+
+            // Show overlays immediately if skipped
+            overlayV3.classList.remove('hidden');
+            document.getElementById('word-lets').classList.remove('hidden');
         } else {
-            video.play().catch(e => console.log("Video 3 play failed", e));
+            video.play().then(() => {
+                // SYNC: Only show overlays once video actually starts playing
+                overlayV3.classList.remove('hidden');
+                document.getElementById('word-lets').classList.remove('hidden');
+            }).catch(e => console.log("Video 3 play failed", e));
         }
     };
 
@@ -414,12 +435,8 @@ function startVideo3(skipped = false) {
     // Sync with global mute state (unmuteBtn hidden = sound ON)
     const isUnmuted = unmuteBtn.classList.contains('hidden');
 
-    // Switch to Video 2 audio track
-    // Switch to Video 2 audio track for both pool items
-    audioPool.forEach(a => {
-        a.src = videos.v2;
-        a.muted = state.isMuted;
-    });
+    // Sources already set and pre-loading in startVideo2Setup
+    audioPool.forEach(a => a.muted = state.isMuted);
 
     // Check for Mobile Landscape to add delay offset
     const isMobileLandscape = window.matchMedia('(max-width: 900px) and (orientation: landscape)').matches;
@@ -551,9 +568,7 @@ function startVideo3(skipped = false) {
     // If metadata wasn't loaded for currentTime calc:
     // Removed onloadedmetadata duplications since we handled it above.
 
-    overlayV3.classList.remove('hidden');
-
-    document.getElementById('word-lets').classList.remove('hidden');
+    // SYNC: Reveal of overlayV3 and word-lets moved into runVideo() for consistency
 
     // 1s Pow -> 0.8s transition handled in CSS
     // v1.49: Delay by 200ms in portrait (1423 -> 1623, 2700 -> 2900)
