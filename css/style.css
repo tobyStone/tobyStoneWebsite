@@ -681,6 +681,11 @@ textarea {
         left: 67% !important;
         /* 55% base + 12% shift */
     }
+
+    /* Lower 'To' and 'A' in Video 2 by 9% VH */
+    .v2-left .word-stack {
+        top: 9vh !important;
+    }
 }
 
 /* Contact Text Images (replacement for text spans) */
