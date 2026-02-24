@@ -44,8 +44,8 @@ const LayoutConfig = {
         v3VideoScale: 2.204, // 2.655 * 0.83 = 2.204
         contactLinksLeft: '50%',
         wordRing: [
-            { text: 'From', img: 'From.png', time: 500, pos: { top: '20%', left: '30%' } },
-            { text: 'the', img: 'The.png', time: 1260, pos: { top: '20%', left: '70%' } },
+            { text: 'From', img: 'From.png', time: 500, pos: { top: '29%', left: '30%' } },
+            { text: 'the', img: 'The.png', time: 1260, pos: { top: '29%', left: '70%' } },
             { text: 'seed', img: 'Seed.png', time: 2020, pos: { top: '45%', left: '85%' } },
             { text: 'of', img: 'Of.png', time: 2780, pos: { top: '70%', left: '70%' } },
             { text: 'an', img: 'An.png', time: 3540, pos: { top: '70%', left: '30%' } },
@@ -665,6 +665,7 @@ function startVideo3(skipped = false) {
 }
 
 function startTestimonials(delayOffset = 0) {
+    document.body.classList.add('v4-mode');
     overlayV4.classList.remove('hidden');
     overlayV4.style.pointerEvents = 'none';
     document.getElementById('contact-links').style.zIndex = '30';

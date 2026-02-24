@@ -639,9 +639,23 @@ textarea {
         gap: 0px !important;
     }
 
-    /* Move contact.png down by 3% of vertical viewport */
+    /* Move contact.png down by an additional 7% (Total 10% of vertical viewport) */
     #contact-header {
+        bottom: calc(155px - 10vh) !important;
+    }
+
+    /* Lower tagline by 7% as well */
+    #contact-tagline {
+        bottom: calc(105px - 6.3vh) !important;
+    }
+
+    /* Revert lowering for testimonial context */
+    .v4-mode #contact-header {
         bottom: calc(155px - 3vh) !important;
+    }
+
+    .v4-mode #contact-tagline {
+        bottom: calc(105px + 0.7vh) !important;
     }
 
     /* Reduce unmute/mute images to 0.7 current size and move to top left */
@@ -653,12 +667,11 @@ textarea {
         right: auto !important;
     }
 
-    /* Reduce skipIntro button to 0.77 current scale and move to top right */
+    /* Reduce skipIntro button further (0.77 of current 14.6rem = 11.25rem) and move tighter to corner */
     #skip-intro-btn {
-        width: 14.6rem !important;
-        /* ~0.77 of 19rem */
-        top: 20px !important;
-        right: 20px !important;
+        width: 11.25rem !important;
+        top: 10px !important;
+        right: 10px !important;
         bottom: auto !important;
         left: auto !important;
     }
