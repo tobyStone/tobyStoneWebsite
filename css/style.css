@@ -620,6 +620,56 @@ textarea {
     }
 }
 
+@media (orientation: portrait) {
+
+    /* Reduce contact wording and icons to 0.77 */
+    .contact-text-img {
+        height: 1.73rem !important;
+        /* ~0.77 of 2.25rem */
+    }
+
+    .contact-icon {
+        width: 46px !important;
+        /* ~0.77 of 60px */
+        height: 46px !important;
+    }
+
+    /* Reduce gap between icons and wordings to nothing */
+    .contact-item {
+        gap: 0px !important;
+    }
+
+    /* Move contact.png down by 3% of vertical viewport */
+    #contact-header {
+        bottom: calc(155px - 3vh) !important;
+    }
+
+    /* Reduce unmute/mute images to 0.7 current size and move to top left */
+    #unmute-btn {
+        width: 134px !important;
+        /* ~0.7 of 192px */
+        top: 20px !important;
+        left: 20px !important;
+        right: auto !important;
+    }
+
+    /* Reduce skipIntro button to 0.77 current scale and move to top right */
+    #skip-intro-btn {
+        width: 14.6rem !important;
+        /* ~0.77 of 19rem */
+        top: 20px !important;
+        right: 20px !important;
+        bottom: auto !important;
+        left: auto !important;
+    }
+
+    /* Move testimonial writing after "Toby" to the right by 12% of viewport */
+    #testimonial-quote {
+        left: 67% !important;
+        /* 55% base + 12% shift */
+    }
+}
+
 /* Contact Text Images (replacement for text spans) */
 .contact-text-img {
     height: 2.25rem;
