@@ -682,9 +682,9 @@ textarea {
         /* 55% base + 12% shift */
     }
 
-    /* Lower 'To' and 'A' in Video 2 by 9% VH */
+    /* Lower 'To' and 'A' in Video 2 by 6% VH (previously 9vh, raised by 3vh) */
     .v2-left .word-stack {
-        top: 9vh !important;
+        top: 6vh !important;
     }
 }
 
