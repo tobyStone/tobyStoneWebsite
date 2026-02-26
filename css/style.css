@@ -686,6 +686,49 @@ textarea {
     .v2-left .word-stack {
         top: 6vh !important;
     }
+
+    /* --- Aspect-Ratio Dynamic Scaling (Ground Truth: Samsung < 0.5) --- */
+
+    /* Tier 2: Mid-range devices (e.g., iPhone SE), min-aspect-ratio 1/2 */
+    @media (min-aspect-ratio: 1/2) {
+        #contact-header {
+            bottom: calc(155px - 6vh) !important;
+        }
+
+        #contact-tagline {
+            bottom: calc(105px - 2vh) !important;
+        }
+
+        /* Bring links up slightly from bottom: 30px */
+        #contact-links {
+            bottom: 40px !important;
+        }
+    }
+
+    /* Tier 3: Tablets (e.g., Kindle Fire), min-aspect-ratio 55/100 */
+    @media (min-aspect-ratio: 55/100) {
+        #contact-header {
+            bottom: calc(155px - 2vh) !important;
+        }
+
+        #contact-tagline {
+            bottom: calc(105px + 2vh) !important;
+        }
+
+        #contact-links {
+            bottom: 50px !important;
+        }
+
+        /* Optional Scaling for tighter vertical space */
+        .contact-text-img {
+            height: 1.4rem !important;
+        }
+
+        .contact-icon {
+            width: 38px !important;
+            height: 38px !important;
+        }
+    }
 }
 
 /* Contact Text Images (replacement for text spans) */
