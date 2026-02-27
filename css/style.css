@@ -728,6 +728,34 @@ textarea {
             width: 38px !important;
             height: 38px !important;
         }
+
+        /* Video 2 Layout Reversal (Desktop Horizontal Style for wide portrait devices) */
+        .v2-content {
+            flex-direction: row !important;
+        }
+
+        .v2-left .word-stack {
+            flex-direction: column !important;
+            top: auto !important;
+            /* Remove the vertical overlap offset */
+        }
+
+        .v2-right .letter-row {
+            flex-direction: column !important;
+            /* Stack S I T E vertically again */
+        }
+
+        .v2-center-rect {
+            width: 20vw !important;
+            /* Restore desktop gap width */
+            height: 30vh !important;
+        }
+
+        .word-img,
+        .letter-img {
+            max-height: 17vh !important;
+            /* Restore desktop image sizing */
+        }
     }
 }
 
