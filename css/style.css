@@ -751,10 +751,17 @@ textarea {
             height: 30vh !important;
         }
 
+        /* Scale Video 2 words down to 0.37 of desktop size (~17vh * 0.37 = ~6.3vh) */
         .word-img,
         .letter-img {
-            max-height: 17vh !important;
-            /* Restore desktop image sizing */
+            max-height: 6.3vh !important;
+        }
+
+        /* Shift Testimonial Right (+7%) and Up (2vh) */
+        #testimonial-quote {
+            left: 74% !important;
+            bottom: calc(5% + 2vh) !important;
+            /* Note: 5% is standard mobile bottom, plus 2vh */
         }
     }
 }
