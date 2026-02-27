@@ -757,12 +757,29 @@ textarea {
             max-height: 6.3vh !important;
         }
 
-        /* Shift Testimonial Right (+7%) and Up (2vh) */
+        /* Shift Testimonial to Top Right for Tablets */
         #testimonial-quote {
-            left: 74% !important;
-            bottom: calc(5% + 2vh) !important;
-            /* Note: 5% is standard mobile bottom, plus 2vh */
+            left: auto !important;
+            bottom: auto !important;
+            top: 25vh !important;
+            right: 5vw !important;
+            max-width: 40vw !important;
+            /* Prevent it taking full width */
+            text-align: right !important;
+            /* Align words cleanly to the edge */
+            font-size: 1.8rem !important;
+            /* Slightly smaller to fit cleanly */
         }
+    }
+
+    /* V2: Align 'Super' perfectly over vertically stacked 'Site' */
+    /* The 'Super' image is slightly wider than the S I T E letters. Nudging it left slightly to center it mathematically */
+    .v2-right>.word-img {
+        /* Assuming word-img is a direct child of v2-right (for Super) */
+        transform: translateX(0vw) !important;
+        /* Base center */
+        margin-left: -2vw !important;
+        /* Nudge left to center 'S' over 'S' */
     }
 }
 
