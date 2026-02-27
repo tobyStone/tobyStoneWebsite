@@ -757,18 +757,20 @@ textarea {
             max-height: 6.3vh !important;
         }
 
-        /* Shift Testimonial to Top Right for Tablets */
+        /* Shift Testimonial purely to Top Right for Tablets */
         #testimonial-quote {
             left: auto !important;
             bottom: auto !important;
-            top: 25vh !important;
-            right: 5vw !important;
+            top: 5vh !important;
+            right: 2vw !important;
             max-width: 40vw !important;
-            /* Prevent it taking full width */
             text-align: right !important;
-            /* Align words cleanly to the edge */
             font-size: 1.8rem !important;
-            /* Slightly smaller to fit cleanly */
+        }
+
+        /* Elevate Video 2 wording above the explosion video mix-blend-mode (which uses z-index 30) */
+        #overlay-v2 {
+            z-index: 40 !important;
         }
     }
 
