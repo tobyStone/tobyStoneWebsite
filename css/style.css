@@ -761,8 +761,8 @@ textarea {
         #testimonial-quote {
             left: 80% !important;
             /* Center at 80% horizontal */
-            top: 10% !important;
-            /* Center at 10% vertical */
+            top: 20% !important;
+            /* Center at 20% vertical (Moved down 10% from 10%) */
             width: 20vw !important;
             /* Span 70% to 90% (10% left and right of center) */
             max-width: none !important;
