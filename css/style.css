@@ -757,14 +757,21 @@ textarea {
             max-height: 6.3vh !important;
         }
 
-        /* Shift Testimonial purely to Top Right for Tablets */
+        /* Shift Testimonial purely to Top Right for Tablets using exact grid mapping */
         #testimonial-quote {
-            left: auto !important;
+            left: 80% !important;
+            /* Center at 80% horizontal */
+            top: 10% !important;
+            /* Center at 10% vertical */
+            width: 20vw !important;
+            /* Span 70% to 90% (10% left and right of center) */
+            max-width: none !important;
+            right: auto !important;
             bottom: auto !important;
-            top: 5vh !important;
-            right: 2vw !important;
-            max-width: 40vw !important;
-            text-align: right !important;
+            transform: translate(-50%, -50%) !important;
+            /* Re-enable center-anchoring */
+            text-align: center !important;
+            /* Keep text centered within the 20% box */
             font-size: 1.8rem !important;
         }
 
