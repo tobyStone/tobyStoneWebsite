@@ -771,6 +771,13 @@ textarea {
         /* Elevate Video 2 wording above the explosion video mix-blend-mode (which uses z-index 30) */
         #overlay-v2 {
             z-index: 40 !important;
+            background-color: transparent !important;
+            /* Prevent black background from hiding video */
+        }
+
+        .v2-center-rect {
+            background-color: transparent !important;
+            /* Prevent central spacer from hiding video */
         }
     }
 
