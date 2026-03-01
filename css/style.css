@@ -689,9 +689,9 @@ textarea {
 
     /* --- Aspect-Ratio Dynamic Scaling (Ground Truth: Samsung < 0.5) --- */
 
-    /* Tier 1.5: Specific fix for viewports exactly matching the bleeding 414px tall devices */
-    /* Shrinks the testimonial text to 0.77x without hitting Samsung (360px) */
-    @media (min-width: 380px) and (max-width: 430px) and (max-aspect-ratio: 1/2) {
+    /* Tier 1.5: Specific fix for viewports exactly matching the bleeding 375px wide devices (iPhone SE) */
+    /* Shrinks the testimonial text to 0.77x without hitting XR (414px) or wider phones */
+    @media (max-width: 385px) and (orientation: portrait) {
         #testimonial-quote {
             font-size: clamp(1.1rem, 3.77vw, 1.88rem) !important;
         }
