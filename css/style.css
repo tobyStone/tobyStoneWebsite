@@ -703,6 +703,11 @@ textarea {
         #contact-links {
             bottom: 40px !important;
         }
+
+        /* Scale down testimonial text to 0.77x of its base size to fit narrower viewport */
+        #testimonial-quote {
+            font-size: clamp(1.1rem, 3.77vw, 1.88rem) !important;
+        }
     }
 
     /* Tier 3: Tablets (e.g., Kindle Fire), min-aspect-ratio 55/100 */
