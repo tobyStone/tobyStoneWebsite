@@ -713,8 +713,8 @@ textarea {
         }
     }
 
-    /* Tier 3: Tablets (e.g., Kindle Fire), min-aspect-ratio 55/100 */
-    @media (min-aspect-ratio: 55/100) {
+    /* Tier 3: Tablets (e.g., Kindle Fire), min-aspect-ratio 55/100 and physical width */
+    @media (min-aspect-ratio: 55/100) and (min-width: 500px) {
         #contact-header {
             bottom: calc(155px - 2vh) !important;
         }
