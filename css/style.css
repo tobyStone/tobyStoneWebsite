@@ -718,14 +718,17 @@ textarea {
     @media (min-aspect-ratio: 55/100) and (min-width: 500px) {
         #contact-header {
             bottom: calc(155px + 2vh) !important;
+            /* +4vh from previous -2vh */
         }
 
         #contact-tagline {
-            bottom: calc(105px + 6vh) !important;
+            bottom: calc(105px + 2vh) !important;
+            /* Reverted to original */
         }
 
         #contact-links {
-            bottom: calc(50px + 4vh) !important;
+            bottom: 50px !important;
+            /* Reverted to original */
         }
 
         /* Optional Scaling for tighter vertical space */
