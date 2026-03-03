@@ -430,8 +430,9 @@ textarea {
     transition: opacity 1s ease-in-out;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Mobile Responsiveness & Portrait Devices (including wide Tablets/Foldables) */
+@media (max-width: 768px),
+(orientation: portrait) {
     /* ... existing styles ... */
 
     /* Skip Intro: Top Right */
