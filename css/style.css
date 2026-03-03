@@ -431,7 +431,7 @@ textarea {
 }
 
 /* Mobile Responsiveness & Portrait Devices (including wide Tablets/Foldables) */
-@media (max-width: 768px),
+@media (max-width: 768px) and (orientation: portrait),
 (orientation: portrait) {
     /* ... existing styles ... */
 

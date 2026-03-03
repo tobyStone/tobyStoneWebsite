@@ -581,7 +581,7 @@ function startVideo3(skipped = false) {
 
     // 1s Pow -> 0.8s transition handled in CSS
     // v1.49: Delay by 200ms in portrait (1423 -> 1623, 2700 -> 2900)
-    const isMobileVal = window.matchMedia('(max-width: 768px)').matches;
+    const isMobileVal = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
     const powTimeout = isMobileVal ? 1623 : 1423;
     const wowTimeout = isMobileVal ? 2900 : 2700;
     timeoutManager.setTimeout(() => {
@@ -589,7 +589,7 @@ function startVideo3(skipped = false) {
         pow.classList.remove('hidden');
 
         // Drift Targets
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const isMobile = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
 
         // Pow Left:
         // Desktop: 39%
@@ -614,7 +614,7 @@ function startVideo3(skipped = false) {
             wow.classList.remove('hidden');
 
             // Drift Targets
-            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+            const isMobile = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
 
             // Wow Left:
             // Desktop: 63%
@@ -945,7 +945,7 @@ function skipIntro() {
     wordLets.classList.remove('hidden');
     wordLets.style.transition = 'none';
 
-    const isMobileVal = window.matchMedia('(max-width: 768px)').matches;
+    const isMobileVal = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
 
     // 'Pow'
     const pow = document.getElementById('word-pow');
