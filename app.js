@@ -35,7 +35,8 @@ const LayoutConfig = {
     MOBILE_BREAKPOINT: 768,
 
     get current() {
-        return window.innerWidth <= this.MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
+        const isPortrait = window.innerHeight > window.innerWidth;
+        return (window.innerWidth <= this.MOBILE_BREAKPOINT || isPortrait) ? 'mobile' : 'desktop';
     },
 
     mobile: {
