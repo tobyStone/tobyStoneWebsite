@@ -714,18 +714,18 @@ textarea {
         }
     }
 
-    /* Tier 3: Tablets (e.g., Kindle Fire), min-aspect-ratio 55/100 and physical width */
+    /* Tier 3: Tablets (e.g., Kindle Fire, Foldables), min-aspect-ratio 55/100 and physical width */
     @media (min-aspect-ratio: 55/100) and (min-width: 500px) {
         #contact-header {
-            bottom: calc(155px - 2vh) !important;
+            bottom: calc(155px + 2vh) !important;
         }
 
         #contact-tagline {
-            bottom: calc(105px + 2vh) !important;
+            bottom: calc(105px + 6vh) !important;
         }
 
         #contact-links {
-            bottom: 50px !important;
+            bottom: calc(50px + 4vh) !important;
         }
 
         /* Optional Scaling for tighter vertical space */
