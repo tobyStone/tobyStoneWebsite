@@ -939,3 +939,75 @@ textarea {
         /* Increased 1.17x of clamp(0.44rem, 1.47vw, 0.735rem) */
     }
 }
+
+/* Fix for short landscape viewports (e.g. iPhone SE, Galaxy Fold) to prevent element overlapping and cut-offs */
+@media (max-height: 420px) and (orientation: landscape) {
+
+    /* Scale down the big comic words based on height (vh) rather than width (vw) so they don't cover the face */
+    #word-lets,
+    #word-pow,
+    #word-wow {
+        width: auto !important;
+        max-width: 45vh !important;
+    }
+
+    #word-lets {
+        top: 15% !important;
+    }
+
+    #word-pow {
+        left: 20% !important;
+        /* Move left */
+        top: 65% !important;
+    }
+
+    #word-wow {
+        left: 80% !important;
+        /* Move right */
+        top: 65% !important;
+    }
+
+    /* Fix Contact elements positioning to prevent stacking overlap */
+    #contact-header,
+    .v3-mode #contact-header {
+        top: 20% !important;
+        transform: scale(0.65) !important;
+        transform-origin: right top !important;
+        right: 4% !important;
+        left: auto !important;
+    }
+
+    #contact-tagline,
+    .v3-mode #contact-tagline {
+        top: 45% !important;
+        transform: scale(0.65) !important;
+        transform-origin: right center !important;
+        white-space: nowrap !important;
+        right: 4% !important;
+        left: auto !important;
+    }
+
+    /* Transform contact stack into a horizontal row anchored slightly lower */
+    #contact-links,
+    .v3-mode #contact-links {
+        top: auto !important;
+        bottom: 15px !important;
+        left: auto !important;
+        right: 4% !important;
+        flex-direction: row !important;
+        gap: 15px !important;
+        transform: scale(0.65) !important;
+        transform-origin: right bottom !important;
+        width: auto !important;
+    }
+
+    /* Allow scrolling main app container if things still overflow */
+    body,
+    html,
+    #app,
+    #video-wrapper {
+        min-height: 100vh;
+        overflow-y: auto !important;
+        overflow-x: hidden;
+    }
+}
