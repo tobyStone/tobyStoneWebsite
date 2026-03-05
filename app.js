@@ -616,7 +616,7 @@ function startVideo3(skipped = false) {
         // Pow Left:
         let targetLeft = '39%'; // Desktop
         if (isMobilePortrait) targetLeft = '16%';
-        else if (isMobileLandscape) targetLeft = '20%';
+        else if (isMobileLandscape) targetLeft = '35%';
 
         // Drift left/right AND Rotate -31deg
         // v1.45: Raise transition end point by 5% (69% -> 64%)
@@ -644,7 +644,7 @@ function startVideo3(skipped = false) {
             // Wow Left:
             let targetLeft = '63%'; // Desktop
             if (isMobilePortrait) targetLeft = '84%';
-            else if (isMobileLandscape) targetLeft = '80%';
+            else if (isMobileLandscape) targetLeft = '65%';
 
             // Drift right/left AND Rotate 37deg
             // v1.45: Raise transition end point by 5% (72% -> 67%)
@@ -982,7 +982,7 @@ function skipIntro() {
 
     let powLeft = '39%'; // Desktop
     if (isMobilePortrait) powLeft = '16%';
-    else if (isMobileLandscape) powLeft = '20%';
+    else if (isMobileLandscape) powLeft = '35%';
     pow.style.left = powLeft;
 
     if (isMobilePortrait) pow.style.top = '64%';
@@ -997,7 +997,7 @@ function skipIntro() {
 
     let wowLeft = '63%'; // Desktop
     if (isMobilePortrait) wowLeft = '84%';
-    else if (isMobileLandscape) wowLeft = '80%';
+    else if (isMobileLandscape) wowLeft = '65%';
     wow.style.left = wowLeft;
 
     if (isMobilePortrait) wow.style.top = '67%';
