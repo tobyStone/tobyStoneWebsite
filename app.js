@@ -610,19 +610,22 @@ function startVideo3(skipped = false) {
         pow.classList.remove('hidden');
 
         // Drift Targets
-        const isMobile = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+        const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+        const isMobileLandscape = window.matchMedia('(max-height: 420px) and (orientation: landscape)').matches;
 
         // Pow Left:
-        // Desktop: 39%
-        // Mobile: 16% (v1.48 requested: move back in by 2% -> 16%)
-        const targetLeft = isMobile ? '16%' : '39%';
+        let targetLeft = '39%'; // Desktop
+        if (isMobilePortrait) targetLeft = '16%';
+        else if (isMobileLandscape) targetLeft = '20%';
 
         // Drift left/right AND Rotate -31deg
         // v1.45: Raise transition end point by 5% (69% -> 64%)
         timeoutManager.setTimeout(() => {
             pow.style.left = targetLeft;
-            if (isMobile) {
+            if (isMobilePortrait) {
                 pow.style.top = '64%'; // Drift down from 62% to 64% (v1.44 was 69%)
+            } else if (isMobileLandscape) {
+                pow.style.top = '75%';
             }
             pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
         }, 50);
@@ -635,19 +638,22 @@ function startVideo3(skipped = false) {
             wow.classList.remove('hidden');
 
             // Drift Targets
-            const isMobile = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+            const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+            const isMobileLandscape = window.matchMedia('(max-height: 420px) and (orientation: landscape)').matches;
 
             // Wow Left:
-            // Desktop: 63%
-            // Mobile: 84% (v1.48 requested: move back in by 2% -> 84%)
-            const targetLeft = isMobile ? '84%' : '63%';
+            let targetLeft = '63%'; // Desktop
+            if (isMobilePortrait) targetLeft = '84%';
+            else if (isMobileLandscape) targetLeft = '80%';
 
             // Drift right/left AND Rotate 37deg
             // v1.45: Raise transition end point by 5% (72% -> 67%)
             timeoutManager.setTimeout(() => {
                 wow.style.left = targetLeft;
-                if (isMobile) {
+                if (isMobilePortrait) {
                     wow.style.top = '67%'; // Drift down from 65% to 67% (v1.44 was 72%)
+                } else if (isMobileLandscape) {
+                    wow.style.top = '75%';
                 }
                 wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
             }, 50);
@@ -966,22 +972,37 @@ function skipIntro() {
     wordLets.classList.remove('hidden');
     wordLets.style.transition = 'none';
 
-    const isMobileVal = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+    const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+    const isMobileLandscape = window.matchMedia('(max-height: 420px) and (orientation: landscape)').matches;
 
     // 'Pow'
     const pow = document.getElementById('word-pow');
     pow.classList.remove('hidden');
     pow.style.transition = 'none';
-    pow.style.left = isMobileVal ? '16%' : '39%';
-    if (isMobileVal) pow.style.top = '64%';
+
+    let powLeft = '39%'; // Desktop
+    if (isMobilePortrait) powLeft = '16%';
+    else if (isMobileLandscape) powLeft = '20%';
+    pow.style.left = powLeft;
+
+    if (isMobilePortrait) pow.style.top = '64%';
+    else if (isMobileLandscape) pow.style.top = '75%';
+
     pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
 
     // 'Wow'
     const wow = document.getElementById('word-wow');
     wow.classList.remove('hidden');
     wow.style.transition = 'none';
-    wow.style.left = isMobileVal ? '84%' : '63%';
-    if (isMobileVal) wow.style.top = '67%';
+
+    let wowLeft = '63%'; // Desktop
+    if (isMobilePortrait) wowLeft = '84%';
+    else if (isMobileLandscape) wowLeft = '80%';
+    wow.style.left = wowLeft;
+
+    if (isMobilePortrait) wow.style.top = '67%';
+    else if (isMobileLandscape) wow.style.top = '75%';
+
     wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
 
     // Contact Links

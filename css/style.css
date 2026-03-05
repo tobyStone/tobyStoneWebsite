@@ -956,15 +956,11 @@ textarea {
     }
 
     #word-pow {
-        left: 20% !important;
-        /* Move left */
-        top: 65% !important;
+        top: 75% !important;
     }
 
     #word-wow {
-        left: 80% !important;
-        /* Move right */
-        top: 65% !important;
+        top: 75% !important;
     }
 
     /* Fix Contact elements positioning to prevent stacking overlap */
