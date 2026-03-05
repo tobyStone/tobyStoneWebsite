@@ -179,6 +179,7 @@ async function init() {
 let v1StartTime;
 
 function startVideo1() {
+    document.body.classList.add('v1-mode');
     overlayV1.classList.remove('hidden');
 
     // User requested audio starts 'off'
@@ -287,6 +288,7 @@ function stopVideo1() {
     // if (!video.muted) { ... }
 
     video.pause();
+    document.body.classList.remove('v1-mode');
     overlayV1.classList.add('hidden');
     overlayV1.innerHTML = ''; // Clear all text elements immediately
     startVideo2Setup();

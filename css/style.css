@@ -1008,4 +1008,12 @@ textarea {
         overflow-y: auto !important;
         overflow-x: hidden;
     }
+
+    /* V1 Mode specific offsets for the first video in short landscape */
+    .v1-mode #skip-intro-btn {
+        top: 20px !important;
+        left: 20px !important;
+        bottom: auto !important;
+        right: auto !important;
+    }
 }
