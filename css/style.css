@@ -966,20 +966,22 @@ textarea {
     /* Fix Contact elements positioning to prevent stacking overlap */
     #contact-header,
     .v3-mode #contact-header {
-        top: 20% !important;
+        top: auto !important;
+        bottom: 85px !important;
         transform: scale(0.65) !important;
-        transform-origin: right top !important;
-        right: 4% !important;
+        transform-origin: center bottom !important;
+        right: 18.5% !important;
         left: auto !important;
     }
 
     #contact-tagline,
     .v3-mode #contact-tagline {
-        top: 45% !important;
+        top: auto !important;
+        bottom: 60px !important;
         transform: scale(0.65) !important;
-        transform-origin: right center !important;
+        transform-origin: center bottom !important;
         white-space: nowrap !important;
-        right: 4% !important;
+        right: 18.5% !important;
         left: auto !important;
     }
 
