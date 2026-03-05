@@ -969,8 +969,8 @@ textarea {
         top: auto !important;
         bottom: 85px !important;
         transform: scale(0.65) !important;
-        transform-origin: center bottom !important;
-        right: 18.5% !important;
+        transform-origin: right bottom !important;
+        right: 4% !important;
         left: auto !important;
     }
 
@@ -979,9 +979,9 @@ textarea {
         top: auto !important;
         bottom: 60px !important;
         transform: scale(0.65) !important;
-        transform-origin: center bottom !important;
+        transform-origin: right bottom !important;
         white-space: nowrap !important;
-        right: 18.5% !important;
+        right: 4% !important;
         left: auto !important;
     }
 
