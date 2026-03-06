@@ -972,8 +972,8 @@ textarea {
     }
 }
 
-/* Fix for short landscape viewports (e.g. iPhone SE, Galaxy Fold) to prevent element overlapping and cut-offs */
-@media (max-height: 420px) and (orientation: landscape) {
+/* Fix for short landscape viewports (e.g. iPad Minis with tabs, iPhone SE, Galaxy Fold) to prevent element overlapping and cut-offs */
+@media (max-height: 550px) and (orientation: landscape) {
 
     /* Scale down the big comic words based on height (vh) rather than width (vw) so they don't cover the face */
     #word-lets,

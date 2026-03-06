@@ -36,7 +36,7 @@ const LayoutConfig = {
 
     get current() {
         const isPortrait = window.innerHeight > window.innerWidth;
-        if (!isPortrait && window.innerHeight <= 420) {
+        if (!isPortrait && window.innerHeight <= 550) {
             return 'mobileLandscape';
         }
         return (window.innerWidth <= this.MOBILE_BREAKPOINT || isPortrait) ? 'mobile' : 'desktop';
@@ -956,7 +956,7 @@ function skipIntro() {
     wordLets.style.transition = 'none';
 
     const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
-    const isMobileLandscape = window.matchMedia('(max-height: 420px) and (orientation: landscape)').matches;
+    const isMobileLandscape = window.matchMedia('(max-height: 550px) and (orientation: landscape)').matches;
 
     // 'Pow'
     const pow = document.getElementById('word-pow');
