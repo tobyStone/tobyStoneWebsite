@@ -48,6 +48,14 @@ html {
     display: block;
 }
 
+/* Global V3/V4 Unmute position to prevent overlapping right-side UI */
+.v3-mode #unmute-btn,
+.v4-mode #unmute-btn {
+    right: auto !important;
+    left: 20px !important;
+    top: 20px !important;
+}
+
 #video-wrapper {
     position: relative;
     width: 100vw;
@@ -846,8 +854,9 @@ textarea {
 
 
 
-/* Mobile Landscape Tweaks */
-@media (max-width: 900px) and (orientation: landscape) {
+/* Mobile & Tablet Landscape Tweaks (Catches large phones and tablets) */
+@media (max-width: 1200px) and (orientation: landscape),
+(max-height: 550px) and (orientation: landscape) {
 
     /* 1. Unmute Button: Move 1% Right, 1% Up from previous (Total: 6% Right, 4% Up) */
     #unmute-btn {
@@ -880,14 +889,6 @@ textarea {
     #word-wow.drift-active {
         left: 65%;
         top: 75%;
-    }
-
-    /* 1. Unmute Button: Top Left */
-    /* Target via body class .v3-mode */
-    .v3-mode #unmute-btn {
-        right: auto;
-        left: 20px;
-        top: 20px;
     }
 
     /* 2. Testimonial Text & Contact Image: 0.77x of current size */

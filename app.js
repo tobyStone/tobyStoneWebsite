@@ -486,7 +486,7 @@ function startVideo3(skipped = false) {
     audioPool.forEach(a => a.muted = state.isMuted);
 
     // Check for Mobile Landscape to add delay offset
-    const isMobileLandscape = window.matchMedia('(max-width: 900px) and (orientation: landscape)').matches;
+    const isMobileLandscape = window.matchMedia('(max-width: 1200px) and (orientation: landscape)').matches || window.matchMedia('(max-height: 550px) and (orientation: landscape)').matches;
     const delayOffset = isMobileLandscape ? 1000 : 0; // 1000ms delay if mobile landscape (600 + 400)
 
     // Start at 75% for initial play (as per previous request), or 63% (last 37%)? 
