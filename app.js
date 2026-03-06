@@ -93,15 +93,27 @@ const LayoutConfig = {
 };
 
 // --- Reflow Contract ---
-function handleResize() {
+function recalculateLayout() {
     const config = LayoutConfig[LayoutConfig.current];
+    const isMobile = LayoutConfig.current === 'mobile';
 
-    // Update Contact Links if visible
-    if (!contactLinks.classList.contains('hidden')) {
-        contactLinks.style.left = config.contactLinksLeft;
+    if (state.step === 2) {
+        const staticScale = config.staticVideoScale || 1.0;
+        video.style.transform = `scale(${staticScale})`;
+    } else if (state.step >= 3) {
+        const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
+        const xShift = isMobile ? '-3vw' : '0';
+        video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
     }
 }
+
+let resizeTimeout;
+function handleResize() {
+    timeoutManager.clearTimeout(resizeTimeout);
+    resizeTimeout = timeoutManager.setTimeout(recalculateLayout, 150);
+}
 window.addEventListener('resize', handleResize);
+window.addEventListener('orientationchange', handleResize);
 
 // --- Timeout Manager ---
 const timeoutManager = {
@@ -179,6 +191,7 @@ async function init() {
 let v1StartTime;
 
 function startVideo1() {
+    state.step = 1;
     document.body.classList.add('v1-mode');
     overlayV1.classList.remove('hidden');
 
@@ -295,6 +308,7 @@ function stopVideo1() {
 }
 
 function startVideo2Setup() {
+    state.step = 2;
     video.src = videos.v2;
     const staticScale = LayoutConfig[LayoutConfig.current].staticVideoScale || 1.0;
     video.style.transform = `scale(${staticScale})`;
@@ -404,6 +418,7 @@ function startVideo2Setup() {
 }
 
 function startVideo3(skipped = false) {
+    state.step = 3;
     console.log("Starting Video 3 (Skipped: " + skipped + ")");
     // V3 Mobile Landscape Mode - apply unconditionally to ensure state matches skipIntro
     // CSS media queries will restrict the actual visual changes to landscape/mobile.
@@ -611,25 +626,9 @@ function startVideo3(skipped = false) {
         const pow = document.getElementById('word-pow');
         pow.classList.remove('hidden');
 
-        // Drift Targets
-        const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
-        const isMobileLandscape = window.matchMedia('(max-height: 420px) and (orientation: landscape)').matches;
-
-        // Pow Left:
-        let targetLeft = '39%'; // Desktop
-        if (isMobilePortrait) targetLeft = '16%';
-        else if (isMobileLandscape) targetLeft = '35%';
-
-        // Drift left/right AND Rotate -31deg
-        // v1.45: Raise transition end point by 5% (69% -> 64%)
+        // Trigger CSS-driven drift
         timeoutManager.setTimeout(() => {
-            pow.style.left = targetLeft;
-            if (isMobilePortrait) {
-                pow.style.top = '64%'; // Drift down from 62% to 64% (v1.44 was 69%)
-            } else if (isMobileLandscape) {
-                pow.style.top = '75%';
-            }
-            pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
+            pow.classList.add('drift-active');
         }, 50);
     }, powTimeout + delayOffset);
 
@@ -639,25 +638,9 @@ function startVideo3(skipped = false) {
         if (wow) {
             wow.classList.remove('hidden');
 
-            // Drift Targets
-            const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
-            const isMobileLandscape = window.matchMedia('(max-height: 420px) and (orientation: landscape)').matches;
-
-            // Wow Left:
-            let targetLeft = '63%'; // Desktop
-            if (isMobilePortrait) targetLeft = '84%';
-            else if (isMobileLandscape) targetLeft = '65%';
-
-            // Drift right/left AND Rotate 37deg
-            // v1.45: Raise transition end point by 5% (72% -> 67%)
+            // Trigger CSS-driven drift
             timeoutManager.setTimeout(() => {
-                wow.style.left = targetLeft;
-                if (isMobilePortrait) {
-                    wow.style.top = '67%'; // Drift down from 65% to 67% (v1.44 was 72%)
-                } else if (isMobileLandscape) {
-                    wow.style.top = '75%';
-                }
-                wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+                wow.classList.add('drift-active');
             }, 50);
         }
     }, wowTimeout + delayOffset);
@@ -685,9 +668,6 @@ function startVideo3(skipped = false) {
             tagline.classList.remove('hidden');
             tagline.style.opacity = '1';
         }
-        if (contactLinks) {
-            contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
-        }
 
         // Start Testimonials after contacts appear
         startTestimonials(delayOffset);
@@ -695,6 +675,7 @@ function startVideo3(skipped = false) {
 }
 
 function startTestimonials(delayOffset = 0) {
+    state.step = 4;
     document.body.classList.add('v4-mode');
     overlayV4.classList.remove('hidden');
     overlayV4.style.pointerEvents = 'none';

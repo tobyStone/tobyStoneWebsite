@@ -52,6 +52,7 @@ html {
     position: relative;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -177,6 +178,17 @@ html {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 25vw;
+}
+
+/* Drift Targets for Video 3 Words */
+#word-pow.drift-active {
+    left: 39%;
+    transform: translate(-50%, -50%) rotate(-31deg);
+}
+
+#word-wow.drift-active {
+    left: 63%;
+    transform: translate(-50%, -50%) rotate(37deg);
 }
 
 /* Contact Links */
@@ -613,11 +625,21 @@ textarea {
         left: 55%;
     }
 
+    #word-pow.drift-active {
+        left: 16%;
+        top: 64%;
+    }
+
     /* "Wow": Move Left 7%, Down 3% (from 52%, 62%) -> (45%, 65%) */
     #word-wow {
         top: 65%;
         width: 44.25vw;
         left: 45%;
+    }
+
+    #word-wow.drift-active {
+        left: 84%;
+        top: 67%;
     }
 }
 
@@ -850,6 +872,16 @@ textarea {
 
     /* Video 3 Landscape Overrides */
 
+    #word-pow.drift-active {
+        left: 35%;
+        top: 75%;
+    }
+
+    #word-wow.drift-active {
+        left: 65%;
+        top: 75%;
+    }
+
     /* 1. Unmute Button: Top Left */
     /* Target via body class .v3-mode */
     .v3-mode #unmute-btn {
@@ -959,7 +991,15 @@ textarea {
         top: 75% !important;
     }
 
+    #word-pow.drift-active {
+        top: 75% !important;
+    }
+
     #word-wow {
+        top: 75% !important;
+    }
+
+    #word-wow.drift-active {
         top: 75% !important;
     }
 
