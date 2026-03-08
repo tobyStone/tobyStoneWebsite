@@ -292,6 +292,9 @@ export function startVideo3(skipped = false) {
     }, wowTimeout + delayOffset);
 
     timeoutManager.setTimeout(() => {
+        const skipBtn = document.getElementById('skip-intro-btn');
+        if (skipBtn) skipBtn.classList.add('hidden');
+
         const contactLinks = document.getElementById('contact-links');
         if (contactLinks) {
             contactLinks.classList.remove('hidden');
