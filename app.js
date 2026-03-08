@@ -1,1018 +1,190 @@
+import { state, videos, LayoutConfig } from './modules/state.js';
+import { timeoutManager } from './modules/utils.js';
+import { initLayout } from './modules/layout.js';
+import { audioPool, toggleMuteState } from './modules/audioController.js';
+import { startVideo1, v1AnimationId, v2TimeUpdateHandler, clearVideoAnimationHandlers } from './modules/videoController.js';
+import { startTestimonials } from './modules/testimonials.js';
+import { initContactForm } from './modules/contactForm.js';
 
-// State
-const state = {
-    step: 1,
-    isMuted: true
-};
-
-// DOM Elements
 const video = document.getElementById('main-video');
-const overlayV1 = document.getElementById('overlay-v1');
-const overlayV2 = document.getElementById('overlay-v2');
-const overlayV3 = document.getElementById('overlay-v3');
-const overlayV4 = document.getElementById('overlay-v4');
-const contactLinks = document.getElementById('contact-links');
-
-// Assets
-const videos = {
-    v1: '/videos/With_background_noise_202602021518.mp4',
-    v2: '/videos/_the_stepbystep_1080p_202602011636.mp4',
-    v3: '/videos/Instruction_open_and_202602041218_mbxwm.mp4'
-};
-
-const music = '/music/musicfx-dj-1770309373761.wav';
-const audioPool = [new Audio(music), new Audio(music)];
-let activeAudioIndex = 0;
-const bgAudio = () => audioPool[activeAudioIndex];
-const standbyAudio = () => audioPool[1 - activeAudioIndex];
-
-// Config
-const V1_DURATION = 5713; // Adjusted for 1.225x speed (7000 / 1.225)
-
-// --- Layout Configuration ---
-const LayoutConfig = {
-    MOBILE_BREAKPOINT: 768,
-
-    get current() {
-        const isPortrait = window.innerHeight > window.innerWidth;
-        if (!isPortrait && window.innerHeight <= 550) {
-            return 'mobileLandscape';
-        }
-        return (window.innerWidth <= this.MOBILE_BREAKPOINT || isPortrait) ? 'mobile' : 'desktop';
-    },
-
-    mobileLandscape: {
-        videoScaleMultiplier: 1.0,
-        staticVideoScale: 1.0,
-        v3VideoScale: 1.0,
-        contactLinksLeft: '84%',
-        wordRing: [
-            { text: 'From', img: 'From.png', time: 500, pos: { top: '19.7%', left: '32.5%' } },
-            { text: 'the', img: 'The.png', time: 975, pos: { top: '15.5%', left: '56.1%' } },
-            { text: 'seed', img: 'Seed.png', time: 1450, pos: { top: '27.5%', left: '76.8%' } },
-            { text: 'of', img: 'Of.png', time: 1925, pos: { top: '50%', left: '85%' } },
-            { text: 'a', img: 'A.png', time: 2400, pos: { top: '72.5%', left: '76.8%' } },
-            { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
-            { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
-            { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
-            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '59%', left: '50%' } }
-        ]
-    },
-
-    mobile: {
-        videoScaleMultiplier: 2.5,
-        staticVideoScale: 1.5, // Reverted to 1.5 for V2
-        v3VideoScale: 2.204, // 2.655 * 0.83 = 2.204
-        contactLinksLeft: '50%',
-        wordRing: [
-            { text: 'From', img: 'From.png', time: 500, pos: { top: '29%', left: '30%' } },
-            { text: 'the', img: 'The.png', time: 1260, pos: { top: '29%', left: '70%' } },
-            { text: 'seed', img: 'Seed.png', time: 2020, pos: { top: '45%', left: '85%' } },
-            { text: 'of', img: 'Of.png', time: 2780, pos: { top: '70%', left: '70%' } },
-            { text: 'an', img: 'An.png', time: 3540, pos: { top: '70%', left: '30%' } },
-            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '56%', left: '50%' } }
-        ]
-    },
-
-    desktop: {
-        videoScaleMultiplier: 1.0,
-        contactLinksLeft: '84%',
-        wordRing: [
-            { text: 'From', img: 'From.png', time: 500, pos: { top: '19.7%', left: '32.5%' } },
-            { text: 'the', img: 'The.png', time: 975, pos: { top: '15.5%', left: '56.1%' } },
-            { text: 'seed', img: 'Seed.png', time: 1450, pos: { top: '27.5%', left: '76.8%' } },
-            { text: 'of', img: 'Of.png', time: 1925, pos: { top: '50%', left: '85%' } },
-            { text: 'a', img: 'A.png', time: 2400, pos: { top: '72.5%', left: '76.8%' } },
-            { text: 'bean', img: 'Bean.png', time: 2875, pos: { top: '84.5%', left: '56.1%' } },
-            { text: 'of', img: 'Of.png', time: 3350, pos: { top: '80.3%', left: '32.5%' } },
-            { text: 'an', img: 'An.png', time: 3825, pos: { top: '62%', left: '17.1%' } },
-            { text: 'idea', img: 'Idea.png', time: 4300, pos: { top: '59%', left: '50%' } }
-        ]
-    }
-};
-
-// --- Reflow Contract ---
-function recalculateLayout() {
-    const config = LayoutConfig[LayoutConfig.current];
-    const isMobile = LayoutConfig.current === 'mobile';
-
-    if (state.step === 2) {
-        const staticScale = config.staticVideoScale || 1.0;
-        video.style.transform = `scale(${staticScale})`;
-    } else if (state.step >= 3) {
-        const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
-        const xShift = isMobile ? '-3vw' : '0';
-        video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
-    }
-}
-
-let resizeTimeout;
-function handleResize() {
-    timeoutManager.clearTimeout(resizeTimeout);
-    resizeTimeout = timeoutManager.setTimeout(recalculateLayout, 150);
-}
-window.addEventListener('resize', handleResize);
-window.addEventListener('orientationchange', handleResize);
-
-// --- Timeout Manager ---
-const timeoutManager = {
-    timeouts: [],
-    intervals: [],
-
-    setTimeout: function (cb, delay) {
-        const id = setTimeout(() => {
-            cb();
-            this.clearTimeout(id); // Cleanup after execution
-        }, delay);
-        this.timeouts.push(id);
-        return id;
-    },
-
-    clearTimeout: function (id) {
-        clearTimeout(id);
-        this.timeouts = this.timeouts.filter(t => t !== id);
-    },
-
-    setInterval: function (cb, delay) {
-        const id = setInterval(cb, delay);
-        this.intervals.push(id);
-        return id;
-    },
-
-    clearInterval: function (id) {
-        clearInterval(id);
-        this.intervals = this.intervals.filter(i => i !== id);
-    },
-
-    clearAll: function () {
-        this.timeouts.forEach(id => clearTimeout(id));
-        this.timeouts = [];
-        this.intervals.forEach(id => clearInterval(id));
-        this.intervals = [];
-    }
-};
-
-// --- Animation Frame Manager ---
-let v1AnimationId = null; // Track requestAnimationFrame for V1
-let v2TimeUpdateHandler = null; // Track V2 listener for lookup/removal
-
-// --- Initialization ---
 const unmuteBtn = document.getElementById('unmute-btn');
 const skipIntroBtn = document.getElementById('skip-intro-btn');
 
 async function init() {
-    console.log('Initializing... Version: Contact Transition Update 1.52 (Refinements)');
-    // Setup Video 1
-    video.src = videos.v1;
-    video.muted = false; // Try sound first
-    // User requested: increase speed by another 7%. 1.145 * 1.07 = ~1.225
-    video.playbackRate = 1.225;
+    console.log('Initializing... Version: Contact Transition Update 1.52 (Refinements - Modular)');
 
-    video.onloadeddata = () => {
-        // Bugfix: Ensure this only runs once so V1 setup doesn't re-trigger for V2/V3
-        video.onloadeddata = null;
-        startVideo1();
+    initLayout();
+    initContactForm();
 
-        // Start pre-loading Video 3 in the background
-        const preloadV3 = document.createElement('video');
-        preloadV3.src = videos.v3;
-        preloadV3.preload = 'auto';
-    };
+    if (video) {
+        video.src = videos.v1;
+        video.muted = false;
+        video.playbackRate = 1.225;
 
-    skipIntroBtn.addEventListener('click', () => {
-        // Skip Intro Logic
-        skipIntro();
-    });
-}
+        video.onloadeddata = () => {
+            video.onloadeddata = null;
+            startVideo1();
 
-// --- Video 1 Logic ---
-let v1StartTime;
-
-function startVideo1() {
-    state.step = 1;
-    document.body.classList.add('v1-mode');
-    overlayV1.classList.remove('hidden');
-
-    // User requested audio starts 'off'
-    video.muted = true;
-    unmuteBtn.classList.remove('hidden');
-
-    unmuteBtn.onclick = () => {
-        state.isMuted = !state.isMuted;
-
-        // Update Video State
-        video.muted = state.isMuted;
-
-        // Update Pool State
-        audioPool.forEach(a => a.muted = state.isMuted);
-
-        // Update Icon
-        const btnImg = unmuteBtn.querySelector('img');
-        if (state.isMuted) {
-            btnImg.src = '/images/unmute.png';
-            btnImg.alt = 'Unmute';
-        } else {
-            btnImg.src = '/images/mute.png';
-            btnImg.alt = 'Mute';
-        }
-    };
-
-    video.play().then(() => {
-        // Play started
-        if (!v1StartTime) {
-            v1StartTime = Date.now();
-            v1AnimationId = requestAnimationFrame(animateV1);
-        }
-    }).catch(e => {
-        console.log("Autoplay failed even muted?", e);
-    });
-
-    // Words Sequence
-    const words = LayoutConfig[LayoutConfig.current].wordRing;
-
-    words.forEach(w => {
-        timeoutManager.setTimeout(() => {
-            const el = document.createElement('img');
-            el.src = `/images/${w.img}`;
-            el.className = 'v1-word';
-            el.onerror = () => { el.style.display = 'none'; };
-            Object.assign(el.style, w.pos);
-            // Center all words for precise clock positioning
-            el.style.transform = 'translate(-50%, -50%)';
-            overlayV1.appendChild(el);
-        }, w.time);
-    });
-
-    // Optimize: Pre-load Video 2 in the background halfway through Video 1
-    // (V1_DURATION is 5713, so halfway is ~2856ms)
-    timeoutManager.setTimeout(() => {
-        const preloadV2 = document.createElement('video');
-        preloadV2.src = videos.v2;
-        preloadV2.preload = 'auto';
-    }, V1_DURATION / 2);
-}
-
-function animateV1() {
-    const now = Date.now();
-    const elapsed = now - v1StartTime;
-
-    if (elapsed >= V1_DURATION) {
-        stopVideo1();
-        return;
-    }
-
-    // "indication: 1st 800ms enlarge to 1.3... 2nd 800ms shrink to 0.8... 3rd 800ms enlarge to 1.5"
-    // We define keyframes relative to the Previous Step's End Scale.
-    // Step 0 (Start): 0.2
-
-    // Define the sequence of multiplicative factors
-    const factors = [1.3, 0.8, 1.5, 0.8, 1.7, 0.8, 1.9, 0.8, 2.1];
-    const stepDuration = 800;
-
-    // Determine current step index
-    const stepIndex = Math.floor(elapsed / stepDuration);
-    const stepProgress = (elapsed % stepDuration) / stepDuration; // 0.0 -> 1.0
-
-    // Calculate the Scale at the START of the current step
-    let startScale = 0.36; // Initial (1.5x of 0.24)
-    for (let i = 0; i < stepIndex; i++) {
-        if (i < factors.length) startScale *= factors[i];
-    }
-
-    // Calculate the Target Scale at the END of the current step
-    let targetScale = startScale;
-    if (stepIndex < factors.length) {
-        targetScale = startScale * factors[stepIndex];
-    }
-
-    // Interpolate Linear
-    const baseScale = startScale + (targetScale - startScale) * stepProgress;
-    const currentScale = baseScale * LayoutConfig[LayoutConfig.current].videoScaleMultiplier;
-
-    video.style.transform = `scale(${currentScale})`;
-
-    v1AnimationId = requestAnimationFrame(animateV1);
-}
-
-function stopVideo1() {
-    video.pause();
-    document.body.classList.remove('v1-mode');
-    overlayV1.classList.add('hidden');
-    overlayV1.innerHTML = ''; // Clear all text elements immediately
-    startVideo2Setup();
-}
-
-function startVideo2Setup() {
-    state.step = 2;
-    video.src = videos.v2;
-    const staticScale = LayoutConfig[LayoutConfig.current].staticVideoScale || 1.0;
-    video.style.transform = `scale(${staticScale})`;
-    video.currentTime = 0.3; // Start 300ms earlier (skip first 0.3s)
-    // video.muted = false; // REMOVED: Respect global mute state (default muted)
-
-    // Apply blend mode for "explosion over words" effect
-    video.style.zIndex = '30';
-    video.style.position = 'relative'; // Ensure z-index works
-    video.style.mixBlendMode = 'screen';
-
-    // Set initial playback rate to 1/3 speed
-    video.playbackRate = 0.333;
-
-    // Start Muted (Audio Delay)
-    video.muted = true;
-
-    // Show overlay immediately
-    overlayV2.classList.remove('hidden');
-    overlayV2.style.transition = 'opacity 0.5s ease-out';
-    overlayV2.style.opacity = '1';
-
-    video.play();
-
-    // Optimize: Pre-load Video 3 audio track into the pool now 
-    // so it's ready and buffered when Video 3 starts.
-    audioPool.forEach(a => {
-        a.src = videos.v2;
-        a.load(); // Force start loading
-        a.muted = state.isMuted;
-    });
-
-    // Fade out text starting at 3.5s + 377ms = 3877ms
-    timeoutManager.setTimeout(() => {
-        overlayV2.style.opacity = '0';
-    }, 3877);
-
-    // Switch to normal speed at 3.6s (1.2s of video content * 3)
-    timeoutManager.setTimeout(() => {
-        video.playbackRate = 1.0;
-
-        // Respect global mute state for Video 2
-        video.muted = state.isMuted;
-
-        // Ensure overlay is hidden after fade
-        timeoutManager.setTimeout(() => {
-            overlayV2.classList.add('hidden');
-        }, 3000); // Delayed to ensure text lingers as requested (377ms extra visible time logic)
-
-    }, 1900); // 1200ms pause + 700ms slow-mo = 1900ms
-
-    // User requested: Shorten second video by 300ms.
-    // We can do this by checking timeupdate or setting a timeout to end it early?
-    // video.onended fires naturally. To shorten, we need to manually stop/trigger onended.
-    // We don't know exact duration easily without metadata, but assuming we let it play until near end - 300ms.
-    // Or we can subtract 300ms from the end check if we were using timeupdate.
-    // Since we rely on onended for transition, let's use timeupdate to detect end - 0.3s.
-
-    const checkEndTime = () => {
-        if (video.duration && video.currentTime >= video.duration - 0.35) {
-            video.pause();
-            // Trigger transition manually
-            video.removeEventListener('timeupdate', checkEndTime);
-            v2TimeUpdateHandler = null; // Clear global ref
-
-            video.onended = null; // Prevent double firing
-            // Perform the "onended" logic here
-            // Cleanup V2 styles
-            video.style.zIndex = '';
-            video.style.mixBlendMode = '';
-            video.style.position = ''; // Reset position to default (static)
-            video.playbackRate = 1.0; // Reset for V3
-            overlayV2.classList.add('hidden');
-            overlayV2.style.opacity = ''; // Reset opacity
-            startVideo3();
-        }
-    };
-    v2TimeUpdateHandler = checkEndTime; // Store ref
-    video.addEventListener('timeupdate', checkEndTime);
-
-
-    // video.onended is now handled/overridden by the early exit check above.
-    // But keep a fallback just in case duration is short or update misses.
-    video.onended = () => {
-        video.removeEventListener('timeupdate', checkEndTime);
-        v2TimeUpdateHandler = null;
-
-        // Cleanup V2 styles
-        video.style.zIndex = '';
-        video.style.mixBlendMode = '';
-        video.style.position = ''; // Reset position
-        video.playbackRate = 1.0; // Reset for V3
-        overlayV2.classList.add('hidden');
-        overlayV2.style.opacity = ''; // Reset opacity
-        startVideo3();
-    };
-}
-
-function startVideo3(skipped = false) {
-    state.step = 3;
-    console.log("Starting Video 3 (Skipped: " + skipped + ")");
-    // V3 Mobile Landscape Mode - apply unconditionally to ensure state matches skipIntro
-    // CSS media queries will restrict the actual visual changes to landscape/mobile.
-    document.body.classList.add('v3-mode');
-
-    // Ensure Overlay V3 is ABOVE video
-    overlayV3.style.zIndex = '50';
-
-    video.src = videos.v3;
-    // Fix: Ensure V3 doesn't loop via recycled onended handler
-    video.onended = null;
-
-    // Helper to start playback and apply skip logic if needed
-    const runVideo = () => {
-        if (skipped) {
-            // Jump to end state. Do not play.
-            // Wow ends transition at 3.5s.
-            video.currentTime = 3.5;
-            video.pause(); // Ensure paused
-
-            // Show overlays immediately if skipped
-            overlayV3.classList.remove('hidden');
-            document.getElementById('word-lets').classList.remove('hidden');
-        } else {
-            video.play().then(() => {
-                // SYNC: Only show overlays once video actually starts playing
-                overlayV3.classList.remove('hidden');
-                document.getElementById('word-lets').classList.remove('hidden');
-            }).catch(e => console.log("Video 3 play failed", e));
-        }
-    };
-
-    // If source changed, we might need to wait for metadata to seek safely?
-    // Usually play() handles loading, but currentTime might need metadata.
-    if (video.readyState >= 1) {
-        runVideo();
-    } else {
-        video.onloadedmetadata = () => {
-            video.onloadedmetadata = null; // Cleanup
-            runVideo();
+            const preloadV3 = document.createElement('video');
+            preloadV3.src = videos.v3;
+            preloadV3.preload = 'auto';
         };
     }
 
-    // (Removed undefined finalScaleCheck block)
-
-    const config = LayoutConfig[LayoutConfig.current];
-    const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
-
-    video.muted = true; // Video itself is muted, using bgAudio
-    video.loop = false;
-
-    // Apply Scale AND Translation together
-    // Portrait (Mobile): 3% Left (-3vw). Landscape/Desktop: Center (0).
-    const isMobile = LayoutConfig.current === 'mobile';
-    const xShift = isMobile ? '-3vw' : '0';
-    video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
-    // User requested: video 3 speed increased to 1.2
-    video.playbackRate = 1.2;
-
-    // Sync with global mute state
-    audioPool.forEach(a => a.muted = state.isMuted);
-
-    // Check for Mobile Landscape to add delay offset
-    const isMobileLandscape = window.matchMedia('(max-width: 1200px) and (orientation: landscape)').matches || window.matchMedia('(max-height: 550px) and (orientation: landscape)').matches;
-    const delayOffset = isMobileLandscape ? 1000 : 0; // 1000ms delay if mobile landscape (600 + 400)
-
-    // Start at 75% for initial play (as per previous request), or 63% (last 37%)? 
-    // Previous: "loop the last 33%". New: "loop the last 27%".
-    // 1.0 - 0.27 = 0.73
-    const loopStartRatio = 0.73;
-
-    // Logic: Repeat short soundtrack (last 27%) twice.
-    // 1st time: volume 0.25 (as set before, "75% softer").
-    // 2nd time: volume 0.125 (50% of previous).
-
-    // We need a counter or state for loop count
-    let loopCount = 0;
-    const maxLoops = 3; // "one more time" -> Total 4 plays? Original: 3 plays. Now: 4 plays.
-    // "repeat ... twice" -> 3 plays.
-    // "loop ... one more time" -> 4 plays. 
-    // "repeat ... twice" implies play, repeat, repeat. Total 3.
-    // OR "play ... twice".
-    // "each time at 50% of the volume of the iteration before."
-    // 1: 0.25
-    // 2: 0.125
-    // 3: 0.0625
-
-    const playNextLoop = () => {
-        // Target volume for this iteration: starts at 0.25, then 0.125, 0.0625, etc.
-        const targetVolume = 0.25 * Math.pow(0.5, loopCount);
-
-        // Threshold to stop: stop when volume is extremely low (e.g., < 0.001)
-        if (targetVolume < 0.001) {
-            // All loops finished, hide the toggle button
-            unmuteBtn.classList.add('hidden');
-            return;
-        }
-
-        const current = bgAudio();
-        const next = standbyAudio();
-
-        // Prepare next audio
-        if (!isFinite(next.duration)) {
-            console.log("Next audio duration not finite, skipping this loop tick");
-            return;
-        }
-        next.currentTime = next.duration * loopStartRatio;
-        next.volume = 0;
-        next.muted = state.isMuted;
-
-        next.play().then(() => {
-            // Fade In `next` and Fade Out `current` simultaneously
-            const fadeSteps = 10;
-            const fadeInterval = 40; // Total 400ms fade
-            let step = 0;
-
-            const crossfade = timeoutManager.setInterval(() => {
-                step++;
-                const progress = step / fadeSteps;
-
-                // Fade in next (Skip fade-in for first loop to maintain volume consistency)
-                next.volume = loopCount === 0 ? targetVolume : progress * targetVolume;
-
-                // Fade out current (if it's already playing)
-                if (loopCount > 0) {
-                    const prevVolume = 0.25 * Math.pow(0.5, loopCount - 1);
-                    current.volume = (1 - progress) * prevVolume;
-                }
-
-                if (step >= fadeSteps) {
-                    timeoutManager.clearInterval(crossfade);
-                    if (loopCount > 0) {
-                        current.pause();
-                    }
-                    // Switch roles
-                    activeAudioIndex = 1 - activeAudioIndex;
-                }
-            }, fadeInterval);
-
-            // Schedule the NEXT loop to start at 73% point of THIS loop
-            const snippetDuration = next.duration * (1 - loopStartRatio);
-            if (!isFinite(snippetDuration)) return;
-            const fadeOutStartTime = snippetDuration * 0.47;
-
-            timeoutManager.setTimeout(() => {
-                loopCount++;
-                playNextLoop();
-            }, fadeOutStartTime * 1000);
-
-        }).catch(e => console.log("Audio play failed", e));
-    };
-
-    if (!skipped) {
-        let readyCount = 0;
-        const checkReady = () => {
-            readyCount++;
-            if (readyCount === 2) {
-                loopCount = 0;
-                playNextLoop();
-            }
-        };
-
-        audioPool.forEach(a => {
-            if (a.readyState >= 1 && isFinite(a.duration)) {
-                checkReady();
-            } else {
-                a.onloadedmetadata = checkReady;
-            }
-        });
-    } else {
-        audioPool.forEach(a => a.pause());
+    if (skipIntroBtn) {
+        skipIntroBtn.addEventListener('click', skipIntro);
     }
 
-    // "75% softer initially" -> 0.25 volume
-    // Initial play handled by playNextLoop logic or loadedmetadata above.
-    // If we call play() here blindly, we might duplicate or mess up the count.
-    // We already call playNextLoop() inside the checks.
-    // But we need to ensure it starts if metadata was ALREADY loaded.
-    // The "if (bgAudio.duration)" block above checks that. 
-    // We can remove the loose play() call and the volume set.
-
-    // Fade up to 0.7
-    // Fade logic requested: "reduce ... to 25% volume by the end"
-    // Since we start at 25% (0.25), and want to end at 25%, no fade needed?
-    // "75% softer initially" means 0.25 volume. 
-    // "reduce ... to 25% volume by the end" means end at 0.25 volume.
-    // Interpreting as: Start at 0.25 and stay there (or ensure it ends there).
-    // Removing the volume increase interval.
-
-    // If metadata wasn't loaded for currentTime calc:
-    // Removed onloadedmetadata duplications since we handled it above.
-
-    // SYNC: Reveal of overlayV3 and word-lets moved into runVideo() for consistency
-
-    // 1s Pow -> 0.8s transition handled in CSS
-    // v1.49: Delay by 200ms in portrait (1423 -> 1623, 2700 -> 2900)
-    const isMobileVal = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
-    const powTimeout = isMobileVal ? 1623 : 1423;
-    const wowTimeout = isMobileVal ? 2900 : 2700;
-    timeoutManager.setTimeout(() => {
-        const pow = document.getElementById('word-pow');
-        pow.classList.remove('hidden');
-
-        // Trigger CSS-driven drift
-        timeoutManager.setTimeout(() => {
-            pow.classList.add('drift-active');
-        }, 50);
-    }, powTimeout + delayOffset);
-
-    // 2s Wow
-    timeoutManager.setTimeout(() => {
-        const wow = document.getElementById('word-wow');
-        if (wow) {
-            wow.classList.remove('hidden');
-
-            // Trigger CSS-driven drift
-            timeoutManager.setTimeout(() => {
-                wow.classList.add('drift-active');
-            }, 50);
-        }
-    }, wowTimeout + delayOffset);
-
-    // If skipped, we fast-forward animations
-    if (skipped) {
-        // Skip Logic moved to skipIntro function proper or handled via clearing
+    if (unmuteBtn) {
+        unmuteBtn.onclick = () => toggleMuteState(unmuteBtn);
     }
-
-    // Normal Flow
-    // ... items below ...
-    // Links Fade In
-    // v1.45 User: "give a 200ms pause before 'Toby and the testimonial writing' appears"
-    // Previously 4200ms, now 4400ms.
-    timeoutManager.setTimeout(() => {
-        contactLinks.classList.remove('hidden');
-        contactLinks.style.opacity = '1';
-        const tagline = document.getElementById('contact-tagline');
-        if (tagline) {
-            tagline.classList.remove('hidden');
-            tagline.style.opacity = '1';
-        }
-
-        // Start Testimonials after contacts appear
-        startTestimonials(delayOffset);
-    }, 4400 + delayOffset);
 }
-
-function startTestimonials(delayOffset = 0) {
-    state.step = 4;
-    document.body.classList.add('v4-mode');
-    overlayV4.classList.remove('hidden');
-    overlayV4.style.pointerEvents = 'none';
-    document.getElementById('contact-links').style.zIndex = '30';
-
-    // Show static Contact Header immediately ("with Toby")
-    const contactHeader = document.getElementById('contact-header');
-    contactHeader.classList.remove('hidden');
-    contactHeader.style.opacity = '1';
-
-    const quotes = [
-        'is friendly and approachable', // Added 'is'
-        'listened to our needs',
-        'translated them into a website',
-        'that looks great', // Added 'that'
-        'works brilliantly too,"', // Added punctuation
-        'Karen Simpson, Tutors Alliance Scotland.', // Added author to loop
-        'Contact him here' // Added "Contact Him Here"
-    ];
-
-    const quoteEl = document.getElementById('testimonial-quote');
-    // We don't need separate authorEl logic anymore if it's just text in the center
-    // Wait, user said "render at the end and then loop back around".
-    // Does Author display in the same place as quotes? Or separate?
-    // "render at the end and then loop back around all the previous testimonial words"
-    // Usually testimonials have author at bottom. But if it's part of the loop sequence of "words", maybe it replaces the quote text?
-    // "All following words will be in white and will fade in and fade out... 'Karen Simpson...'"
-    // Implies it's just another item in the sequence.
-
-    // Let's assume it replaces the quote text for now.
-
-    let currentIndex = 0;
-
-    const showNextQuote = () => {
-        const text = quotes[currentIndex];
-
-        // Fade In
-        // Special check for "Contact him here"
-        if (text === 'Contact him here') {
-            currentIndex = (currentIndex + 1) % quotes.length;
-            runContactTransition(quoteEl, quotes, showNextQuote);
-            return;
-        }
-
-        quoteEl.textContent = text;
-        quoteEl.style.opacity = '1';
-
-        // Duration
-        // 2s duration for text
-        // Maybe longer for author?
-        const duration = 2500 / 1.2 / 1.2;
-
-        timeoutManager.setTimeout(() => {
-            // Fade Out
-            quoteEl.style.opacity = '0';
-
-            timeoutManager.setTimeout(() => {
-                // Next
-                currentIndex = (currentIndex + 1) % quotes.length;
-                showNextQuote();
-            }, 1000 / 1.2 / 1.2); // 1s gap between words (speed increased by 1.2 twice)
-
-        }, duration);
-    };
-
-    // Start delay
-    timeoutManager.setTimeout(showNextQuote, 1000);
-}
-
-function runContactTransition(quoteEl, quotes, loopCallback) {
-    // 1. Show "Contact him here"
-    // Image size: 0.75x of final 200px = 150px
-    quoteEl.innerHTML = '<img src="/images/contact.png" id="trans-contact" style="width: 150px; height: auto; vertical-align: middle;"> <span id="trans-him-here" style="vertical-align: middle;">him here</span>';
-    quoteEl.style.opacity = '1';
-
-    // 2. Show Arrow
-    const arrow = document.getElementById('testimonial-arrow');
-    const contactHeader = document.getElementById('contact-header');
-
-    // Calculate Midpoint
-    // We need element rects.
-    // contactHeader is already visible (from startTestimonials), so rect is valid.
-
-    // Ensure arrow is visible for rect but opacity 0 (default css for arrow?)
-    // Arrow in V4 overlay is visible by default? No, it's just an img in overlay.
-    // Let's set arrow style
-    arrow.style.opacity = '0';
-    arrow.style.display = 'block'; // Ensure it's not hidden
-
-    // Get Rects
-    const qRect = quoteEl.getBoundingClientRect();
-    const hRect = contactHeader.getBoundingClientRect();
-
-    // Midpoint
-    const midX = (qRect.left + qRect.width / 2 + hRect.left + hRect.width / 2) / 2;
-    const midY = (qRect.top + qRect.height / 2 + hRect.top + hRect.height / 2) / 2;
-
-    // Position Arrow
-    arrow.style.left = midX + 'px';
-    arrow.style.top = midY + 'px';
-    arrow.style.transform = 'translate(-50%, -50%) rotate(83deg)'; // 83deg clockwise from Up (assuming arrow image is Up?)
-    // If arrow image is Right (standard), 83deg is Down-Right. 
-    // User said "start bearing at upwards", implying 0 is Up.
-
-    // Fade In Arrow
-    arrow.style.transition = 'opacity 0.5s';
-    arrow.style.opacity = '1';
-
-    // Wait for reading time (approx same as other words? ~1.7s)
-    const readTime = 2500 / 1.2 / 1.2;
-
-    timeoutManager.setTimeout(() => {
-        // 3. Transition "Contact"
-        const transContact = document.getElementById('trans-contact');
-        const transHimHere = document.getElementById('trans-him-here');
-
-        // Get positions for transition
-        // We need to move transContact to contactHeader position.
-        // Easier to make transContact fixed/absolute to animate it across DOM?
-        // Or just transform translate.
-
-        const cRect = transContact.getBoundingClientRect();
-        const destRect = contactHeader.getBoundingClientRect();
-
-        const deltaX = destRect.left - cRect.left;
-        const deltaY = destRect.top - cRect.top;
-
-        transContact.style.display = 'inline-block';
-        transContact.style.position = 'relative'; // Ensure transform works
-        transContact.style.transition = 'transform 1s ease-in-out, width 1s, height 1s';
-
-        // Match destination dimensions if needed? Or just let it fly.
-        // If destination image is larger (width 200px vs 2.5rem), we should scale it.
-        // 2.5rem approx 40px. 200px is 5x larger.
-        // We can scale transform? Or just let it translate.
-        // Actually, let's scale it to match the destination size roughly.
-        // destination width (destRect.width) / source width (cRect.width)
-        const scaleX = destRect.width / cRect.width;
-        const scaleY = destRect.height / cRect.height;
-        // Apply scale in transform
-        transContact.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
-        transContact.style.transformOrigin = 'top left'; // Grow from top-left corner (matches translation vector logic better)
-
-        // 4. Fade out "Him Here" and Arrow
-        transHimHere.style.transition = 'opacity 1s ease-in-out';
-        transHimHere.style.opacity = '0';
-
-        arrow.style.transition = 'opacity 1s ease-in-out';
-        arrow.style.opacity = '0';
-
-        // 5. When transition ends
-        timeoutManager.setTimeout(() => {
-            // Show real header, hide Transition Contact
-            contactHeader.style.opacity = '1';
-            quoteEl.style.opacity = '0'; // Hide the whole quote container
-
-            // Wait a moment then restart loop
-            timeoutManager.setTimeout(() => {
-                // Reset stuff for next loop?
-                // Hide arrow? It's already opacity 0.
-                // Reset Quote El text?
-                quoteEl.textContent = '';
-
-                // Restart Loop (index is handled by caller logic? No, we need to reset/increment)
-                // loopCallback expects to be called to show NEXT quote.
-                // We should reset index to 0 for next loop?
-                // "restart the loop of the testimonial wording"
-                // Do we restart from 'friendly'?
-                // Caller `showNextQuote` calculates `currentIndex = (currentIndex + 1)`.
-                // We are at `quotes.length - 1` (Contact Him Here).
-                // Next call will wrap to 0. Perfect.
-                loopCallback();
-            }, 1000); // 1s pause before restarting "is friendly..."
-
-        }, 1000); // 1s transition time
-
-    }, readTime);
-}
-
-document.getElementById('link-form').addEventListener('click', () => {
-    document.getElementById('form-modal').classList.remove('hidden');
-});
-
-document.getElementById('close-form').addEventListener('click', () => {
-    document.getElementById('form-modal').classList.add('hidden');
-});
-
-const form = document.getElementById('interest-form');
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-        const res = await fetch('/api/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        if (json.success) {
-            form.reset();
-            alert('Thanks!');
-            document.getElementById('form-modal').classList.add('hidden');
-        } else {
-            alert('Error submitting form');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Network error');
-    }
-});
 
 function skipIntro() {
     console.log("Skipping Intro - Cleaning up and enforcing final state");
 
-    // 1. CLEAR ALL TIMERS
-    // This stops future events (V2 start, V3 words, audio fades, etc.)
     timeoutManager.clearAll();
 
-    // 2. STOP V1 ANIMATION LOOP
     if (v1AnimationId) {
         cancelAnimationFrame(v1AnimationId);
     }
+    clearVideoAnimationHandlers();
 
-    // 3. STOP ALL MEDIA
-    video.pause();
-    // Ensure styles are reset if skipping from V2
-    video.style.zIndex = '';
-    video.style.mixBlendMode = '';
-    video.style.position = '';
+    if (video) {
+        video.pause();
+        video.style.zIndex = '';
+        video.style.mixBlendMode = '';
+        video.style.position = '';
 
-    // Use try/catch to avoid errors if src is empty
-    try {
-        video.src = ''; // Stops downloading/buffering
-        video.load();
-    } catch (e) { }
+        try {
+            video.src = '';
+            video.load();
+        } catch (e) { }
+    }
 
     audioPool.forEach(a => {
         a.pause();
-        a.src = ''; // Stop audio completely
+        a.src = '';
     });
 
-    // 4. REMOVE EVENT LISTENERS (Clean Slate)
-    // We replace the node to strip listeners or just nullify properties we attached
-    video.onended = null;
-    video.ontimeupdate = null;
-    if (v2TimeUpdateHandler) {
-        video.removeEventListener('timeupdate', v2TimeUpdateHandler);
-        v2TimeUpdateHandler = null;
+    if (video) {
+        video.onended = null;
+        video.ontimeupdate = null;
+        if (v2TimeUpdateHandler) {
+            video.removeEventListener('timeupdate', v2TimeUpdateHandler);
+        }
+        video.onloadeddata = null;
+        video.onloadedmetadata = null;
     }
 
-    video.onloadeddata = null;
-    video.onloadedmetadata = null;
     audioPool.forEach(a => {
         a.onended = null;
         a.onloadedmetadata = null;
     });
 
-    // 5. CLEAR OVERLAYS / HIDE OLD ELEMENTS
-    document.body.classList.add('v3-mode'); // Ensure V3 mode is active for final state CSS
+    document.body.classList.add('v3-mode');
 
-    overlayV1.classList.add('hidden');
-    overlayV1.innerHTML = '';
+    const overlayV1 = document.getElementById('overlay-v1');
+    if (overlayV1) {
+        overlayV1.classList.add('hidden');
+        overlayV1.innerHTML = '';
+    }
 
-    overlayV2.classList.add('hidden');
-    overlayV2.style.opacity = '';
+    const overlayV2 = document.getElementById('overlay-v2');
+    if (overlayV2) {
+        overlayV2.classList.add('hidden');
+        overlayV2.style.opacity = '';
+    }
 
-    unmuteBtn.classList.add('hidden'); // Hide the toggle as audio is stopped
+    if (unmuteBtn) unmuteBtn.classList.add('hidden');
+    if (skipIntroBtn) skipIntroBtn.classList.add('hidden');
 
-    skipIntroBtn.classList.add('hidden');
+    const overlayV3 = document.getElementById('overlay-v3');
+    if (overlayV3) overlayV3.classList.remove('hidden');
 
-    // 6. ENFORCE V3 FINAL STATE
-    overlayV3.classList.remove('hidden');
-
-    // 'Let's'
     const wordLets = document.getElementById('word-lets');
-    wordLets.classList.remove('hidden');
-    wordLets.style.transition = 'none';
+    if (wordLets) {
+        wordLets.classList.remove('hidden');
+        wordLets.style.transition = 'none';
+    }
 
     const isMobilePortrait = window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
     const isMobileLandscape = window.matchMedia('(max-height: 550px) and (orientation: landscape)').matches;
 
-    // 'Pow'
     const pow = document.getElementById('word-pow');
-    pow.classList.remove('hidden');
-    pow.style.transition = 'none';
+    if (pow) {
+        pow.classList.remove('hidden');
+        pow.style.transition = 'none';
 
-    let powLeft = '39%'; // Desktop
-    if (isMobilePortrait) powLeft = '16%';
-    else if (isMobileLandscape) powLeft = '35%';
-    pow.style.left = powLeft;
+        let powLeft = '39%';
+        if (isMobilePortrait) powLeft = '16%';
+        else if (isMobileLandscape) powLeft = '35%';
+        pow.style.left = powLeft;
 
-    if (isMobilePortrait) pow.style.top = '64%';
-    else if (isMobileLandscape) pow.style.top = '75%';
+        if (isMobilePortrait) pow.style.top = '64%';
+        else if (isMobileLandscape) pow.style.top = '75%';
 
-    pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
+        pow.style.transform = 'translate(-50%, -50%) rotate(-31deg)';
+    }
 
-    // 'Wow'
     const wow = document.getElementById('word-wow');
-    wow.classList.remove('hidden');
-    wow.style.transition = 'none';
+    if (wow) {
+        wow.classList.remove('hidden');
+        wow.style.transition = 'none';
 
-    let wowLeft = '63%'; // Desktop
-    if (isMobilePortrait) wowLeft = '84%';
-    else if (isMobileLandscape) wowLeft = '65%';
-    wow.style.left = wowLeft;
+        let wowLeft = '63%';
+        if (isMobilePortrait) wowLeft = '84%';
+        else if (isMobileLandscape) wowLeft = '65%';
+        wow.style.left = wowLeft;
 
-    if (isMobilePortrait) wow.style.top = '67%';
-    else if (isMobileLandscape) wow.style.top = '75%';
+        if (isMobilePortrait) wow.style.top = '67%';
+        else if (isMobileLandscape) wow.style.top = '75%';
 
-    wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+        wow.style.transform = 'translate(-50%, -50%) rotate(37deg)';
+    }
 
-    // Contact Links
-    contactLinks.classList.remove('hidden');
-    contactLinks.style.opacity = '1';
+    const contactLinks = document.getElementById('contact-links');
+    if (contactLinks) {
+        contactLinks.classList.remove('hidden');
+        contactLinks.style.opacity = '1';
+        contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
+    }
+
     const tagline = document.getElementById('contact-tagline');
     if (tagline) {
         tagline.classList.remove('hidden');
         tagline.style.opacity = '1';
     }
-    contactLinks.style.left = LayoutConfig[LayoutConfig.current].contactLinksLeft;
 
-    // START TESTIMONIALS IMMEDIATELY
     startTestimonials();
 
-    // Ensure V3 Video Background is visible?
-    // We effectively stopped the video. If we want the V3 *frame* to be visible as background, we need to set it.
-    // "skip to the end of all three videos playing... and not play any videos"
-    // Does this mean black background? Or the last frame of V3?
-    // Usually means last frame.
-    // Set src to V3, seek to end, pause.
-    video.src = videos.v3;
-    const seekToEnd = () => {
-        // Seek to the very end. Setting currentTime to duration usually shows the last frame.
-        // Or a tiny bit before if some browsers loop/reset.
-        // Let's safe bet: duration - 0.1? Or just duration. 
-        // User asked for "end of the playing time".
-        if (video.duration) {
-            video.currentTime = video.duration;
-        }
-    };
-
-    if (video.readyState >= 1) {
-        seekToEnd();
-    } else {
-        video.onloadedmetadata = () => {
-            seekToEnd();
-            video.onloadedmetadata = null;
+    if (video) {
+        video.src = videos.v3;
+        const seekToEnd = () => {
+            if (video.duration) {
+                video.currentTime = video.duration;
+            }
         };
-    }
-    // Match Video 3 Scaling/Translation
-    const config = LayoutConfig[LayoutConfig.current];
-    const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
-    const isMobile = LayoutConfig.current === 'mobile';
-    const xShift = isMobile ? '-3vw' : '0';
 
-    video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
-    video.style.zIndex = '';
-    video.style.mixBlendMode = '';
-    video.style.opacity = '1';
+        if (video.readyState >= 1) {
+            seekToEnd();
+        } else {
+            video.onloadedmetadata = () => {
+                seekToEnd();
+                video.onloadedmetadata = null;
+            };
+        }
+
+        const config = LayoutConfig[LayoutConfig.current];
+        const v3Scale = config.v3VideoScale || config.staticVideoScale || 1.0;
+        const isMobile = LayoutConfig.current === 'mobile';
+        const xShift = isMobile ? '-3vw' : '0';
+
+        video.style.transform = `scale(${v3Scale}) translateX(${xShift})`;
+        video.style.zIndex = '';
+        video.style.mixBlendMode = '';
+        video.style.opacity = '1';
+    }
 }
 
 init();
