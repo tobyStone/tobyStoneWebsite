@@ -17,31 +17,39 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Origin/Referer check to prevent Cross-Site Request Abuse
-        const host = req.headers.host;
+        // 1. Content-Type and Size Validation immediately
+        if (req.headers['content-type'] !== 'application/json') {
+            return res.status(415).json({ error: 'Unsupported Media Type: expected application/json' });
+        }
+
+        // Extremely crude payload length cutoff (e.g., if req.body is larger than ~2KB)
+        // Note: Vercel standardizes standard req.body as parsed object, but we can check stringified size
+        if (JSON.stringify(req.body).length > 2000) {
+            return res.status(413).json({ error: 'Payload Too Large' });
+        }
+
+        // 2. Explicit Origin/Referer Allowlist to prevent Cross-Site Request Abuse
         const origin = req.headers.origin;
         const referer = req.headers.referer;
 
-        if (origin && host) {
-            try {
-                const originHost = new URL(origin).host;
-                if (originHost !== host) {
-                    return res.status(403).json({ error: 'Forbidden origin' });
-                }
-            } catch (e) {
-                return res.status(400).json({ error: 'Invalid origin format' });
-            }
-        } else if (referer && host) {
-            try {
-                const refererHost = new URL(referer).host;
-                if (refererHost !== host) {
-                    return res.status(403).json({ error: 'Forbidden referer' });
-                }
-            } catch (e) {
-                return res.status(400).json({ error: 'Invalid referer format' });
-            }
-        } else if (!origin && !referer && process.env.NODE_ENV !== 'development') {
-            return res.status(403).json({ error: 'Forbidden, missing origin/referer' });
+        const ALLOWED_ORIGINS = [
+            'https://www.tobystone.com',
+            'https://tobystone.com',
+            'http://localhost:3000',
+            'http://localhost:5173'
+        ];
+
+        let isAllowed = false;
+
+        if (origin && ALLOWED_ORIGINS.includes(origin)) {
+            isAllowed = true;
+        } else if (referer) {
+            // Referers usually have trailing slashes or paths, so we check if it starts with an allowed origin
+            isAllowed = ALLOWED_ORIGINS.some(allowed => referer.startsWith(allowed));
+        }
+
+        if (!isAllowed && process.env.NODE_ENV !== 'development') {
+            return res.status(403).json({ error: 'Forbidden: Origin not in allowlist' });
         }
 
         if (!req.body || typeof req.body !== 'object') {

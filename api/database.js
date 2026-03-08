@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const password = process.env.databasePassword;
-const connectionString = `mongodb+srv://tstone4:${password}@cluster0.ntuqn.mongodb.net/tobyStone?appName=Cluster0`;
+const connectionString = process.env.MONGODB_URI || `mongodb+srv://tstone4:${process.env.databasePassword}@cluster0.ntuqn.mongodb.net/tobyStone?appName=Cluster0`;
 
 let cachedConnection = null;
 
@@ -12,8 +11,8 @@ export async function connectToDatabase() {
         return cachedConnection;
     }
 
-    if (!password) {
-        throw new Error('databasePassword environment variable is not defined');
+    if (!connectionString || connectionString.includes('undefined')) {
+        throw new Error('MongoDB connection string or databasePassword is not defined');
     }
 
     try {
