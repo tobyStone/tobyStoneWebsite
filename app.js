@@ -853,6 +853,7 @@ form.addEventListener('submit', async (e) => {
         });
         const json = await res.json();
         if (json.success) {
+            form.reset();
             alert('Thanks!');
             document.getElementById('form-modal').classList.add('hidden');
         } else {

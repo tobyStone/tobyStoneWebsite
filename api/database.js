@@ -18,6 +18,7 @@ export async function connectToDatabase() {
     try {
         const opts = {
             bufferCommands: false,
+            dbName: 'tobyStone'
         };
 
         const connection = await mongoose.connect(connectionString, opts);
