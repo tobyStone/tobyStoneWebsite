@@ -94,7 +94,7 @@ export function runContactTransition(quoteEl, quotes, loopCallback) {
         const transContact = document.getElementById('trans-contact');
         const transHimHere = document.getElementById('trans-him-here');
 
-        if (!transContact || !destRect) return;
+        if (!transContact) return;
 
         const cRect = transContact.getBoundingClientRect();
         const destRect = contactHeader ? contactHeader.getBoundingClientRect() : cRect;
