@@ -28,7 +28,6 @@ const standbyAudio = () => audioPool[1 - activeAudioIndex];
 
 // Config
 const V1_DURATION = 5713; // Adjusted for 1.225x speed (7000 / 1.225)
-const V2_PAUSE_DURATION = 1200;
 
 // --- Layout Configuration ---
 const LayoutConfig = {
@@ -160,7 +159,6 @@ let v2TimeUpdateHandler = null; // Track V2 listener for lookup/removal
 // --- Initialization ---
 const unmuteBtn = document.getElementById('unmute-btn');
 const skipIntroBtn = document.getElementById('skip-intro-btn');
-let skipIntroTimeout;
 
 async function init() {
     console.log('Initializing... Version: Contact Transition Update 1.52 (Refinements)');
@@ -297,9 +295,6 @@ function animateV1() {
 }
 
 function stopVideo1() {
-    // Overlap V1 Audio into V2 (Fade out) - REMOVED per request
-    // if (!video.muted) { ... }
-
     video.pause();
     document.body.classList.remove('v1-mode');
     overlayV1.classList.add('hidden');
@@ -405,16 +400,6 @@ function startVideo2Setup() {
         overlayV2.style.opacity = ''; // Reset opacity
         startVideo3();
     };
-
-    // Audio Fade (REMOVED: Do not play bgAudio/music in V2)
-    // const monitor = setInterval(() => {
-    //     if (video.duration && video.currentTime >= video.duration - 1.0) {
-    //         if (video.volume > 0.1) video.volume -= 0.1;
-    //         if (bgAudio.paused) bgAudio.play();
-    //         if (bgAudio.volume < 1.0) bgAudio.volume += 0.1;
-    //     }
-    //     if (video.ended) clearInterval(monitor);
-    // }, 200);
 }
 
 function startVideo3(skipped = false) {
@@ -478,11 +463,7 @@ function startVideo3(skipped = false) {
     // User requested: video 3 speed increased to 1.2
     video.playbackRate = 1.2;
 
-    // Background Audio Logic
-    // Sync with global mute state (unmuteBtn hidden = sound ON)
-    const isUnmuted = unmuteBtn.classList.contains('hidden');
-
-    // Sources already set and pre-loading in startVideo2Setup
+    // Sync with global mute state
     audioPool.forEach(a => a.muted = state.isMuted);
 
     // Check for Mobile Landscape to add delay offset
@@ -652,11 +633,6 @@ function startVideo3(skipped = false) {
 
     // Normal Flow
     // ... items below ...
-    // Calculate when to hide Skip Button: 4200ms
-    skipIntroTimeout = timeoutManager.setTimeout(() => {
-        skipIntroBtn.classList.add('hidden');
-    }, 4200);
-
     // Links Fade In
     // v1.45 User: "give a 200ms pause before 'Toby and the testimonial writing' appears"
     // Previously 4200ms, now 4400ms.
