@@ -1,6 +1,6 @@
 export const state = {
     step: 1,
-    isMuted: true
+    isMuted: false
 };
 
 export const videos = {

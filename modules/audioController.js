@@ -12,6 +12,11 @@ export function toggleMuteState(unmuteBtn) {
     state.isMuted = !state.isMuted;
     audioPool.forEach(a => Object.assign(a, { muted: state.isMuted }));
 
+    const video = document.getElementById('main-video');
+    if (video) {
+        video.muted = state.isMuted;
+    }
+
     const btnImg = unmuteBtn.querySelector('img');
     if (state.isMuted) {
         btnImg.src = '/images/unmute.png';

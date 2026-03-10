@@ -22,8 +22,15 @@ export function startVideo1() {
     const video = document.getElementById('main-video');
     const unmuteBtn = document.getElementById('unmute-btn');
 
-    if (video) video.muted = true;
-    if (unmuteBtn) unmuteBtn.classList.remove('hidden');
+    if (video) video.muted = state.isMuted;
+    if (unmuteBtn) {
+        unmuteBtn.classList.remove('hidden');
+        const btnImg = unmuteBtn.querySelector('img');
+        if (btnImg) {
+            btnImg.src = state.isMuted ? '/images/unmute.png' : '/images/mute.png';
+            btnImg.alt = state.isMuted ? 'Unmute' : 'Mute';
+        }
+    }
 
     if (video) {
         video.play().then(() => {
@@ -31,7 +38,26 @@ export function startVideo1() {
                 v1StartTime = Date.now();
                 v1AnimationId = requestAnimationFrame(() => animateV1(video, overlayV1));
             }
-        }).catch(e => console.log("Autoplay failed even muted?", e));
+        }).catch(e => {
+            console.log("Autoplay failed (likely due to being unmuted), falling back to muted", e);
+            if (video) {
+                video.muted = true;
+                state.isMuted = true;
+                if (unmuteBtn) {
+                    const btnImg = unmuteBtn.querySelector('img');
+                    if (btnImg) {
+                        btnImg.src = '/images/unmute.png';
+                        btnImg.alt = 'Unmute';
+                    }
+                }
+                video.play().then(() => {
+                    if (!v1StartTime) {
+                        v1StartTime = Date.now();
+                        v1AnimationId = requestAnimationFrame(() => animateV1(video, overlayV1));
+                    }
+                }).catch(err => console.log("Final muted autoplay failed:", err));
+            }
+        });
     }
 
     const words = LayoutConfig[LayoutConfig.current].wordRing;
