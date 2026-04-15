@@ -88,13 +88,15 @@ class ShipEngine {
             if (this.activeVideo && this.calibration) {
                 const time = this.activeVideo.currentTime;
                 // Simple interpolation from calibration mapping
-                let clipKey = 'L';
+                let clipKey = null;
+                if (this.state === STATE.MOVING_LEFT) clipKey = 'L';
                 if (this.state === STATE.MOVING_RIGHT) clipKey = 'R';
-                if (this.state === STATE.TURN_L_TO_R || this.state === STATE.TURN_R_TO_L) clipKey = 'T';
 
-                const map = this.calibration.clipData[clipKey]?.xMap;
-                if (map) {
-                    this.shipX = this.interpolateX(map, time);
+                if (clipKey) {
+                    const map = this.calibration.clipData[clipKey]?.xMap;
+                    if (map) {
+                        this.shipX = this.interpolateX(map, time);
+                    }
                 }
             }
             this.updateDebug();
@@ -177,8 +179,12 @@ class ShipEngine {
             // We use the same turning video for now for both logic branches
             // Ideally we'd have T_LR and T_RL, but user specified "the turning video"
             
-            const targetTimeForTurn = this.findNearestTimeForX(this.calibration.clipData['T'].xMap, this.shipX);
-            this.videoT.currentTime = targetTimeForTurn;
+            // Translate the turning video so its centre perfectly aligns with the ship's current X coordinate
+            const offsetVw = (this.shipX - 0.5) * 100;
+            this.videoT.style.transform = `translateX(${offsetVw}vw) scale(0.43478)`;
+            
+            // We just play the turn video from the start, as it simply represents the turn animation
+            this.videoT.currentTime = 0;
             
             crossfadeTo(this.videoT);
 
