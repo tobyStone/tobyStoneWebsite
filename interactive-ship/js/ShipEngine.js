@@ -23,6 +23,7 @@ class ShipEngine {
         this.videoL = document.getElementById('video-l');
         this.videoR = document.getElementById('video-r');
         this.videoT = document.getElementById('video-t');
+        this.bgShipless = document.getElementById('bg-shipless');
         
         this.state = STATE.INIT;
         this.pointerX = 0.5;      // Normalized pointer X (0 to 1)
@@ -154,6 +155,14 @@ class ShipEngine {
         [this.videoL, this.videoR, this.videoT].forEach(v => {
             v.classList.remove('active');
         });
+        
+        if (this.bgShipless) {
+            if (newState === STATE.TURN_L_TO_R || newState === STATE.TURN_R_TO_L) {
+                this.bgShipless.classList.add('active');
+            } else {
+                this.bgShipless.classList.remove('active');
+            }
+        }
 
         const crossfadeTo = (videoEl) => {
             if (this.activeVideo && this.activeVideo !== videoEl) {
