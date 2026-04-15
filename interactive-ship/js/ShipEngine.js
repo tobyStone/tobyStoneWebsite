@@ -200,7 +200,7 @@ class ShipEngine {
             clearTimeout(this.turnTimer);
             this.turnTimer = setTimeout(() => {
                 this.setState((newState === STATE.TURN_L_TO_R) ? STATE.MOVING_RIGHT : STATE.MOVING_LEFT);
-            }, this.videoT.duration * 1000 - (targetTimeForTurn * 1000) - 200); // 200ms buffer
+            }, this.videoT.duration * 1000 - 200); // 200ms buffer
         }
         
         this.updateDebug();
