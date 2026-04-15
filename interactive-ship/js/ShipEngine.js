@@ -1,6 +1,8 @@
 // ShipEngine.js
 // State Machine for controlling interactive ship video with temporal-spatial continuity
 
+import calibrationData from './calibration.json';
+
 const STATE = {
     INIT: 'INIT',
     MOVING_LEFT: 'MOVING_LEFT',
@@ -37,9 +39,8 @@ class ShipEngine {
 
     async init() {
         try {
-            // Fetch calibration data
-            const res = await fetch('./js/calibration.json');
-            this.calibration = await res.json();
+            // Assign imported calibration data
+            this.calibration = calibrationData;
             
             // Wait for initial metadata to be ready
             await Promise.all([
