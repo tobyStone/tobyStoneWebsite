@@ -188,9 +188,10 @@ class ShipEngine {
             // We use the same turning video for now for both logic branches
             // Ideally we'd have T_LR and T_RL, but user specified "the turning video"
             
-            // Translate the turning video so its centre perfectly aligns with the ship's current X coordinate
-            const offsetVw = (this.shipX - 0.5) * 100;
-            this.videoT.style.transform = `translateX(${offsetVw}vw) scale(0.43478)`;
+            // Translate the turning video so its centre Perfectly aligns with the ship's current X coordinate
+            // We multiply by 80vw instead of 100vw because the main L/R videos are scaled to 0.8 in CSS
+            const offsetVw = (this.shipX - 0.5) * 80;
+            this.videoT.style.transform = `translateX(${offsetVw}vw) scale(1.2)`;
             
             // We just play the turn video from the start, as it simply represents the turn animation
             this.videoT.currentTime = 0;
