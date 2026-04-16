@@ -58,7 +58,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     z-index: 0; /* Base layer */
     opacity: 1; /* Always visible to provide continuous background for all videos */
     transform: scale(0.9);
