@@ -62,7 +62,10 @@ body {
     object-position: top center;
     z-index: -1; /* Bottom-most layer */
     opacity: 1; 
-    transform: scale(1.7);
+    
+    /* Y-Scale: 1.7 * 1.07 = 1.819 */
+    /* X-Scale (Stretch 30% left and right): 1.819 * 1.6 = 2.9104 */
+    transform: scale(2.9104, 1.819);
     transform-origin: top center;
 }
 
