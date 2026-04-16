@@ -52,6 +52,18 @@ body {
     pointer-events: none;
 }
 
+#bg-shipless-base {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right top;
+    z-index: -1; /* Bottom-most layer */
+    opacity: 1; 
+}
+
 #bg-shipless {
     position: absolute;
     top: 0;
@@ -60,8 +72,8 @@ body {
     height: 100%;
     object-fit: cover;
     object-position: right top; /* Anchors the moon/stars at top-right regardless of wide/narrow screens */
-    z-index: 0; /* Base layer */
-    opacity: 1; /* Always visible to provide continuous background for all videos */
+    z-index: 0; /* Middle backdrop layer */
+    opacity: 0.5; /* Reduced alpha dynamically by 50% */
 }
 
 #ship-container video.active {
