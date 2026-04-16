@@ -79,9 +79,9 @@ body {
     transform: translateX(7vw) scale(2.128, 1.819);
     transform-origin: top center;
     
-    /* Deepened radial mask for extra transparency in the outer 12%, with a steeper drop in the last 7% */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
+    /* Aggressive radial mask for cleaner edge blending */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
 
 #bg-shipless {
@@ -95,12 +95,9 @@ body {
     z-index: 0; /* Middle backdrop layer */
     opacity: 0.5; /* Reduced alpha dynamically by 50% */
     
-    /* Even more gradual radial feathering with color-crushing to blend into the base layer */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.2) 90%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.2) 90%, transparent 100%);
-    
-    /* Slight darkening to ensure the background plate doesn't have hard edges against the deep space */
-    filter: brightness(0.95) contrast(1.05);
+    /* Reverting to more aggressive previous masking logic for cleaner blending */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
 
 #ship-container video.active {
@@ -111,12 +108,9 @@ body {
     transform: scale(0.8);
     transform-origin: center center;
     
-    /* CRITICAL: Crushing the blacks of the video asset so they hit #000 and vanish into the background */
-    filter: brightness(0.85) contrast(1.2);
-    
-    /* Hyper-gradual radial mask starting much earlier (40%) to eliminate the "ghost box" effect */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.2) 90%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.2) 90%, transparent 100%);
+    /* Reverting filters - relying on more aggressive radial mask for blending */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
 
 #debug-overlay {
@@ -139,8 +133,7 @@ body {
     transform: translateY(-10vh) scale(0.672);
     transform-origin: center center;
     
-    /* Same filters and mask for the turn video */
-    filter: brightness(0.85) contrast(1.2);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.2) 90%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.2) 90%, transparent 100%);
+    /* Applying aggressive 12%+ margin mask to turn video */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
