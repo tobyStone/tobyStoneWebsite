@@ -64,8 +64,8 @@ body {
     opacity: 1; 
     
     /* Y-Scale: 1.7 * 1.07 = 1.819 */
-    /* X-Scale (Stretch 30% left and right): 1.819 * 1.6 = 2.9104 */
-    transform: scale(2.9104, 1.819);
+    /* X-Scale (17% Stretch): 1.819 * 1.17 = 2.128 */
+    transform: translateX(17vw) scale(2.128, 1.819);
     transform-origin: top center;
 }
 
