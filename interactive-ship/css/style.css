@@ -62,6 +62,8 @@ body {
     object-position: top center;
     z-index: -1; /* Bottom-most layer */
     opacity: 1; 
+    transform: scale(1.7);
+    transform-origin: top center;
 }
 
 #bg-shipless {
