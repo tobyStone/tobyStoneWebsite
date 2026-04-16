@@ -61,6 +61,8 @@ body {
     object-fit: cover;
     z-index: 0; /* Base layer */
     opacity: 1; /* Always visible to provide continuous background for all videos */
+    transform: scale(0.9);
+    transform-origin: center center;
 }
 
 #ship-container video.active {
@@ -96,8 +98,8 @@ body {
 }
 
 #video-t {
-    /* 1.2 * 0.7 = 0.84 */
-    transform: scale(0.84);
+    /* 0.84 * 0.8 = 0.672 */
+    transform: translateY(-10vh) scale(0.672);
     transform-origin: center center;
     
     /* CSS Mask to fade 20% of horizontal edges and 10% of vertical edges to transparent */
