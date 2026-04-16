@@ -50,6 +50,10 @@ body {
     z-index: 1; /* Overlay on background */
     transition: opacity 0.15s ease-in-out; /* Smooth crossfades when active */
     pointer-events: none;
+    
+    /* Performance optimizations to keep the mask stable during animation */
+    will-change: transform, opacity;
+    transform: translateZ(0); 
 }
 
 #bg-deep-starry {
@@ -105,7 +109,7 @@ body {
 }
 
 #video-l, #video-r {
-    transform: scale(0.8);
+    transform: scale(0.8) translateZ(0);
     transform-origin: center center;
     
     /* Reverting filters - relying on more aggressive radial mask for blending */
@@ -130,10 +134,10 @@ body {
 
 #video-t {
     /* 0.84 * 0.8 = 0.672 */
-    transform: translateY(-10vh) scale(0.672);
+    transform: translateY(-10vh) scale(0.672) translateZ(0);
     transform-origin: center center;
     
-    /* Applying aggressive 12%+ margin mask to turn video */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    /* Custom deep mask for turn video: 25% horizontal fade and 17% vertical margin fade */
+    -webkit-mask-image: radial-gradient(ellipse 50% 66% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 66% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
 }
