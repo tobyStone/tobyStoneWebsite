@@ -97,6 +97,17 @@ class ShipEngine {
                     const map = this.calibration.clipData[clipKey]?.xMap;
                     if (map) {
                         this.shipX = this.interpolateX(map, time);
+                        
+                        // Stop at edges: if we hit the min/max of the map, pause the video
+                        const atStart = time <= map[0].t;
+                        const atEnd = time >= map[map.length - 1].t;
+                        
+                        if (atStart || atEnd) {
+                            this.activeVideo.pause();
+                        } else {
+                            // Resume if we've moved back into tracking territory
+                            this.activeVideo.play().catch(() => {});
+                        }
                     }
                 }
             }
@@ -156,7 +167,7 @@ class ShipEngine {
             v.classList.remove('active');
         });
 
-        const crossfadeTo = (videoEl) => {
+        const crossfadeTo = (videoEl, isReverse = false) => {
             if (this.activeVideo && this.activeVideo !== videoEl) {
                 // Pause old shortly after to allow smooth opacity transition
                 const oldVideo = this.activeVideo;
@@ -165,8 +176,15 @@ class ShipEngine {
                 }, CONFIG.crossfadeMs);
             }
             this.activeVideo = videoEl;
-            videoEl.play().catch(e => console.error("Play prevented", e));
+            
             videoEl.classList.add('active');
+
+            if (isReverse) {
+                this.playReverse(videoEl);
+            } else {
+                videoEl.playbackRate = 1.0;
+                videoEl.play().catch(e => console.error("Play prevented", e));
+            }
         };
 
         if (newState === STATE.MOVING_LEFT) {
@@ -180,15 +198,17 @@ class ShipEngine {
             // We use the same turning video for now for both logic branches
             // Ideally we'd have T_LR and T_RL, but user specified "the turning video"
             
+            const isReverse = (newState === STATE.TURN_R_TO_L);
+            
             // Translate the turning video so its centre Perfectly aligns with the ship's current X coordinate
             // We multiply by 80vw instead of 100vw because the main L/R videos are scaled to 0.8 in CSS
             const offsetVw = (this.shipX - 0.5) * 80;
             this.videoT.style.transform = `translateX(${offsetVw}vw) translateY(-10vh) scale(0.672)`;
             
-            // We just play the turn video from the start, as it simply represents the turn animation
-            this.videoT.currentTime = 0;
+            // Start from beginning if forward, end if reverse
+            this.videoT.currentTime = isReverse ? this.videoT.duration : 0;
             
-            crossfadeTo(this.videoT);
+            crossfadeTo(this.videoT, isReverse);
 
             // While turning, recalculate opposite video mapping and aggressively preload
             const nextVideo = (newState === STATE.TURN_L_TO_R) ? this.videoR : this.videoL;
@@ -229,6 +249,21 @@ class ShipEngine {
         if(dbgState) dbgState.textContent = this.state;
         if(dbgX) dbgX.textContent = this.shipX.toFixed(2);
         if(dbgMX) dbgMX.textContent = this.pointerX.toFixed(2);
+    }
+
+    playReverse(videoEl) {
+        videoEl.pause();
+        const fps = 30;
+        const interval = 1000 / fps;
+        
+        const step = () => {
+            if (this.activeVideo !== videoEl || this.state === STATE.INIT) return;
+            if (videoEl.currentTime > 0) {
+                videoEl.currentTime -= (1 / fps);
+                setTimeout(() => requestAnimationFrame(step), interval);
+            }
+        };
+        requestAnimationFrame(step);
     }
 }
 
