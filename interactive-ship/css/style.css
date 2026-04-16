@@ -79,9 +79,9 @@ body {
     transform: translateX(7vw) scale(2.128, 1.819);
     transform-origin: top center;
     
-    /* Aggressive radial mask for cleaner edge blending */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    /* Aggressive LINEAR mask for the right-hand edge only to eliminate the vertical segment boundary */
+    -webkit-mask-image: linear-gradient(to right, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
+    mask-image: linear-gradient(to right, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
 
 #bg-shipless {
