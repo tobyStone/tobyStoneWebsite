@@ -79,9 +79,9 @@ body {
     transform: translateX(7vw) scale(2.128, 1.819);
     transform-origin: top center;
     
-    /* 12% Oval feathering */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
+    /* Deepened radial mask for extra transparency in the outer 12%, with a steeper drop in the last 7% */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
 }
 
 #bg-shipless {
@@ -95,9 +95,9 @@ body {
     z-index: 0; /* Middle backdrop layer */
     opacity: 0.5; /* Reduced alpha dynamically by 50% */
     
-    /* 12% Oval feathering */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
+    /* 12% Oval feathering with extra steep drop in the final 7% */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
 }
 
 #ship-container video.active {
@@ -108,9 +108,9 @@ body {
     transform: scale(0.8);
     transform-origin: center center;
     
-    /* CSS Radial Mask perfectly vignettes the edges into transparency */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
+    /* Aggressive radial mask: opaque center, then steep fade in the last 12%, with extra transparency in the final 7% */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
 }
 
 #debug-overlay {
@@ -133,7 +133,7 @@ body {
     transform: translateY(-10vh) scale(0.672);
     transform-origin: center center;
     
-    /* CSS Radial Mask */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 88%, transparent 100%);
+    /* Aggressive radial mask */
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 65%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0.3) 93%, transparent 100%);
 }
