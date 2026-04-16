@@ -65,7 +65,7 @@ body {
     
     /* Y-Scale: 1.7 * 1.07 = 1.819 */
     /* X-Scale (17% Stretch): 1.819 * 1.17 = 2.128 */
-    transform: translateX(17vw) scale(2.128, 1.819);
+    transform: translateX(10vw) scale(2.128, 1.819);
     transform-origin: top center;
 }
 
@@ -91,6 +91,9 @@ body {
     
     /* Mix-blend completely removes the black background from the video asset */
     mix-blend-mode: screen;
+    
+    /* Boosting brightness mathematically forces the screen blend mode to render the ship and waves more densely/opaquely */
+    filter: brightness(1.2);
     
     /* CSS Radial Mask perfectly vignettes the edges into transparency without math limits causing hard borders */
     -webkit-mask-image: radial-gradient(ellipse at center, black 70%, transparent 100%);
