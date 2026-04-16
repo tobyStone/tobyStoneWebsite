@@ -180,9 +180,9 @@ class ShipEngine {
             videoEl.classList.add('active');
 
             if (isReverse) {
-                this.playReverse(videoEl);
+                this.playReverse(videoEl, 1.2); // Pass speed scalar
             } else {
-                videoEl.playbackRate = 1.0;
+                videoEl.playbackRate = (videoEl === this.videoT) ? 1.2 : 1.0;
                 videoEl.play().catch(e => console.error("Play prevented", e));
             }
         };
@@ -203,12 +203,15 @@ class ShipEngine {
             // Translate the turning video so its centre Perfectly aligns with the ship's current X coordinate
             // We multiply by 80vw instead of 100vw because the main L/R videos are scaled to 0.8 in CSS
             const offsetVw = (this.shipX - 0.5) * 80;
-            this.videoT.style.transform = `translateX(${offsetVw}vw) translateY(-10vh) scale(0.672)`;
+            this.videoT.style.transform = `translateX(${offsetVw}vw) translateY(-6vh) scale(0.672) translateZ(0)`;
             
-            // Start from beginning if forward, end if reverse
-            this.videoT.currentTime = isReverse ? this.videoT.duration : 0;
+            // Start from 100ms if forward, end if reverse
+            this.videoT.currentTime = isReverse ? this.videoT.duration : 0.1;
             
             crossfadeTo(this.videoT, isReverse);
+            
+            // Recalculate duration for 1.2x speed + 100ms cutoff
+            const effectiveDurationMs = ((this.videoT.duration - 0.1) / 1.2) * 1000;
 
             // While turning, recalculate opposite video mapping and aggressively preload
             const nextVideo = (newState === STATE.TURN_L_TO_R) ? this.videoR : this.videoL;
@@ -222,7 +225,7 @@ class ShipEngine {
             clearTimeout(this.turnTimer);
             this.turnTimer = setTimeout(() => {
                 this.setState((newState === STATE.TURN_L_TO_R) ? STATE.MOVING_RIGHT : STATE.MOVING_LEFT);
-            }, this.videoT.duration * 1000 - 200); // 200ms buffer
+            }, effectiveDurationMs - 150); // 150ms buffer for crossfade timing
         }
         
         this.updateDebug();
@@ -251,14 +254,15 @@ class ShipEngine {
         if(dbgMX) dbgMX.textContent = this.pointerX.toFixed(2);
     }
 
-    playReverse(videoEl) {
+    playReverse(videoEl, speed = 1.0) {
         videoEl.pause();
         const fps = 30;
-        const interval = 1000 / fps;
+        const interval = 1000 / (fps * speed); // Compensate interval for speed scalar
         
         const step = () => {
             if (this.activeVideo !== videoEl || this.state === STATE.INIT) return;
-            if (videoEl.currentTime > 0) {
+            // Respect the 100ms cutoff even in reverse (finish when we hit 0.1)
+            if (videoEl.currentTime > 0.1) {
                 videoEl.currentTime -= (1 / fps);
                 setTimeout(() => requestAnimationFrame(step), interval);
             }

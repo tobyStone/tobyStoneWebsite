@@ -133,11 +133,11 @@ body {
 }
 
 #video-t {
-    /* 0.84 * 0.8 = 0.672 */
-    transform: translateY(-10vh) scale(0.672) translateZ(0);
+    /* Lowered by 4% (from -10vh to -6vh) */
+    transform: translateY(-6vh) scale(0.672) translateZ(0);
     transform-origin: center center;
     
-    /* Custom deep mask for turn video: 25% horizontal fade and 17% vertical margin fade */
-    -webkit-mask-image: radial-gradient(ellipse 50% 66% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
-    mask-image: radial-gradient(ellipse 50% 66% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
+    /* Further blending: 40% horizontal radius and 55% vertical radius for deeper edge fades */
+    -webkit-mask-image: radial-gradient(ellipse 40% 55% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
+    mask-image: radial-gradient(ellipse 40% 55% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
 }
