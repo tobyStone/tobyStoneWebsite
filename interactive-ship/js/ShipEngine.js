@@ -13,24 +13,28 @@ const STATE = {
 };
 
 const CONFIG = {
-    deadZone: 0.03,        // 3% normalized viewport width
-    intentHoldMs: 100,     // 100ms debounce for turning
-    crossfadeMs: 150       // CSS transition duration
+    deadZone: 0.03,        
+    intentHoldMs: 100,     
+    crossfadeMs: 150       
 };
 
 class ShipEngine {
     constructor() {
-        this.videoL = document.getElementById('video-l');
-        this.videoR = document.getElementById('video-r');
-        this.videoT = document.getElementById('video-t');
-        this.bgShipless = document.getElementById('bg-shipless');
+        this.shipL = document.getElementById('ship-l');
+        this.shipR = document.getElementById('ship-r');
+        this.shipTL = document.getElementById('ship-tl'); // R to L turn (turning left)
+        this.shipTR = document.getElementById('ship-tr'); // L to R turn (turning right)
+        
+        this.wavesL = document.getElementById('waves-l');
+        this.wavesR = document.getElementById('waves-r');
         
         this.state = STATE.INIT;
-        this.pointerX = 0.5;      // Normalized pointer X (0 to 1)
-        this.shipX = 0.5;         // Normalized ship X (0 to 1) 
+        this.pointerX = 0.5;      
+        this.shipX = 0.5;         
         
         this.calibration = null;
-        this.activeVideo = null;
+        this.activeShip = null;
+        this.activeWaves = null;
         
         this.turnTimer = null;
         this.intentTimer = null;
@@ -40,18 +44,18 @@ class ShipEngine {
 
     async init() {
         try {
-            // Assign imported calibration data
             this.calibration = calibrationData;
             
-            // Wait for initial metadata to be ready
+            // To prevent blocking initial wait times on videos that don't have a src yet,
+            // we only wait for meta on the active starting ones.
             await Promise.all([
-                this.waitForMeta(this.videoL),
-                this.waitForMeta(this.videoR),
-                this.waitForMeta(this.videoT)
+                this.waitForMeta(this.shipR),
+                this.waitForMeta(this.wavesR)
             ]);
 
             this.setupListeners();
-            this.setState(STATE.MOVING_RIGHT); // default
+            // Start state
+            this.setState(STATE.MOVING_RIGHT);
             this.updateDebug();
         } catch (e) {
             console.error("Initialization error:", e);
@@ -67,14 +71,13 @@ class ShipEngine {
     }
 
     setupListeners() {
-        // Track pointer normalized to 0-1
+        // Track pointer 
         window.addEventListener('mousemove', (e) => {
             this.pointerX = e.clientX / window.innerWidth;
             this.evaluateIntent();
             this.updateDebug();
         });
         
-        // Touch support
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length > 0) {
                 this.pointerX = e.touches[0].clientX / window.innerWidth;
@@ -84,11 +87,9 @@ class ShipEngine {
         });
 
         // Track ship's simulated X based on active video current time
-        // Use requestAnimationFrame for smoother tracking than timeupdate event
         const trackShipX = () => {
-            if (this.activeVideo && this.calibration) {
-                const time = this.activeVideo.currentTime;
-                // Simple interpolation from calibration mapping
+            if (this.activeShip && this.calibration) {
+                const time = this.activeShip.currentTime;
                 let clipKey = null;
                 if (this.state === STATE.MOVING_LEFT) clipKey = 'L';
                 if (this.state === STATE.MOVING_RIGHT) clipKey = 'R';
@@ -98,15 +99,14 @@ class ShipEngine {
                     if (map) {
                         this.shipX = this.interpolateX(map, time);
                         
-                        // Stop at edges: if we hit the min/max of the map, pause the video
+                        // Stop at edges
                         const atStart = time <= map[0].t;
                         const atEnd = time >= map[map.length - 1].t;
                         
                         if (atStart || atEnd) {
-                            this.activeVideo.pause();
+                            this.activeShip.pause();
                         } else {
-                            // Resume if we've moved back into tracking territory
-                            this.activeVideo.play().catch(() => {});
+                            this.activeShip.play().catch(() => {});
                         }
                     }
                 }
@@ -118,7 +118,6 @@ class ShipEngine {
     }
 
     interpolateX(xMap, time) {
-        // Find surrounding points
         for (let i = 0; i < xMap.length - 1; i++) {
             const p1 = xMap[i];
             const p2 = xMap[i+1];
@@ -131,9 +130,8 @@ class ShipEngine {
     }
 
     evaluateIntent() {
-        // Deadzone check
         if (Math.abs(this.pointerX - this.shipX) < CONFIG.deadZone) {
-            return; // Inside deadzone, do nothing
+            return; 
         }
 
         const pointerIsRight = this.pointerX > this.shipX;
@@ -143,14 +141,13 @@ class ShipEngine {
         } else if (this.state === STATE.MOVING_RIGHT && !pointerIsRight) {
             this.triggerTurnIntent(STATE.TURN_R_TO_L);
         } else if (this.state === STATE.MOVING_LEFT || this.state === STATE.MOVING_RIGHT) {
-            // Match, cancel any turn intents
             clearTimeout(this.intentTimer);
             this.intentTimer = null;
         }
     }
 
     triggerTurnIntent(nextState) {
-        if (this.intentTimer) return; // Already queuing
+        if (this.intentTimer) return; 
         
         this.intentTimer = setTimeout(() => {
             this.setState(nextState);
@@ -158,74 +155,96 @@ class ShipEngine {
         }, CONFIG.intentHoldMs);
     }
 
+    crossfadeElements(newShip, newWaves = null) {
+        // Handle Ship
+        if (this.activeShip && this.activeShip !== newShip) {
+            const oldShip = this.activeShip;
+            oldShip.classList.remove('active');
+            setTimeout(() => {
+                oldShip.pause();
+                oldShip.removeAttribute('src'); // Aggressive garbage collection
+                oldShip.load(); 
+            }, CONFIG.crossfadeMs);
+        }
+        this.activeShip = newShip;
+        if (!this.activeShip.hasAttribute('src')) {
+            this.activeShip.src = this.activeShip.dataset.src;
+            this.activeShip.load();
+        }
+        
+        // Handle Waves
+        if (newWaves && this.activeWaves !== newWaves) {
+            if (this.activeWaves) {
+                const oldWaves = this.activeWaves;
+                oldWaves.classList.remove('active');
+                setTimeout(() => { 
+                    oldWaves.pause(); 
+                    oldWaves.removeAttribute('src');
+                    oldWaves.load();
+                }, CONFIG.crossfadeMs);
+            }
+            this.activeWaves = newWaves;
+            if (!this.activeWaves.hasAttribute('src')) {
+                this.activeWaves.src = this.activeWaves.dataset.src;
+                this.activeWaves.load();
+            }
+            this.activeWaves.classList.add('active');
+            this.activeWaves.play().catch(e => console.error("Wave Play prevented", e));
+        }
+
+        // Add class to ship but handle pre-play requirements explicitly per function
+        newShip.classList.add('active');
+    }
+
     setState(newState) {
         if (this.state === newState) return;
         this.state = newState;
 
-        // Clear active classes
-        [this.videoL, this.videoR, this.videoT].forEach(v => {
-            v.classList.remove('active');
-        });
-
-        const crossfadeTo = (videoEl, isReverse = false) => {
-            if (this.activeVideo && this.activeVideo !== videoEl) {
-                // Pause old shortly after to allow smooth opacity transition
-                const oldVideo = this.activeVideo;
-                setTimeout(() => {
-                    oldVideo.pause();
-                }, CONFIG.crossfadeMs);
-            }
-            this.activeVideo = videoEl;
-            
-            videoEl.classList.add('active');
-
-            if (isReverse) {
-                this.playReverse(videoEl, 1.2); // Pass speed scalar
-            } else {
-                videoEl.playbackRate = (videoEl === this.videoT) ? 1.2 : 1.0;
-                videoEl.play().catch(e => console.error("Play prevented", e));
-            }
-        };
-
         if (newState === STATE.MOVING_LEFT) {
-            crossfadeTo(this.videoL);
+            this.crossfadeElements(this.shipL, this.wavesL);
+            this.activeShip.play().catch(e => console.error("Play prevented", e));
         } 
         else if (newState === STATE.MOVING_RIGHT) {
-            crossfadeTo(this.videoR);
+            this.crossfadeElements(this.shipR, this.wavesR);
+            this.activeShip.play().catch(e => console.error("Play prevented", e));
         } 
         else if (newState === STATE.TURN_L_TO_R || newState === STATE.TURN_R_TO_L) {
+            // Turning State
+            const turnVid = (newState === STATE.TURN_L_TO_R) ? this.shipTR : this.shipTL;
             
-            // We use the same turning video for now for both logic branches
-            // Ideally we'd have T_LR and T_RL, but user specified "the turning video"
+            // src handling is done within crossfadeElements now 
+            this.crossfadeElements(turnVid);
+            turnVid.currentTime = 0;
+            this.activeShip.play().catch(e => console.error("Play prevented", e));
             
-            const isReverse = (newState === STATE.TURN_R_TO_L);
-            
-            // Translate the turning video so its centre Perfectly aligns with the ship's current X coordinate
-            // We multiply by 80vw instead of 100vw because the main L/R videos are scaled to 0.8 in CSS
-            const offsetVw = (this.shipX - 0.5) * 80;
-            this.videoT.style.transform = `translateX(${offsetVw}vw) translateY(-6vh) scale(0.672) translateZ(0)`;
-            
-            // Start from 100ms if forward, end if reverse
-            this.videoT.currentTime = isReverse ? this.videoT.duration : 0.1;
-            
-            crossfadeTo(this.videoT, isReverse);
-            
-            // Recalculate duration for 1.2x speed + 100ms cutoff
-            const effectiveDurationMs = ((this.videoT.duration - 0.1) / 1.2) * 1000;
+            const durationMs = turnVid.duration ? (turnVid.duration * 1000) : 2000; // Fallback if meta not loaded instantly
 
-            // While turning, recalculate opposite video mapping and aggressively preload
-            const nextVideo = (newState === STATE.TURN_L_TO_R) ? this.videoR : this.videoL;
-            const targetX = this.shipX; // Approximating ship doesn't move far in turn
+            // Preload opposite videos & Find mapping
+            const nextShip = (newState === STATE.TURN_L_TO_R) ? this.shipR : this.shipL;
+            const nextWaves = (newState === STATE.TURN_L_TO_R) ? this.wavesR : this.wavesL;
             const lookupKey = (newState === STATE.TURN_L_TO_R) ? 'R' : 'L';
             
-            const targetTimeForOpposite = this.findNearestTimeForX(this.calibration.clipData[lookupKey].xMap, targetX);
-            nextVideo.currentTime = targetTimeForOpposite;
+            // Preload by setting src early
+            if (!nextShip.hasAttribute('src')) {
+                nextShip.src = nextShip.dataset.src;
+                nextShip.load();
+            }
+            if (!nextWaves.hasAttribute('src')) {
+                nextWaves.src = nextWaves.dataset.src;
+                nextWaves.load();
+            }
             
-            // Queue transition back to moving
+            // Sync Temporal mapping
+            const targetTimeForOpposite = this.findNearestTimeForX(this.calibration.clipData[lookupKey].xMap, this.shipX);
+            // Ensure readyState > 0 to set currentTime safely, or just set it
+            try { nextShip.currentTime = targetTimeForOpposite; } catch(e){}
+            try { nextWaves.currentTime = targetTimeForOpposite; } catch(e){}
+            
+            // Queue transition back to move state
             clearTimeout(this.turnTimer);
             this.turnTimer = setTimeout(() => {
                 this.setState((newState === STATE.TURN_L_TO_R) ? STATE.MOVING_RIGHT : STATE.MOVING_LEFT);
-            }, effectiveDurationMs - 150); // 150ms buffer for crossfade timing
+            }, durationMs - CONFIG.crossfadeMs);
         }
         
         this.updateDebug();
@@ -252,22 +271,6 @@ class ShipEngine {
         if(dbgState) dbgState.textContent = this.state;
         if(dbgX) dbgX.textContent = this.shipX.toFixed(2);
         if(dbgMX) dbgMX.textContent = this.pointerX.toFixed(2);
-    }
-
-    playReverse(videoEl, speed = 1.0) {
-        videoEl.pause();
-        const fps = 30;
-        const interval = 1000 / (fps * speed); // Compensate interval for speed scalar
-        
-        const step = () => {
-            if (this.activeVideo !== videoEl || this.state === STATE.INIT) return;
-            // Respect the 100ms cutoff even in reverse (finish when we hit 0.1)
-            if (videoEl.currentTime > 0.1) {
-                videoEl.currentTime -= (1 / fps);
-                setTimeout(() => requestAnimationFrame(step), interval);
-            }
-        };
-        requestAnimationFrame(step);
     }
 }
 

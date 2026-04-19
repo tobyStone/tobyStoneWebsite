@@ -56,65 +56,51 @@ body {
     transform: translateZ(0); 
 }
 
-#bg-deep-starry {
+.bg-vid {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -2; /* Absolute bottom */
+    z-index: 0; /* Lowest layer */
+    opacity: 1; /* Background is always fully visible */
+}
+
+.waves-vid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2; /* Highest layer, above ships */
+    pointer-events: none;
+    /* Waves need to be active to show, default to opacity 0 until state logic kicks in */
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.waves-vid.active {
     opacity: 1;
-}
-
-#bg-shipless-base {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 15%;
-    object-fit: contain;
-    object-position: top center;
-    z-index: -1; /* Bottom-most layer */
-    opacity: 1; 
-    
-    /* Y-Scale: 1.7 * 1.07 = 1.819 */
-    /* X-Scale (17% Stretch): 1.819 * 1.17 = 2.128 */
-    transform: translateX(7vw) scale(2.128, 1.819);
-    transform-origin: top center;
-    
-    /* Aggressive LINEAR mask for the right-hand edge only to eliminate the vertical segment boundary */
-    -webkit-mask-image: linear-gradient(to right, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
-    mask-image: linear-gradient(to right, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
-}
-
-#bg-shipless {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: right top; /* Anchors the moon/stars at top-right regardless of wide/narrow screens */
-    z-index: 0; /* Middle backdrop layer */
-    opacity: 0.5; /* Reduced alpha dynamically by 50% */
-    
-    /* Reverting to more aggressive previous masking logic for cleaner blending */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
 
 #ship-container video.active {
     opacity: 1;
 }
 
-#video-l, #video-r {
-    transform: scale(0.8) translateZ(0);
+.ship-vid {
+    z-index: 1; /* Mid layer, between bg and waves */
+}
+
+#ship-l, #ship-r {
+    /* If the ship videos are meant to fill the screen, remove the scale constraint. 
+       If they still need downscaling to 0.696, keep it. Because we are starting fresh with new assets, 
+       we'll remove specific scaling unless it's strictly needed, but let's assume they are output 
+       fullscreen by the tech team. Wait, we should probably keep the old scale if it looked good, or assume full. 
+       Let's stick to full frame `translateZ(0)` to keep things perfectly aligned. */
+    transform: translateZ(0); 
     transform-origin: center center;
-    
-    /* Reverting filters - relying on more aggressive radial mask for blending */
-    -webkit-mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
-    mask-image: radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 88%, transparent 100%);
 }
 
 #debug-overlay {
@@ -132,12 +118,7 @@ body {
     display: none !important;
 }
 
-#video-t {
-    /* Lowered by 4% (from -10vh to -6vh) */
-    transform: translateY(-6vh) scale(0.672) translateZ(0);
+#ship-tl, #ship-tr {
+    transform: translateZ(0);
     transform-origin: center center;
-    
-    /* Further blending: 40% horizontal radius and 55% vertical radius for deeper edge fades */
-    -webkit-mask-image: radial-gradient(ellipse 40% 55% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
-    mask-image: radial-gradient(ellipse 40% 55% at center, black 60%, rgba(0,0,0,0.4) 80%, transparent 95%, transparent 100%);
 }

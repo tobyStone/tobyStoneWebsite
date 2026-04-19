@@ -14,13 +14,18 @@
             We use contain: strict to ensure the browser completely sandboxes this element.
             This gives massive performance benefits for video transitions inside it.
         -->
-        <img id="bg-deep-starry" src="/images/deepStarryBase.png" alt="Deep Space" class="bg-layer" />
-        <img id="bg-shipless-base" src="/images/topSliceBackground.png" alt="Base Background" class="bg-layer" />
-        <img id="bg-shipless" src="/images/blackPirateShiplessBackground.png" alt="Background" class="bg-layer" />
+        <!-- 1) Lowest Z: Background -->
+        <video id="bg-clouds" class="bg-vid" src="/videos/Clouds_moving_across_202604191247.mp4" muted loop autoplay playsinline></video>
         
-        <video id="video-l" src="/videos/Black_and_white_202604151320.mp4" muted preload="auto" playsinline></video>
-        <video id="video-r" src="/videos/Visual__Black_and_202604151319.mp4" muted preload="auto" playsinline></video>
-        <video id="video-t" src="/videos/Image_turning_on_202604151318.mp4" muted preload="auto" playsinline></video>
+        <!-- 2) Mid Z: Ship Motion (User-Controlled) -->
+        <video id="ship-l" class="ship-vid" data-src="/videos/ship_sails_left.mp4" muted preload="auto" playsinline></video>
+        <video id="ship-r" class="ship-vid" data-src="/videos/ship_sails_right.mp4" src="/videos/ship_sails_right.mp4" muted preload="auto" playsinline></video>
+        <video id="ship-tl" class="ship-vid" data-src="/videos/ship_turning_left.mp4" muted preload="auto" playsinline></video>
+        <video id="ship-tr" class="ship-vid" data-src="/videos/ship_turning_right.mp4" muted preload="auto" playsinline></video>
+        
+        <!-- 3) Highest Z: Sea Foreground (Transparent) -->
+        <video id="waves-l" class="waves-vid" data-src="/videos/wavesGoingLeft.mp4" muted preload="auto" playsinline></video>
+        <video id="waves-r" class="waves-vid" data-src="/videos/wavesGoingRight.mp4" src="/videos/wavesGoingRight.mp4" muted preload="auto" playsinline></video>
     </div>
 
     <!-- UI Overlay for debugging (optional) -->
