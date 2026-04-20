@@ -2,11 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\api",
-    "\\config",
     "\\css",
-    "\\models",
-    "\\public",
-    "\\public\\javascript",
     "\\public\\music"
   ],
   "PreviewInSolutionExplorer": false
