@@ -122,3 +122,31 @@ body {
     transform: translateZ(0);
     transform-origin: center center;
 }
+
+/* PNG Test Styles */
+#png-test-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    transform: translate(-50%, -50%);
+    z-index: 50; /* Above all videos */
+    pointer-events: none;
+}
+
+#static-ship-test {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: simple-move 4s ease-in-out infinite;
+}
+
+@keyframes simple-move {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(30px, -20px) rotate(3deg);
+    }
+}
