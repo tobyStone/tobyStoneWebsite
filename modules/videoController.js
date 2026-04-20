@@ -333,6 +333,20 @@ export function startVideo3(skipped = false) {
             tagline.style.opacity = '1';
         }
 
+        // Interactive Ship Link Gateway Logic for naturally finishing intro
+        const interactiveShipLink = document.getElementById('link-interactive-ship');
+        if (interactiveShipLink) {
+            const isDesktop = matchMedia('(hover: hover) and (pointer: fine)').matches;
+            const isLandscape = window.innerWidth > window.innerHeight;
+            
+            if (isDesktop && isLandscape) {
+                interactiveShipLink.classList.remove('hidden');
+                setTimeout(() => {
+                    interactiveShipLink.classList.add('visible');
+                }, 1000);
+            }
+        }
+
         startTestimonials(delayOffset);
     }, 4400 + delayOffset);
 }

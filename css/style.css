@@ -1060,3 +1060,44 @@ textarea {
         right: auto !important;
     }
 }
+
+/* Interactive Ship Gateway Link */
+#link-interactive-ship {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: #fff;
+    text-decoration: none;
+    z-index: 1000;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 30px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none; /* disabled until fully shown */
+}
+
+#link-interactive-ship.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#link-interactive-ship:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.pulse-icon {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}

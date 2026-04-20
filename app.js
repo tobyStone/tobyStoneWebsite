@@ -156,6 +156,21 @@ function skipIntro() {
         tagline.style.opacity = '1';
     }
 
+    // Interactive Ship Link Gateway Logic
+    const interactiveShipLink = document.getElementById('link-interactive-ship');
+    if (interactiveShipLink) {
+        const isDesktop = matchMedia('(hover: hover) and (pointer: fine)').matches;
+        const isLandscape = window.innerWidth > window.innerHeight;
+        
+        if (isDesktop && isLandscape) {
+            interactiveShipLink.classList.remove('hidden');
+            // Slight delay so it doesn't jarringly appear before the video finishes fading
+            setTimeout(() => {
+                interactiveShipLink.classList.add('visible');
+            }, 1000);
+        }
+    }
+
     startTestimonials();
 
     if (video) {

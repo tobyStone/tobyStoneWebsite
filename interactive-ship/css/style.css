@@ -1,0 +1,124 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+.back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    z-index: 100;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+#ship-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* CSS Containment to isolate the heavy rendering of the videos */
+    contain: strict;
+    
+    /* Intrinsic size so that it maintains its dimensions */
+    contain-intrinsic-size: 100vw 100vh;
+}
+
+#ship-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    z-index: 1; /* Overlay on background */
+    transition: opacity 0.15s ease-in-out; /* Smooth crossfades when active */
+    pointer-events: none;
+    
+    /* Performance optimizations to keep the mask stable during animation */
+    will-change: transform, opacity;
+    transform: translateZ(0); 
+}
+
+.bg-vid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0; /* Lowest layer */
+    opacity: 1; /* Background is always fully visible */
+}
+
+.waves-vid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2; /* Highest layer, above ships */
+    pointer-events: none;
+    /* Waves need to be active to show, default to opacity 0 until state logic kicks in */
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.waves-vid.active {
+    opacity: 1;
+}
+
+#ship-container video.active {
+    opacity: 1;
+}
+
+.ship-vid {
+    z-index: 1; /* Mid layer, between bg and waves */
+}
+
+#ship-l, #ship-r {
+    /* If the ship videos are meant to fill the screen, remove the scale constraint. 
+       If they still need downscaling to 0.696, keep it. Because we are starting fresh with new assets, 
+       we'll remove specific scaling unless it's strictly needed, but let's assume they are output 
+       fullscreen by the tech team. Wait, we should probably keep the old scale if it looked good, or assume full. 
+       Let's stick to full frame `translateZ(0)` to keep things perfectly aligned. */
+    transform: translateZ(0); 
+    transform-origin: center center;
+}
+
+#debug-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.8);
+    padding: 15px;
+    border-radius: 8px;
+    font-family: monospace;
+    z-index: 100;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#ship-tl, #ship-tr {
+    transform: translateZ(0);
+    transform-origin: center center;
+}
