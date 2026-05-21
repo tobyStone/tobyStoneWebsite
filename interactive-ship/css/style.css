@@ -33,13 +33,21 @@ body {
     background: #000;
 }
 
-.background-video,
-.sea-overlay {
+.background-video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
+}
+
+.sea-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: auto;
     pointer-events: none;
 }
 
@@ -51,9 +59,9 @@ body {
 .ship-overlay {
     position: absolute;
     z-index: 2;
-    width: 340px;
+    width: 602px;
     left: 15%;
-    bottom: 22%;
+    bottom: 5%;
     transform: translateX(-50%);
     pointer-events: none;
     opacity: 0;
@@ -76,11 +84,11 @@ body {
 @keyframes shipSailAcross {
     from {
         left: 15%;
-        bottom: 22%;
+        bottom: 5%;
     }
     to {
         left: 75%;
-        bottom: 25%;
+        bottom: 8%;
     }
 }
 
