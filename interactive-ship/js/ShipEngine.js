@@ -30,6 +30,9 @@ class ShipGameController {
 
         this.initButtons();
         this.setState(STATE.IDLE);
+        
+        // Start the real-time wave tracking
+        this.startWaveTracking();
     }
 
     initButtons() {
@@ -129,6 +132,86 @@ class ShipGameController {
         sinkVideo.onended = () => {
             sinkVideo.onended = null;
         };
+    }
+
+    startWaveTracking() {
+        this.seaVideo = document.querySelector('.sea-overlay');
+        
+        const track = () => {
+            requestAnimationFrame(track);
+            
+            if (!this.seaVideo || this.seaVideo.readyState < 2) return;
+            const videoWidth = this.seaVideo.videoWidth;
+            const videoHeight = this.seaVideo.videoHeight;
+            if (videoWidth === 0 || videoHeight === 0) return;
+
+            const activeVideo = this.videos[this.state];
+            if (!activeVideo) return;
+
+            const shipRect = activeVideo.getBoundingClientRect();
+            // Center of the ship horizontally
+            const shipScreenX = shipRect.left + shipRect.width / 2;
+
+            const containerW = window.innerWidth;
+            const containerH = window.innerHeight;
+            
+            // Calculate actual rendered dimensions due to object-fit: contain
+            const scale = Math.min(containerW / videoWidth, containerH / videoHeight);
+            const renderedVidW = videoWidth * scale;
+            const renderedVidH = videoHeight * scale;
+            
+            const vidOffsetX = (containerW - renderedVidW) / 2;
+            const vidOffsetY = (containerH - renderedVidH) / 2;
+            
+            // Map the screen X to native video X
+            const relativeX = shipScreenX - vidOffsetX;
+            let nativeX = (relativeX / renderedVidW) * videoWidth;
+            nativeX = Math.max(0, Math.min(videoWidth - 1, Math.floor(nativeX)));
+
+            if (!this.scanCanvas) {
+                this.scanCanvas = document.createElement('canvas');
+                this.scanCtx = this.scanCanvas.getContext('2d', { willReadFrequently: true });
+            }
+            
+            if (this.scanCanvas.width !== 1 || this.scanCanvas.height !== videoHeight) {
+                this.scanCanvas.width = 1;
+                this.scanCanvas.height = videoHeight;
+            }
+
+            this.scanCtx.clearRect(0, 0, 1, videoHeight);
+            // Draw a single 1-pixel wide column from nativeX in the video
+            this.scanCtx.drawImage(
+                this.seaVideo, 
+                nativeX, 0, 1, videoHeight,
+                0, 0, 1, videoHeight
+            );
+
+            const imgData = this.scanCtx.getImageData(0, 0, 1, videoHeight).data;
+            let waveYNative = videoHeight; 
+
+            // Find the wave surface (first pixel with alpha > 50)
+            for (let y = 0; y < videoHeight; y++) {
+                if (imgData[y * 4 + 3] > 50) { 
+                    waveYNative = y;
+                    break;
+                }
+            }
+
+            // Map native Y back to viewport Y
+            const waveYViewport = vidOffsetY + (waveYNative / videoHeight) * renderedVidH;
+            const waveBottomPx = containerH - waveYViewport;
+            
+            // Dip hull slightly (5% of its height) into the water
+            const immersionOffset = shipRect.height * 0.05; 
+            
+            // Apply new dynamic bottom position to all videos so they stay perfectly overlaid
+            const newBottom = `${waveBottomPx - immersionOffset}px`;
+            Object.values(this.videos).forEach(vid => {
+                if (vid) vid.style.bottom = newBottom;
+            });
+        };
+        
+        track();
     }
 }
 

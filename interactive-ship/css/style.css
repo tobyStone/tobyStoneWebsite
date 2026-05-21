@@ -76,11 +76,9 @@ body {
 @keyframes shipSailAcross {
     from {
         left: 7%;
-        bottom: 15%;
     }
     to {
         left: 75%;
-        bottom: 18%;
     }
 }
 
