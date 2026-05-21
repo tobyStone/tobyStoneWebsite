@@ -202,7 +202,9 @@ class ShipGameController {
             const waveBottomPx = containerH - waveYViewport;
             
             // Dip hull slightly (5% of its height) into the water
-            const immersionOffset = shipRect.height * 0.05; 
+            // AND lower the ship by an additional 15% of the vertical viewport as requested
+            // (This compensates for the transparent empty space at the bottom of the ship's WebM canvas)
+            const immersionOffset = (shipRect.height * 0.05) + (containerH * 0.15); 
             
             // Apply new dynamic bottom position to all videos so they stay perfectly overlaid
             const newBottom = `${waveBottomPx - immersionOffset}px`;
