@@ -9,36 +9,26 @@
 <body>
     <a href="/" class="back-link">&larr; Back to Main Site</a>
     
-    <div id="ship-container">
-        <!-- 
-            We use contain: strict to ensure the browser completely sandboxes this element.
-            This gives massive performance benefits for video transitions inside it.
-        -->
+    <div id="ship-container" class="ghost-game-scene">
         <!-- 1) Lowest Z: Background -->
-        <video id="bg-clouds" class="bg-vid" src="/videos/Clouds_moving_across_202604191247.mp4" muted loop autoplay playsinline></video>
+        <video id="bg-clouds" class="background-video" src="/videos/clouds-moon-background-web.mp4" muted loop autoplay playsinline preload="auto"></video>
         
-        <!-- 2) Mid Z: Ship Motion (User-Controlled) -->
-        <video id="ship-l" class="ship-vid" data-src="/videos/ship_sails_left.mp4" muted preload="auto" playsinline></video>
-        <video id="ship-r" class="ship-vid" data-src="/videos/ship_sails_right.mp4" src="/videos/ship_sails_right.mp4" muted preload="auto" playsinline></video>
-        <video id="ship-tl" class="ship-vid" data-src="/videos/ship_turning_left.mp4" muted preload="auto" playsinline></video>
-        <video id="ship-tr" class="ship-vid" data-src="/videos/ship_turning_right.mp4" muted preload="auto" playsinline></video>
-        
-        <!-- 3) Highest Z: Sea Foreground (Transparent) -->
-        <video id="waves-l" class="waves-vid" data-src="/videos/wavesGoingLeft.mp4" muted preload="auto" playsinline></video>
-        <video id="waves-r" class="waves-vid" data-src="/videos/wavesGoingRight.mp4" src="/videos/wavesGoingRight.mp4" muted preload="auto" playsinline></video>
-        
-        <!-- png transparency test -->
-        <div id="png-test-container">
-            <img src="/images/ship.png" alt="Static Ship PNG" id="static-ship-test">
-        </div>
-    </div>
+        <!-- 2) Mid Z: Ship Motion (4 preloaded states) -->
+        <video id="ship-idle" class="ship-overlay active" src="/videos/ship_idle.webm" muted loop autoplay playsinline preload="auto"></video>
+        <video id="ship-sailing" class="ship-overlay" src="/videos/ship_sailing.webm" muted loop playsinline preload="auto"></video>
+        <video id="ship-hit" class="ship-overlay" src="/videos/ship_hit.webm" muted playsinline preload="auto"></video>
+        <video id="ship-sink" class="ship-overlay" src="/videos/ship_sink.webm" muted playsinline preload="auto"></video>
 
-    <!-- UI Overlay for debugging (optional) -->
-    <div id="debug-overlay" class="hidden">
-        <div>State: <span id="dbg-state"></span></div>
-        <div>Direction: <span id="dbg-dir"></span></div>
-        <div>Ship X: <span id="dbg-x"></span></div>
-        <div>Mouse X: <span id="dbg-mx"></span></div>
+        <!-- 3) Highest Z: Sea Foreground (Transparent) -->
+        <video id="sea-overlay" class="sea-overlay" src="/videos/dark-sea-transparent.webm" muted loop autoplay playsinline preload="auto"></video>
+        
+        <!-- 4) Game UI (Interactive testing buttons) -->
+        <div class="game-ui">
+            <button type="button" id="btn-idle">Idle</button>
+            <button type="button" id="btn-sail">Sail</button>
+            <button type="button" id="btn-hit">Hit</button>
+            <button type="button" id="btn-sink">Sink</button>
+        </div>
     </div>
 
     <script type="module" src="./js/ShipEngine.js"></script>

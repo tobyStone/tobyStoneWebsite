@@ -25,128 +25,86 @@ body {
     opacity: 1;
 }
 
-#ship-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    
-    /* CSS Containment to isolate the heavy rendering of the videos */
-    contain: strict;
-    
-    /* Intrinsic size so that it maintains its dimensions */
-    contain-intrinsic-size: 100vw 100vh;
+.ghost-game-scene {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
 }
 
-#ship-container video {
+.background-video,
+.sea-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
-    z-index: 1; /* Overlay on background */
-    transition: opacity 0.15s ease-in-out; /* Smooth crossfades when active */
     pointer-events: none;
-    
-    /* Performance optimizations to keep the mask stable during animation */
-    will-change: transform, opacity;
-    transform: translateZ(0); 
 }
 
-.bg-vid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0; /* Lowest layer */
-    opacity: 1; /* Background is always fully visible */
+.background-video {
+    z-index: 1;
 }
 
-.waves-vid {
+/* Ship sits behind the sea to give depth overlap */
+.ship-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 2; /* Highest layer, above ships */
+    z-index: 2;
+    width: 340px;
+    left: 15%;
+    bottom: 22%;
+    transform: translateX(-50%);
     pointer-events: none;
-    /* Waves need to be active to show, default to opacity 0 until state logic kicks in */
     opacity: 0;
-    transition: opacity 0.15s ease-in-out;
+    transition: opacity 0.1s;
+    will-change: left, opacity;
 }
 
-.waves-vid.active {
+.ship-overlay.active {
     opacity: 1;
 }
 
-#ship-container video.active {
-    opacity: 1;
+.sea-overlay {
+    z-index: 3;
 }
 
-.ship-vid {
-    z-index: 1; /* Mid layer, between bg and waves */
+.ship-sailing {
+    animation: shipSailAcross 12s linear forwards;
 }
 
-#ship-l, #ship-r {
-    /* If the ship videos are meant to fill the screen, remove the scale constraint. 
-       If they still need downscaling to 0.696, keep it. Because we are starting fresh with new assets, 
-       we'll remove specific scaling unless it's strictly needed, but let's assume they are output 
-       fullscreen by the tech team. Wait, we should probably keep the old scale if it looked good, or assume full. 
-       Let's stick to full frame `translateZ(0)` to keep things perfectly aligned. */
-    transform: translateZ(0); 
-    transform-origin: center center;
+@keyframes shipSailAcross {
+    from {
+        left: 15%;
+        bottom: 22%;
+    }
+    to {
+        left: 75%;
+        bottom: 25%;
+    }
 }
 
-#debug-overlay {
+.game-ui {
     position: absolute;
-    bottom: 20px;
+    z-index: 4;
     left: 20px;
-    background: rgba(0,0,0,0.8);
-    padding: 15px;
-    border-radius: 8px;
-    font-family: monospace;
-    z-index: 100;
+    bottom: 20px;
+    display: flex;
+    gap: 10px;
 }
 
-.hidden {
-    display: none !important;
+.game-ui button {
+    font-size: 18px;
+    padding: 10px 16px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
 }
 
-#ship-tl, #ship-tr {
-    transform: translateZ(0);
-    transform-origin: center center;
-}
-
-/* PNG Test Styles */
-#png-test-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 400px;
-    height: 400px;
-    transform: translate(-50%, -50%);
-    z-index: 50; /* Above all videos */
-    pointer-events: none;
-}
-
-#static-ship-test {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    animation: simple-move 4s ease-in-out infinite;
-}
-
-@keyframes simple-move {
-    0%, 100% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    50% {
-        transform: translate(30px, -20px) rotate(3deg);
-    }
+.game-ui button:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
