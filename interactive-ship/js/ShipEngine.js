@@ -201,13 +201,25 @@ class ShipGameController {
             const waveYViewport = vidOffsetY + (waveYNative / videoHeight) * renderedVidH;
             const waveBottomPx = containerH - waveYViewport;
             
-            // Dip hull slightly (5% of its height) into the water
-            // AND lower the ship by an additional 15% of the vertical viewport as requested
-            // (This compensates for the transparent empty space at the bottom of the ship's WebM canvas)
-            const immersionOffset = (shipRect.height * 0.05) + (containerH * 0.15); 
+            // The user wants the ship closer to the viewer (halfway between base of viewport and horizon)
+            // The horizon's distance from the bottom is waveBottomPx. Halfway is waveBottomPx * 0.5.
+            const targetBottomPx = waveBottomPx * 0.5;
+
+            // Subtract 15% of viewport to compensate for the transparent empty space at the bottom of the ship's WebM canvas
+            const paddingOffset = containerH * 0.15; 
+            const targetBottom = targetBottomPx - paddingOffset;
+            
+            // Initialize smoothing variable on first frame
+            if (this.currentBottom === undefined) {
+                this.currentBottom = targetBottom;
+            }
+            
+            // Apply smoothing (low-pass filter) to eliminate jerkiness
+            // A factor of 0.05 creates a very smooth, heavy, organic boat bobbing effect
+            this.currentBottom += (targetBottom - this.currentBottom) * 0.05;
             
             // Apply new dynamic bottom position to all videos so they stay perfectly overlaid
-            const newBottom = `${waveBottomPx - immersionOffset}px`;
+            const newBottom = `${this.currentBottom}px`;
             Object.values(this.videos).forEach(vid => {
                 if (vid) vid.style.bottom = newBottom;
             });
