@@ -58,8 +58,8 @@ body {
     opacity: 0;
     transition: opacity 0.1s;
     will-change: left, opacity;
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 25px), transparent calc(100% - 15vh));
-    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 25px), transparent calc(100% - 15vh));
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 35px), transparent calc(100% - 15vh));
+    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 35px), transparent calc(100% - 15vh));
 }
 
 .ship-overlay.active {
