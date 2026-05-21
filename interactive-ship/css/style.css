@@ -47,20 +47,18 @@ body {
     z-index: 1;
 }
 
-/* Ship sits in front of the sea, but its bottom is masked to simulate depth */
+/* Ship sits behind the sea to give natural depth overlap with the wave */
 .ship-overlay {
     position: absolute;
-    z-index: 3;
+    z-index: 2;
     width: 602px;
     left: 15%;
-    bottom: 5%;
+    bottom: 15%;
     transform: translateX(-50%);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.1s;
     will-change: left, opacity;
-    mask-image: linear-gradient(to bottom, black 90%, black 97%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 90%, black 97%, transparent 100%);
 }
 
 .ship-overlay.active {
@@ -68,7 +66,7 @@ body {
 }
 
 .sea-overlay {
-    z-index: 2;
+    z-index: 3;
 }
 
 .ship-sailing {
@@ -78,11 +76,11 @@ body {
 @keyframes shipSailAcross {
     from {
         left: 15%;
-        bottom: 5%;
+        bottom: 15%;
     }
     to {
         left: 75%;
-        bottom: 8%;
+        bottom: 18%;
     }
 }
 
