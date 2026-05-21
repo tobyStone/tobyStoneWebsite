@@ -47,18 +47,19 @@ body {
     z-index: 1;
 }
 
-/* Ship sits behind the sea to give natural depth overlap with the wave */
+/* Ship sits in front of the sea (z:4) with a masked hull to simulate water occlusion */
 .ship-overlay {
     position: absolute;
-    z-index: 2;
+    z-index: 4;
     width: 602px;
     left: 22%;
-    bottom: 15%;
     transform: translateX(-50%);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.1s;
     will-change: left, opacity;
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 15px), transparent calc(100% - 15vh));
+    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 15px), transparent calc(100% - 15vh));
 }
 
 .ship-overlay.active {
