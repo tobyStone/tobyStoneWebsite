@@ -17,7 +17,7 @@ class ShipGameController {
             [STATE.IDLE]: document.getElementById('ship-idle'),
             [STATE.SAILING]: document.getElementById('ship-sailing'),
             [STATE.HIT]: document.getElementById('ship-hit'),
-            [STATE.SINK]: document.getElementById('ship-idle') // REUSE IDLE VIDEO FOR SINKING!
+            [STATE.SINK]: document.getElementById('ship-sink') // USE THE NEW TILTING VIDEO
         };
         
         // Ensure we play the videos correctly on load
@@ -70,7 +70,11 @@ class ShipGameController {
 
         // Prepare the new video and show it
         if (oldVideo !== newVideo) {
-            newVideo.currentTime = 0;
+            if (newState === STATE.SINK) {
+                newVideo.load(); // Force the browser to refresh the video buffer
+            } else {
+                newVideo.currentTime = 0;
+            }
             newVideo.classList.add('active');
         }
         
@@ -92,12 +96,17 @@ class ShipGameController {
                 }
             });
         } else if (newState === STATE.SINK) {
-            // Freeze the ship in its exact current horizontal position!
+            // Find the exact horizontal pixel the ship is currently at
+            let frozenLeft = '22%';
+            if (oldVideo) {
+                frozenLeft = window.getComputedStyle(oldVideo).left;
+            }
+            
+            // Instantly apply this frozen position to all videos so it doesn't snap back to the start!
             Object.values(this.videos).forEach(vid => {
-                if (vid && vid.classList.contains('ship-sailing')) {
-                    // Lock the computed left position as an inline style
-                    vid.style.left = window.getComputedStyle(vid).left;
+                if (vid) {
                     vid.classList.remove('ship-sailing');
+                    vid.style.left = frozenLeft;
                 }
             });
         } else {
