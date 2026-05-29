@@ -17,7 +17,7 @@ class ShipGameController {
             [STATE.IDLE]: document.getElementById('ship-idle'),
             [STATE.SAILING]: document.getElementById('ship-sailing'),
             [STATE.HIT]: document.getElementById('ship-hit'),
-            [STATE.SINK]: document.getElementById('ship-sink')
+            [STATE.SINK]: document.getElementById('ship-idle') // REUSE IDLE VIDEO FOR SINKING!
         };
         
         // Ensure we play the videos correctly on load
@@ -69,8 +69,10 @@ class ShipGameController {
         }
 
         // Prepare the new video and show it
-        newVideo.currentTime = 0;
-        newVideo.classList.add('active');
+        if (oldVideo !== newVideo) {
+            newVideo.currentTime = 0;
+            newVideo.classList.add('active');
+        }
         
         const playPromise = newVideo.play();
         if (playPromise !== undefined) {
@@ -89,6 +91,15 @@ class ShipGameController {
                     vid.classList.add('ship-sailing');
                 }
             });
+        } else if (newState === STATE.SINK) {
+            // Freeze the ship in its exact current horizontal position!
+            Object.values(this.videos).forEach(vid => {
+                if (vid && vid.classList.contains('ship-sailing')) {
+                    // Lock the computed left position as an inline style
+                    vid.style.left = window.getComputedStyle(vid).left;
+                    vid.classList.remove('ship-sailing');
+                }
+            });
         } else {
             // Keep it wherever it was, or reset it. For a pure "restart", remove the class.
             Object.values(this.videos).forEach(vid => {
@@ -96,6 +107,8 @@ class ShipGameController {
                     // If we hit, we want to pause its movement. If we go to idle or sink, we might stop moving.
                     // For now, only remove sailing class when going back to idle or sink.
                     vid.classList.remove('ship-sailing');
+                    // Clear the frozen left style so it snaps back to the CSS default (22%)
+                    vid.style.left = '';
                 }
             });
         }
@@ -126,12 +139,6 @@ class ShipGameController {
 
     playSink() {
         this.setState(STATE.SINK);
-        
-        // Sink stays sunk, no auto-return
-        const sinkVideo = this.videos[STATE.SINK];
-        sinkVideo.onended = () => {
-            sinkVideo.onended = null;
-        };
     }
 
     startWaveTracking() {
@@ -214,9 +221,15 @@ class ShipGameController {
                 this.currentBottom = targetBottom;
             }
             
-            // Apply smoothing (low-pass filter) to eliminate jerkiness
-            // A factor of 0.05 creates a very smooth, heavy, organic boat bobbing effect
-            this.currentBottom += (targetBottom - this.currentBottom) * 0.05;
+            if (this.state === STATE.SINK) {
+                // Linearly sink down off the screen!
+                // Container height / 300 = sink entirely in ~5 seconds at 60fps
+                this.currentBottom -= (containerH / 300);
+            } else {
+                // Apply smoothing (low-pass filter) to eliminate jerkiness
+                // A factor of 0.05 creates a very smooth, heavy, organic boat bobbing effect
+                this.currentBottom += (targetBottom - this.currentBottom) * 0.05;
+            }
             
             // Apply new dynamic bottom position to all videos so they stay perfectly overlaid
             const newBottom = `${this.currentBottom}px`;
