@@ -72,7 +72,9 @@ class ShipGameController {
         if (oldVideo !== newVideo) {
             if (newState === STATE.SINK) {
                 newVideo.load(); // Force the browser to refresh the video buffer
+                newVideo.playbackRate = 0.7; // Slow down the tilting video by 0.7x
             } else {
+                newVideo.playbackRate = 1.0;
                 newVideo.currentTime = 0;
             }
             newVideo.classList.add('active');
@@ -232,7 +234,8 @@ class ShipGameController {
             
             if (this.state === STATE.SINK) {
                 // Determine how much to sink per frame (sink off screen in ~5 seconds at 60fps)
-                const sinkAmount = (containerH / 300);
+                // Multiplied by 0.7 to perfectly match the 0.7x slowed video animation!
+                const sinkAmount = (containerH / 300) * 0.7;
                 
                 // Track total distance sunk
                 if (!this.sinkOffset) this.sinkOffset = 0;
