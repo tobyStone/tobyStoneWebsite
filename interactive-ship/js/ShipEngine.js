@@ -72,7 +72,7 @@ class ShipGameController {
         if (oldVideo !== newVideo) {
             if (newState === STATE.SINK) {
                 newVideo.load(); // Force the browser to refresh the video buffer
-                newVideo.playbackRate = 0.7; // Slow down the tilting video by 0.7x
+                newVideo.playbackRate = 0.49; // Slow down the tilting video by another 0.7x (0.7 * 0.7) to hide clipping
             } else {
                 newVideo.playbackRate = 1.0;
                 newVideo.currentTime = 0;
