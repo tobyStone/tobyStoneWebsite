@@ -222,13 +222,28 @@ class ShipGameController {
             }
             
             if (this.state === STATE.SINK) {
-                // Linearly sink down off the screen!
-                // Container height / 300 = sink entirely in ~5 seconds at 60fps
-                this.currentBottom -= (containerH / 300);
+                // Determine how much to sink per frame (sink off screen in ~5 seconds at 60fps)
+                const sinkAmount = (containerH / 300);
+                
+                // Track total distance sunk
+                if (!this.sinkOffset) this.sinkOffset = 0;
+                this.sinkOffset += sinkAmount;
+                
+                // The new target is the wave's surface MINUS how far we've sunk!
+                const sinkTarget = targetBottom - this.sinkOffset;
+                
+                // Keep smoothing it! This allows the ship to elegantly bob with the waves WHILE sinking
+                this.currentBottom += (sinkTarget - this.currentBottom) * 0.05;
+                
+                // Perfectly cancel out the mask drop by pushing the mask upwards
+                document.documentElement.style.setProperty('--sink-mask-offset', `${this.sinkOffset}px`);
             } else {
-                // Apply smoothing (low-pass filter) to eliminate jerkiness
-                // A factor of 0.05 creates a very smooth, heavy, organic boat bobbing effect
+                // Apply standard smoothing (low-pass filter) to eliminate jerkiness
                 this.currentBottom += (targetBottom - this.currentBottom) * 0.05;
+                
+                // Reset the mask offset in case the user resets to idle
+                this.sinkOffset = 0;
+                document.documentElement.style.setProperty('--sink-mask-offset', `0px`);
             }
             
             // Apply new dynamic bottom position to all videos so they stay perfectly overlaid
