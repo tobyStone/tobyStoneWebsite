@@ -40,11 +40,21 @@ class ShipGameController {
         const btnSail = document.getElementById('btn-sail');
         const btnHit = document.getElementById('btn-hit');
         const btnSink = document.getElementById('btn-sink');
+        const btnTurn = document.getElementById('btn-turn');
 
         if(btnIdle) btnIdle.addEventListener('click', () => this.playIdle());
         if(btnSail) btnSail.addEventListener('click', () => this.startSailing());
         if(btnHit) btnHit.addEventListener('click', () => this.playHit());
         if(btnSink) btnSink.addEventListener('click', () => this.playSink());
+        if(btnTurn) btnTurn.addEventListener('click', () => this.toggleTurn());
+    }
+
+    toggleTurn() {
+        const sea = document.getElementById('sea-overlay');
+        const isFlipped = sea.classList.toggle('flipped');
+        Object.values(this.videos).forEach(vid => {
+            if (vid) vid.classList.toggle('flipped', isFlipped);
+        });
     }
 
     // --- Core Transition Logic ---

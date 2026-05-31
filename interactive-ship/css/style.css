@@ -107,3 +107,25 @@ body {
 .game-ui button:hover {
     background: rgba(255, 255, 255, 0.4);
 }
+
+.ship-overlay.flipped {
+    left: 75%;
+    transform: translateX(-50%) scaleX(-1);
+}
+
+.sea-overlay.flipped {
+    transform: scaleX(-1);
+}
+
+.ship-overlay.flipped.ship-sailing {
+    animation: shipSailAcrossReverse 12s linear forwards;
+}
+
+@keyframes shipSailAcrossReverse {
+    from {
+        left: 75%;
+    }
+    to {
+        left: 22%;
+    }
+}
