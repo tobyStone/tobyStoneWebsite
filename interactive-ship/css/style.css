@@ -51,7 +51,7 @@ body {
 .ship-overlay {
     position: absolute;
     z-index: 4;
-    width: 421px;
+    width: 505px;
     left: 22%;
     transform: translateX(-50%);
     pointer-events: none;
