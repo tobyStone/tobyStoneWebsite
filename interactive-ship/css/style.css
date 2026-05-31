@@ -70,18 +70,7 @@ body {
     z-index: 3;
 }
 
-.ship-sailing {
-    animation: shipSailAcross 12s linear forwards;
-}
 
-@keyframes shipSailAcross {
-    from {
-        left: 22%;
-    }
-    to {
-        left: 75%;
-    }
-}
 
 .game-ui {
     position: absolute;
@@ -109,23 +98,9 @@ body {
 }
 
 .ship-overlay.flipped {
-    left: 75%;
     transform: translateX(-50%) scaleX(-1);
 }
 
 .sea-overlay.flipped {
     transform: scaleX(-1);
-}
-
-.ship-overlay.flipped.ship-sailing {
-    animation: shipSailAcrossReverse 12s linear forwards;
-}
-
-@keyframes shipSailAcrossReverse {
-    from {
-        left: 75%;
-    }
-    to {
-        left: 22%;
-    }
 }

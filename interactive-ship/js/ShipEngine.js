@@ -32,6 +32,7 @@ class ShipGameController {
         this.setState(STATE.IDLE);
         
         // Start the real-time wave tracking
+        this.currentLeftPct = 22; // Track the exact X position
         this.startWaveTracking();
     }
 
@@ -93,45 +94,6 @@ class ShipGameController {
         const playPromise = newVideo.play();
         if (playPromise !== undefined) {
             playPromise.catch(e => console.log("Video play prevented:", e));
-        }
-
-        // Manage the CSS sailing animation classes
-        // All videos need the sailing class if the ship is currently physically moving
-        // But for now, we attach it to all so they move together.
-        if (newState === STATE.SAILING) {
-            Object.values(this.videos).forEach(vid => {
-                if (vid) {
-                    vid.classList.remove('ship-sailing');
-                    // Trigger reflow
-                    void vid.offsetWidth;
-                    vid.classList.add('ship-sailing');
-                }
-            });
-        } else if (newState === STATE.SINK) {
-            // Find the exact horizontal pixel the ship is currently at
-            let frozenLeft = '22%';
-            if (oldVideo) {
-                frozenLeft = window.getComputedStyle(oldVideo).left;
-            }
-            
-            // Instantly apply this frozen position to all videos so it doesn't snap back to the start!
-            Object.values(this.videos).forEach(vid => {
-                if (vid) {
-                    vid.classList.remove('ship-sailing');
-                    vid.style.left = frozenLeft;
-                }
-            });
-        } else {
-            // Keep it wherever it was, or reset it. For a pure "restart", remove the class.
-            Object.values(this.videos).forEach(vid => {
-                if (vid && newState !== STATE.HIT) {
-                    // If we hit, we want to pause its movement. If we go to idle or sink, we might stop moving.
-                    // For now, only remove sailing class when going back to idle or sink.
-                    vid.classList.remove('ship-sailing');
-                    // Clear the frozen left style so it snaps back to the CSS default (22%)
-                    vid.style.left = '';
-                }
-            });
         }
     }
 
@@ -268,10 +230,29 @@ class ShipGameController {
                 document.documentElement.style.setProperty('--sink-mask-offset', `0px`);
             }
             
-            // Apply new dynamic bottom position to all videos so they stay perfectly overlaid
+            // X-Axis Movement Logic
+            if (this.state === STATE.SAILING) {
+                const isFlipped = this.seaVideo.classList.contains('flipped');
+                const speed = (75 - 22) / (12 * 60); // 12 seconds to cross screen at 60fps
+                
+                if (isFlipped) {
+                    this.currentLeftPct -= speed;
+                    if (this.currentLeftPct < 22) this.currentLeftPct = 22;
+                } else {
+                    this.currentLeftPct += speed;
+                    if (this.currentLeftPct > 75) this.currentLeftPct = 75;
+                }
+            }
+            
+            // Apply new dynamic positions to all videos so they stay perfectly overlaid
             const newBottom = `${this.currentBottom}px`;
+            const newLeft = `${this.currentLeftPct}%`;
+            
             Object.values(this.videos).forEach(vid => {
-                if (vid) vid.style.bottom = newBottom;
+                if (vid) {
+                    vid.style.bottom = newBottom;
+                    vid.style.left = newLeft;
+                }
             });
         };
         
