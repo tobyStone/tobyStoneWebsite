@@ -5,7 +5,8 @@ const STATE = {
     IDLE: 'IDLE',
     SAILING: 'SAILING',
     HIT: 'HIT',
-    SINK: 'SINK'
+    SINK: 'SINK',
+    TURN: 'TURN'
 };
 
 class ShipGameController {
@@ -17,7 +18,8 @@ class ShipGameController {
             [STATE.IDLE]: document.getElementById('ship-idle'),
             [STATE.SAILING]: document.getElementById('ship-sailing'),
             [STATE.HIT]: document.getElementById('ship-hit'),
-            [STATE.SINK]: document.getElementById('ship-sink') // USE THE NEW TILTING VIDEO
+            [STATE.SINK]: document.getElementById('ship-sink'),
+            [STATE.TURN]: document.getElementById('ship-turn')
         };
         
         // Ensure we play the videos correctly on load
@@ -47,15 +49,27 @@ class ShipGameController {
         if(btnSail) btnSail.addEventListener('click', () => this.startSailing());
         if(btnHit) btnHit.addEventListener('click', () => this.playHit());
         if(btnSink) btnSink.addEventListener('click', () => this.playSink());
-        if(btnTurn) btnTurn.addEventListener('click', () => this.toggleTurn());
+        if(btnTurn) btnTurn.addEventListener('click', () => this.playTurn());
     }
 
-    toggleTurn() {
-        const sea = document.getElementById('sea-overlay');
-        const isFlipped = sea.classList.toggle('flipped');
-        Object.values(this.videos).forEach(vid => {
-            if (vid) vid.classList.toggle('flipped', isFlipped);
-        });
+    playTurn() {
+        if (this.state === STATE.TURN) return;
+        this.setState(STATE.TURN);
+        
+        const turnVideo = this.videos[STATE.TURN];
+        if (!turnVideo) return;
+        
+        turnVideo.onended = () => {
+            turnVideo.onended = null;
+            if (this.state === STATE.TURN) {
+                const sea = document.getElementById('sea-overlay');
+                const isFlipped = sea.classList.toggle('flipped');
+                Object.values(this.videos).forEach(vid => {
+                    if (vid) vid.classList.toggle('flipped', isFlipped);
+                });
+                this.playIdle();
+            }
+        };
     }
 
     // --- Core Transition Logic ---
