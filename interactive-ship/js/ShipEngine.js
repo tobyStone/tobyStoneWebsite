@@ -66,10 +66,12 @@ class ShipGameController {
             turnVideo.onended = null;
             if (this.state === STATE.TURN) {
                 const sea = document.getElementById('sea-overlay');
-                const isFlipped = sea.classList.toggle('flipped');
+                const newFlipped = !sea.classList.contains('flipped');
+                this.pendingSeaFlip = newFlipped;
+                
                 Object.values(this.videos).forEach(vid => {
                     if (vid && vid !== turnVideo) {
-                        vid.classList.toggle('flipped', isFlipped);
+                        vid.classList.toggle('flipped', newFlipped);
                     }
                 });
                 this.playIdle();
@@ -103,6 +105,9 @@ class ShipGameController {
             if (newState === STATE.SINK) {
                 newVideo.load(); // Force the browser to refresh the video buffer
                 newVideo.playbackRate = 0.3773; // Slow down the tilting video further (0.49 * 0.77) to hide clipping
+            } else if (newState === STATE.SAILING) {
+                newVideo.playbackRate = 1.7;
+                newVideo.currentTime = 0;
             } else {
                 newVideo.playbackRate = 1.0;
                 newVideo.currentTime = 0;
@@ -145,11 +150,22 @@ class ShipGameController {
 
     startWaveTracking() {
         this.seaVideo = document.querySelector('.sea-overlay');
+        let lastSeaTime = 0;
         
         const track = () => {
             requestAnimationFrame(track);
             
             if (!this.seaVideo || this.seaVideo.readyState < 2) return;
+            
+            const currentSeaTime = this.seaVideo.currentTime;
+            if (currentSeaTime < lastSeaTime - 1) {
+                if (this.pendingSeaFlip !== undefined) {
+                    this.seaVideo.classList.toggle('flipped', this.pendingSeaFlip);
+                    this.pendingSeaFlip = undefined;
+                }
+            }
+            lastSeaTime = currentSeaTime;
+            
             const videoWidth = this.seaVideo.videoWidth;
             const videoHeight = this.seaVideo.videoHeight;
             if (videoWidth === 0 || videoHeight === 0) return;
