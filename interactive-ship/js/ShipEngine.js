@@ -59,13 +59,16 @@ class ShipGameController {
         const turnVideo = this.videos[STATE.TURN];
         if (!turnVideo) return;
         
+        const isCurrentlyFlipped = document.getElementById('sea-overlay').classList.contains('flipped');
+        turnVideo.classList.toggle('flipped', isCurrentlyFlipped);
+        
         turnVideo.onended = () => {
             turnVideo.onended = null;
             if (this.state === STATE.TURN) {
                 const sea = document.getElementById('sea-overlay');
                 const isFlipped = sea.classList.toggle('flipped');
                 Object.values(this.videos).forEach(vid => {
-                    if (vid && vid !== turnVid) {
+                    if (vid && vid !== turnVideo) {
                         vid.classList.toggle('flipped', isFlipped);
                     }
                 });
