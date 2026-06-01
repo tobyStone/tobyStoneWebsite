@@ -192,8 +192,8 @@ class ShipGameController {
             
             if (!this.seaVideo || this.seaVideo.readyState < 2) return;
             
-            // Trim the last 100ms of the video loop to prevent the judder caused by duplicate trailing frames
-            if (this.seaVideo.duration && this.seaVideo.currentTime >= this.seaVideo.duration - 0.1) {
+            // Trim the last 200ms of the video loop to prevent the judder caused by duplicate trailing frames
+            if (this.seaVideo.duration && this.seaVideo.currentTime >= this.seaVideo.duration - 0.2) {
                 this.seaVideo.currentTime = 0;
             }
             
