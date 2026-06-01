@@ -1,4 +1,5 @@
 // ShipEngine.js
+import './AudioManager.js';
 // State Machine for controlling interactive ship using WebM layers
 
 const STATE = {
