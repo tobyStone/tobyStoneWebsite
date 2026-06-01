@@ -290,8 +290,10 @@ class ShipGameController {
                 // Keep smoothing it! This allows the ship to elegantly bob with the waves WHILE sinking
                 this.currentBottom += (sinkTarget - this.currentBottom) * 0.05;
                 
-                // Perfectly cancel out the mask drop by pushing the mask upwards
-                document.documentElement.style.setProperty('--sink-mask-offset', `${this.sinkOffset}px`);
+                // Perfectly cancel out the mask drop by pushing the mask upwards as a percentage of ship height
+                const shipHeight = this.videos[STATE.IDLE].offsetHeight || 505;
+                const offsetPct = (this.sinkOffset / shipHeight) * 100;
+                document.documentElement.style.setProperty('--sink-mask-offset-pct', `${offsetPct}%`);
             } else {
                 // Apply standard smoothing (low-pass filter) to eliminate jerkiness
                 this.currentBottom += (targetBottom - this.currentBottom) * 0.05;
