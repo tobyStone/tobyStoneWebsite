@@ -2,10 +2,8 @@ class AudioManager {
     constructor() {
         this.initialized = false;
         
-        // Define audio tracks
+        // Define audio tracks for one-shots
         this.tracks = {
-            ambient1: new Audio('/sounds/waves_seamless.ogg'),
-            ambient2: new Audio('/sounds/waves_seamless.ogg'),
             idle: new Audio('/sounds/idle.mp3'),
             sail: new Audio('/sounds/sail.mp3'),
             turn: new Audio('/sounds/turn.mp3'),
@@ -13,12 +11,24 @@ class AudioManager {
             sink: new Audio('/sounds/sink.mp3')
         };
         
-        // Configure ambient tracks
-        this.tracks.ambient1.loop = true;
-        this.tracks.ambient2.loop = true;
-        this.tracks.ambient1.volume = 0.0; // Start silent, fade in
-        this.tracks.ambient2.volume = 0.0;
-        this.ambientTargetVolume = 0.147; // Reduced further for 2 tracks (0.21 * 0.7)
+        // Setup Web Audio API for perfectly seamless ambient looping
+        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        this.ambientGain = this.audioCtx.createGain();
+        this.ambientGain.gain.value = 0.0; // Start silent
+        this.ambientGain.connect(this.audioCtx.destination);
+        
+        this.ambientSource = null;
+        this.ambientBuffer = null;
+        
+        // Fetch and decode the wave sound into memory
+        fetch('/sounds/waves_seamless.ogg')
+            .then(res => res.arrayBuffer())
+            .then(buf => this.audioCtx.decodeAudioData(buf))
+            .then(decodedData => {
+                this.ambientBuffer = decodedData;
+            });
+            
+        this.ambientTargetVolume = 0.21; // Restore to 0.21 for single gapless track
         
         // Preload all
         Object.values(this.tracks).forEach(audio => {
@@ -54,12 +64,28 @@ class AudioManager {
             if (!this.initialized) {
                 this.initialized = true;
                 
-                // Start both tracks, but offset the second one by half its duration
-                this.tracks.ambient1.play().catch(e => console.log('Audio autoplay blocked:', e));
+                // Unlock Web Audio Context
+                if (this.audioCtx.state === 'suspended') {
+                    this.audioCtx.resume();
+                }
                 
-                this.tracks.ambient2.play().then(() => {
-                    this.tracks.ambient2.currentTime = this.tracks.ambient2.duration / 2;
-                }).catch(e => console.log('Audio autoplay blocked:', e));
+                // Start gapless ambient loop
+                const startAmbient = () => {
+                    if (this.ambientBuffer && !this.ambientSource) {
+                        this.ambientSource = this.audioCtx.createBufferSource();
+                        this.ambientSource.buffer = this.ambientBuffer;
+                        this.ambientSource.loop = true;
+                        this.ambientSource.connect(this.ambientGain);
+                        this.ambientSource.start();
+                    }
+                };
+                
+                // If buffer is already loaded, start it. Otherwise try again in 500ms
+                if (this.ambientBuffer) {
+                    startAmbient();
+                } else {
+                    setTimeout(startAmbient, 500);
+                }
                 
                 this.fadeAmbient(this.ambientTargetVolume);
                 this.scheduleNextJoke();
@@ -118,23 +144,14 @@ class AudioManager {
     }
     
     fadeAmbient(targetVol) {
-        if (!this.initialized) return;
+        if (!this.initialized || !this.ambientGain) return;
         
-        // Simple fade interval
-        if (this.fadeInterval) clearInterval(this.fadeInterval);
-        
-        this.fadeInterval = setInterval(() => {
-            let current = this.tracks.ambient1.volume;
-            if (Math.abs(current - targetVol) < 0.02) {
-                this.tracks.ambient1.volume = targetVol;
-                this.tracks.ambient2.volume = targetVol;
-                clearInterval(this.fadeInterval);
-                return;
-            }
-            let nextVol = current + ((targetVol > current) ? 0.02 : -0.02);
-            this.tracks.ambient1.volume = nextVol;
-            this.tracks.ambient2.volume = nextVol;
-        }, 50);
+        // Cancel any currently scheduled fades
+        this.ambientGain.gain.cancelScheduledValues(this.audioCtx.currentTime);
+        // Linearly ramp to the new volume over 0.5 seconds
+        // By setting the value explicitly before ramping, we prevent sudden jumps
+        this.ambientGain.gain.setValueAtTime(this.ambientGain.gain.value, this.audioCtx.currentTime);
+        this.ambientGain.gain.linearRampToValueAtTime(targetVol, this.audioCtx.currentTime + 0.5);
     }
     
     playVoice(engineState, isExplicitClick = false) {
