@@ -4,7 +4,8 @@ class AudioManager {
         
         // Define audio tracks
         this.tracks = {
-            ambient: new Audio('/sounds/waves_seamless.ogg'),
+            ambient1: new Audio('/sounds/waves_seamless.ogg'),
+            ambient2: new Audio('/sounds/waves_seamless.ogg'),
             idle: new Audio('/sounds/idle.mp3'),
             sail: new Audio('/sounds/sail.mp3'),
             turn: new Audio('/sounds/turn.mp3'),
@@ -12,10 +13,12 @@ class AudioManager {
             sink: new Audio('/sounds/sink.mp3')
         };
         
-        // Configure ambient track
-        this.tracks.ambient.loop = true;
-        this.tracks.ambient.volume = 0.0; // Start silent, fade in
-        this.ambientTargetVolume = 0.21; // 70% of original 0.3 volume
+        // Configure ambient tracks
+        this.tracks.ambient1.loop = true;
+        this.tracks.ambient2.loop = true;
+        this.tracks.ambient1.volume = 0.0; // Start silent, fade in
+        this.tracks.ambient2.volume = 0.0;
+        this.ambientTargetVolume = 0.147; // Reduced further for 2 tracks (0.21 * 0.7)
         
         // Preload all
         Object.values(this.tracks).forEach(audio => {
@@ -50,7 +53,14 @@ class AudioManager {
         const unlock = () => {
             if (!this.initialized) {
                 this.initialized = true;
-                this.tracks.ambient.play().catch(e => console.log('Audio autoplay blocked:', e));
+                
+                // Start both tracks, but offset the second one by half its duration
+                this.tracks.ambient1.play().catch(e => console.log('Audio autoplay blocked:', e));
+                
+                this.tracks.ambient2.play().then(() => {
+                    this.tracks.ambient2.currentTime = this.tracks.ambient2.duration / 2;
+                }).catch(e => console.log('Audio autoplay blocked:', e));
+                
                 this.fadeAmbient(this.ambientTargetVolume);
                 this.scheduleNextJoke();
             }
@@ -114,13 +124,16 @@ class AudioManager {
         if (this.fadeInterval) clearInterval(this.fadeInterval);
         
         this.fadeInterval = setInterval(() => {
-            let current = this.tracks.ambient.volume;
+            let current = this.tracks.ambient1.volume;
             if (Math.abs(current - targetVol) < 0.02) {
-                this.tracks.ambient.volume = targetVol;
+                this.tracks.ambient1.volume = targetVol;
+                this.tracks.ambient2.volume = targetVol;
                 clearInterval(this.fadeInterval);
                 return;
             }
-            this.tracks.ambient.volume += (targetVol > current) ? 0.02 : -0.02;
+            let nextVol = current + ((targetVol > current) ? 0.02 : -0.02);
+            this.tracks.ambient1.volume = nextVol;
+            this.tracks.ambient2.volume = nextVol;
         }, 50);
     }
     
