@@ -53,30 +53,53 @@ class ShipGameController {
     }
 
     playTurn() {
-        if (this.state === STATE.TURN) return;
-        this.setState(STATE.TURN);
+        if (this.state === STATE.TURN || this.state === STATE.SINK || this.isPreparingTurn) return;
+        this.isPreparingTurn = true;
         
         const turnVideo = this.videos[STATE.TURN];
         if (!turnVideo) return;
         
-        const isCurrentlyFlipped = document.getElementById('sea-overlay').classList.contains('flipped');
+        // Read the true direction from the IDLE video, NOT the sea video, 
+        // to completely avoid race conditions if the sea flip is currently delayed!
+        const isCurrentlyFlipped = this.videos[STATE.IDLE].classList.contains('flipped');
         turnVideo.classList.toggle('flipped', isCurrentlyFlipped);
         
-        turnVideo.onended = () => {
-            turnVideo.onended = null;
-            if (this.state === STATE.TURN) {
-                const sea = document.getElementById('sea-overlay');
-                const newFlipped = !sea.classList.contains('flipped');
-                this.pendingSeaFlip = newFlipped;
-                
-                Object.values(this.videos).forEach(vid => {
-                    if (vid && vid !== turnVideo) {
-                        vid.classList.toggle('flipped', newFlipped);
-                    }
-                });
-                this.playIdle();
-            }
+        // Pause to prevent rogue playback during seek
+        turnVideo.pause();
+        
+        let hasSeeked = false;
+        const startTurnSequence = () => {
+            if (hasSeeked) return;
+            hasSeeked = true;
+            this.isPreparingTurn = false;
+            turnVideo.removeEventListener('seeked', startTurnSequence);
+            
+            // Abort if another state (like SINK) overrode us during the microscopic seek delay
+            if (this.state === STATE.SINK) return;
+            
+            this.setState(STATE.TURN);
+            
+            turnVideo.onended = () => {
+                turnVideo.onended = null;
+                if (this.state === STATE.TURN) {
+                    const newFlipped = !isCurrentlyFlipped;
+                    this.pendingSeaFlip = newFlipped;
+                    
+                    Object.values(this.videos).forEach(vid => {
+                        if (vid && vid !== turnVideo) {
+                            vid.classList.toggle('flipped', newFlipped);
+                        }
+                    });
+                    this.playIdle();
+                }
+            };
         };
+        
+        // Wait for the video to fully render its 0th frame before we visually show it
+        turnVideo.addEventListener('seeked', startTurnSequence);
+        setTimeout(startTurnSequence, 50); // Robust fallback in case seeked doesn't fire
+        
+        turnVideo.currentTime = 0;
     }
 
     // --- Core Transition Logic ---
