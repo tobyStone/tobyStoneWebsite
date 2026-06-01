@@ -45,10 +45,13 @@ class ShipGameController {
         const btnSink = document.getElementById('btn-sink');
         const btnTurn = document.getElementById('btn-turn');
 
-        if(btnIdle) btnIdle.addEventListener('click', () => this.playIdle());
-        if(btnSail) btnSail.addEventListener('click', () => this.startSailing());
-        if(btnHit) btnHit.addEventListener('click', () => this.playHit());
-        if(btnSink) btnSink.addEventListener('click', () => this.playSink());
+        // Block UI clicks if the ship is turning or sinking
+        const isLocked = () => this.state === STATE.TURN || this.state === STATE.SINK;
+
+        if(btnIdle) btnIdle.addEventListener('click', () => { if (!isLocked()) this.playIdle(); });
+        if(btnSail) btnSail.addEventListener('click', () => { if (!isLocked()) this.startSailing(); });
+        if(btnHit) btnHit.addEventListener('click', () => { if (!isLocked()) this.playHit(); });
+        if(btnSink) btnSink.addEventListener('click', () => { if (!isLocked()) this.playSink(); });
         if(btnTurn) btnTurn.addEventListener('click', () => this.playTurn());
     }
 
@@ -150,17 +153,14 @@ class ShipGameController {
     // --- Public API for Game Logic ---
 
     playIdle() {
-        if (this.state === STATE.TURN) return;
         this.setState(STATE.IDLE);
     }
 
     startSailing() {
-        if (this.state === STATE.TURN) return;
         this.setState(STATE.SAILING);
     }
 
     playHit() {
-        if (this.state === STATE.TURN) return;
         this.setState(STATE.HIT);
         
         // Once hit finishes, return to idle automatically
@@ -174,7 +174,6 @@ class ShipGameController {
     }
 
     playSink() {
-        if (this.state === STATE.TURN) return;
         this.setState(STATE.SINK);
     }
 
