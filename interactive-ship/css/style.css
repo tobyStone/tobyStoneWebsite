@@ -162,6 +162,10 @@ body {
         max-height: none;
     }
 
+    .game-ui {
+        bottom: 12%;
+    }
+
     .background-video,
     .sea-overlay {
         object-fit: cover;

@@ -212,8 +212,9 @@ class ShipGameController {
             // Center of the ship horizontally
             const shipScreenX = shipRect.left + shipRect.width / 2;
 
-            const containerW = window.innerWidth;
-            const containerH = window.innerHeight;
+            const sceneRect = document.querySelector('.ghost-game-scene').getBoundingClientRect();
+            const containerW = sceneRect.width;
+            const containerH = sceneRect.height;
             
             // Calculate actual rendered dimensions due to object-fit: contain
             const scale = Math.min(containerW / videoWidth, containerH / videoHeight);
@@ -267,7 +268,13 @@ class ShipGameController {
 
             // Subtract 15% of viewport to compensate for the transparent empty space at the bottom of the ship's WebM canvas
             const paddingOffset = containerH * 0.15; 
-            const targetBottom = targetBottomPx - paddingOffset;
+            let targetBottom = targetBottomPx - paddingOffset;
+            
+            // Boost the ship up slightly in mobile landscape so it doesn't look sunken and sits higher in the framed viewport
+            const isMobile = window.matchMedia("(max-width: 950px) and (orientation: landscape), (max-height: 500px) and (orientation: landscape)").matches;
+            if (isMobile) {
+                targetBottom += containerH * 0.08; 
+            }
             
             // Initialize smoothing variable on first frame
             if (this.currentBottom === undefined) {
