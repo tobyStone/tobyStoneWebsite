@@ -45,8 +45,8 @@ class ShipGameController {
         const btnSink = document.getElementById('btn-sink');
         const btnTurn = document.getElementById('btn-turn');
 
-        // Block UI clicks if the ship is turning or sinking
-        const isLocked = () => this.state === STATE.TURN || this.state === STATE.SINK;
+        // Block UI clicks if the ship is turning
+        const isLocked = () => this.state === STATE.TURN;
 
         if(btnIdle) btnIdle.addEventListener('click', () => { if (!isLocked()) this.playIdle(); });
         if(btnSail) btnSail.addEventListener('click', () => { if (!isLocked()) this.startSailing(); });
