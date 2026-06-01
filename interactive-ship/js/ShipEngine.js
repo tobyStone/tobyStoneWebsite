@@ -294,6 +294,7 @@ class ShipGameController {
                 const shipHeight = this.videos[STATE.IDLE].offsetHeight || 505;
                 const offsetPct = (this.sinkOffset / shipHeight) * 100;
                 document.documentElement.style.setProperty('--sink-mask-offset-pct', `${offsetPct}%`);
+                document.documentElement.style.setProperty('--sink-mask-offset', `${this.sinkOffset}px`);
             } else {
                 // Apply standard smoothing (low-pass filter) to eliminate jerkiness
                 this.currentBottom += (targetBottom - this.currentBottom) * 0.05;
@@ -301,6 +302,7 @@ class ShipGameController {
                 // Reset the mask offset in case the user resets to idle
                 this.sinkOffset = 0;
                 document.documentElement.style.setProperty('--sink-mask-offset', `0px`);
+                document.documentElement.style.setProperty('--sink-mask-offset-pct', `0%`);
             }
             
             // --- DYNAMIC PITCH CALCULATION ---

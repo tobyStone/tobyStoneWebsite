@@ -7,9 +7,6 @@ body {
     color: #fff;
     font-family: 'Inter', sans-serif;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .back-link {
@@ -32,8 +29,6 @@ body {
     position: relative;
     width: 100vw;
     height: 100vh;
-    max-width: calc(100vh * (16 / 9));
-    max-height: calc(100vw * (9 / 16));
     overflow: hidden;
     background: #000;
 }
@@ -44,7 +39,7 @@ body {
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     pointer-events: none;
 }
 
@@ -56,20 +51,20 @@ body {
 .ship-overlay {
     position: absolute;
     z-index: 4;
-    width: 26.3%; /* 505px / 1920px = 26.3% */
+    width: 505px;
     left: 22%;
     transform: translateX(-50%);
     pointer-events: none;
     opacity: 0;
     transition: none;
     will-change: left, opacity;
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(61% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
-    mask-image: linear-gradient(to bottom, black 0%, black calc(61% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 35px - var(--sink-mask-offset, 0px)), transparent calc(100% - 15vh - var(--sink-mask-offset, 0px)));
+    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 35px - var(--sink-mask-offset, 0px)), transparent calc(100% - 15vh - var(--sink-mask-offset, 0px)));
 }
 
 #ship-sink {
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(64.5% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
-    mask-image: linear-gradient(to bottom, black 0%, black calc(64.5% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 17.5px - var(--sink-mask-offset, 0px)), transparent calc(100% - 15vh - var(--sink-mask-offset, 0px)));
+    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 15vh - 17.5px - var(--sink-mask-offset, 0px)), transparent calc(100% - 15vh - var(--sink-mask-offset, 0px)));
 }
 
 .ship-overlay.active {
@@ -148,5 +143,34 @@ body {
     }
     #portrait-warning {
         display: flex;
+    }
+}
+
+@media (max-width: 950px) and (orientation: landscape), (max-height: 500px) and (orientation: landscape) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ghost-game-scene {
+        max-width: calc(100vh * (16 / 9));
+        max-height: calc(100vw * (9 / 16));
+    }
+
+    .background-video,
+    .sea-overlay {
+        object-fit: cover;
+    }
+
+    .ship-overlay {
+        width: 26.3%;
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(61% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
+        mask-image: linear-gradient(to bottom, black 0%, black calc(61% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
+    }
+
+    #ship-sink {
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(64.5% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
+        mask-image: linear-gradient(to bottom, black 0%, black calc(64.5% - var(--sink-mask-offset-pct, 0%)), transparent calc(67.9% - var(--sink-mask-offset-pct, 0%)));
     }
 }
