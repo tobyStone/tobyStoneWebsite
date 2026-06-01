@@ -238,6 +238,7 @@ class ShipGameController {
             if (this.currentBottom === undefined) {
                 this.currentBottom = targetBottom;
             }
+            const prevBottom = this.currentBottom;
             
             if (this.state === STATE.SINK) {
                 // Determine how much to sink per frame (sink off screen in ~5 seconds at 60fps)
@@ -265,6 +266,21 @@ class ShipGameController {
                 document.documentElement.style.setProperty('--sink-mask-offset', `0px`);
             }
             
+            // --- DYNAMIC PITCH CALCULATION ---
+            if (this.currentPitch === undefined) this.currentPitch = 0;
+            
+            // Velocity: positive means the ship is rising this frame
+            const velocity = this.currentBottom - prevBottom;
+            
+            // Map vertical velocity to a target pitch angle (multiplier determines steepness)
+            let targetPitch = velocity * 3.5; 
+            
+            // Clamp to max 8 degrees up/down
+            targetPitch = Math.max(-8, Math.min(8, targetPitch));
+            
+            // Smooth the pitch for elegant heavy boat feel
+            this.currentPitch += (targetPitch - this.currentPitch) * 0.1;
+
             // X-Axis Movement Logic
             if (this.state === STATE.SAILING) {
                 const isFlipped = this.seaVideo.classList.contains('flipped');
@@ -287,6 +303,13 @@ class ShipGameController {
                 if (vid) {
                     vid.style.bottom = newBottom;
                     vid.style.left = newLeft;
+                    
+                    // Native left-facing: positive pitch = prow up. Flipped right-facing: negative pitch = prow up.
+                    const isFlipped = vid.classList.contains('flipped');
+                    const rot = isFlipped ? -this.currentPitch : this.currentPitch;
+                    
+                    // Apply rotation before scale so the 2D pitch happens natively
+                    vid.style.transform = `translateX(-50%) rotate(${rot}deg) ${isFlipped ? 'scaleX(-1)' : ''}`;
                 }
             });
         };
