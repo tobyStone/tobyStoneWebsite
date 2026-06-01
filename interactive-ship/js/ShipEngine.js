@@ -142,6 +142,11 @@ class ShipGameController {
                 // Removed currentTime = 0 for seamless idle loops
             }
             newVideo.classList.add('active');
+            
+            // Trigger audio voice line
+            if (window.audioManager) {
+                window.audioManager.playVoice(newState);
+            }
         }
         
         const playPromise = newVideo.play();
