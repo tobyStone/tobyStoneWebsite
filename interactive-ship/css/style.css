@@ -173,12 +173,12 @@ body {
 
     .ship-overlay {
         width: 26.3%;
-        -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(85% - var(--sink-mask-offset-pct, 0%)), transparent calc(95% - var(--sink-mask-offset-pct, 0%)));
-        mask-image: linear-gradient(to bottom, black 0%, black calc(85% - var(--sink-mask-offset-pct, 0%)), transparent calc(95% - var(--sink-mask-offset-pct, 0%)));
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(73% - var(--sink-mask-offset-pct, 0%)), transparent calc(83% - var(--sink-mask-offset-pct, 0%)));
+        mask-image: linear-gradient(to bottom, black 0%, black calc(73% - var(--sink-mask-offset-pct, 0%)), transparent calc(83% - var(--sink-mask-offset-pct, 0%)));
     }
 
     #ship-sink {
-        -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(85% - var(--sink-mask-offset-pct, 0%)), transparent calc(95% - var(--sink-mask-offset-pct, 0%)));
-        mask-image: linear-gradient(to bottom, black 0%, black calc(85% - var(--sink-mask-offset-pct, 0%)), transparent calc(95% - var(--sink-mask-offset-pct, 0%)));
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(73% - var(--sink-mask-offset-pct, 0%)), transparent calc(83% - var(--sink-mask-offset-pct, 0%)));
+        mask-image: linear-gradient(to bottom, black 0%, black calc(73% - var(--sink-mask-offset-pct, 0%)), transparent calc(83% - var(--sink-mask-offset-pct, 0%)));
     }
 }
