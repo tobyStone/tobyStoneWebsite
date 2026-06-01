@@ -49,14 +49,14 @@ class ShipGameController {
         // Block UI clicks if the ship is turning
         const isLocked = () => this.state === STATE.TURN;
 
-        if(btnIdle) btnIdle.addEventListener('click', () => { if (!isLocked()) this.playIdle(); });
-        if(btnSail) btnSail.addEventListener('click', () => { if (!isLocked()) this.startSailing(); });
-        if(btnHit) btnHit.addEventListener('click', () => { if (!isLocked()) this.playHit(); });
-        if(btnSink) btnSink.addEventListener('click', () => { if (!isLocked()) this.playSink(); });
-        if(btnTurn) btnTurn.addEventListener('click', () => this.playTurn());
+        if(btnIdle) btnIdle.addEventListener('click', () => { if (!isLocked()) this.playIdle(true); });
+        if(btnSail) btnSail.addEventListener('click', () => { if (!isLocked()) this.startSailing(true); });
+        if(btnHit) btnHit.addEventListener('click', () => { if (!isLocked()) this.playHit(true); });
+        if(btnSink) btnSink.addEventListener('click', () => { if (!isLocked()) this.playSink(true); });
+        if(btnTurn) btnTurn.addEventListener('click', () => { if (!isLocked()) this.playTurn(true); });
     }
 
-    playTurn() {
+    playTurn(isExplicitClick = false) {
         if (this.state === STATE.TURN || this.state === STATE.SINK || this.isPreparingTurn) return;
         this.isPreparingTurn = true;
         
@@ -81,7 +81,7 @@ class ShipGameController {
             // Abort if another state (like SINK) overrode us during the microscopic seek delay
             if (this.state === STATE.SINK) return;
             
-            this.setState(STATE.TURN);
+            this.setState(STATE.TURN, isExplicitClick);
             
             turnVideo.onended = () => {
                 turnVideo.onended = null;
@@ -108,7 +108,7 @@ class ShipGameController {
 
     // --- Core Transition Logic ---
 
-    setState(newState) {
+    setState(newState, isExplicitClick = false) {
         if (this.state === newState && newState !== STATE.HIT) return; // Allow repeating hit
         
         const oldVideo = this.videos[this.state];
@@ -146,7 +146,7 @@ class ShipGameController {
             
             // Trigger audio voice line
             if (window.audioManager) {
-                window.audioManager.playVoice(newState);
+                window.audioManager.playVoice(newState, isExplicitClick);
             }
         }
         
@@ -158,16 +158,16 @@ class ShipGameController {
 
     // --- Public API for Game Logic ---
 
-    playIdle() {
-        this.setState(STATE.IDLE);
+    playIdle(isExplicitClick = false) {
+        this.setState(STATE.IDLE, isExplicitClick);
     }
 
-    startSailing() {
-        this.setState(STATE.SAILING);
+    startSailing(isExplicitClick = false) {
+        this.setState(STATE.SAILING, isExplicitClick);
     }
 
-    playHit() {
-        this.setState(STATE.HIT);
+    playHit(isExplicitClick = false) {
+        this.setState(STATE.HIT, isExplicitClick);
         
         // Once hit finishes, return to idle automatically
         const hitVideo = this.videos[STATE.HIT];
@@ -179,8 +179,8 @@ class ShipGameController {
         };
     }
 
-    playSink() {
-        this.setState(STATE.SINK);
+    playSink(isExplicitClick = false) {
+        this.setState(STATE.SINK, isExplicitClick);
     }
 
     startWaveTracking() {

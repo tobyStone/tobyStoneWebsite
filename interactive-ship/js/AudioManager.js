@@ -4,7 +4,7 @@ class AudioManager {
         
         // Define audio tracks
         this.tracks = {
-            ambient: new Audio('/sounds/waves.mp3'),
+            ambient: new Audio('/sounds/waves_seamless.ogg'),
             idle: new Audio('/sounds/idle.mp3'),
             sail: new Audio('/sounds/sail.mp3'),
             turn: new Audio('/sounds/turn.mp3'),
@@ -15,7 +15,7 @@ class AudioManager {
         // Configure ambient track
         this.tracks.ambient.loop = true;
         this.tracks.ambient.volume = 0.0; // Start silent, fade in
-        this.ambientTargetVolume = 0.3; // Default 30% volume
+        this.ambientTargetVolume = 0.21; // 70% of original 0.3 volume
         
         // Preload all
         Object.values(this.tracks).forEach(audio => {
@@ -44,6 +44,7 @@ class AudioManager {
             new Audio('/sounds/joke5.mp3')
         ];
         this.jokes.forEach(audio => audio.preload = 'auto');
+        this.unplayedJokes = [...this.jokes];
         
         // Listen for first interaction to unlock audio
         const unlock = () => {
@@ -84,7 +85,15 @@ class AudioManager {
             this.currentVoice.onended = null;
         }
         
-        const joke = this.jokes[Math.floor(Math.random() * this.jokes.length)];
+        // Refill shuffle bag if empty
+        if (this.unplayedJokes.length === 0) {
+            this.unplayedJokes = [...this.jokes];
+        }
+        
+        // Pick a random joke from the unplayed bag and remove it
+        const jokeIndex = Math.floor(Math.random() * this.unplayedJokes.length);
+        const joke = this.unplayedJokes.splice(jokeIndex, 1)[0];
+        
         this.currentVoice = joke;
         this.currentVoice.volume = 1.0;
         
@@ -115,13 +124,16 @@ class AudioManager {
         }, 50);
     }
     
-    playVoice(engineState) {
+    playVoice(engineState, isExplicitClick = false) {
+        // Only play Idle sound if explicitly clicked by the user
+        if (engineState === 'IDLE' && !isExplicitClick) return;
+        
         // We only trigger voice lines if the user has actually interacted to unlock audio
         // The first click (e.g. clicking Idle) will both unlock AND play the voice line!
         if (!this.initialized) {
             // Give the unlocker 10ms to fire first
             setTimeout(() => {
-                if (this.initialized) this.playVoice(engineState);
+                if (this.initialized) this.playVoice(engineState, isExplicitClick);
             }, 10);
             return;
         }
