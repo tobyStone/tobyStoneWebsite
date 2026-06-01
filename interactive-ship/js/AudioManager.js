@@ -35,16 +35,67 @@ class AudioManager {
             'SINK': 'sink'
         };
         
+        // Joke Engine
+        this.jokes = [
+            new Audio('/sounds/joke1.mp3'),
+            new Audio('/sounds/joke2.mp3'),
+            new Audio('/sounds/joke3.mp3'),
+            new Audio('/sounds/joke4.mp3'),
+            new Audio('/sounds/joke5.mp3')
+        ];
+        this.jokes.forEach(audio => audio.preload = 'auto');
+        
         // Listen for first interaction to unlock audio
         const unlock = () => {
             if (!this.initialized) {
                 this.initialized = true;
                 this.tracks.ambient.play().catch(e => console.log('Audio autoplay blocked:', e));
                 this.fadeAmbient(this.ambientTargetVolume);
+                this.scheduleNextJoke();
             }
             document.removeEventListener('click', unlock);
         };
         document.addEventListener('click', unlock);
+    }
+    
+    scheduleNextJoke() {
+        if (this.jokeTimer) clearTimeout(this.jokeTimer);
+        
+        // Random interval between 20 and 45 seconds
+        const nextDelay = 20000 + Math.random() * 25000;
+        this.jokeTimer = setTimeout(() => {
+            this.playJoke();
+            this.scheduleNextJoke();
+        }, nextDelay);
+    }
+    
+    playJoke() {
+        if (!this.initialized) return;
+        
+        // Don't interrupt important state voice lines!
+        if (this.currentVoice && !this.jokes.includes(this.currentVoice)) return;
+        
+        // Only tell jokes if we are just chilling out
+        if (window.shipGame && window.shipGame.state !== 'IDLE' && window.shipGame.state !== 'SAILING') return;
+        
+        if (this.currentVoice) {
+            this.currentVoice.pause();
+            this.currentVoice.currentTime = 0;
+            this.currentVoice.onended = null;
+        }
+        
+        const joke = this.jokes[Math.floor(Math.random() * this.jokes.length)];
+        this.currentVoice = joke;
+        this.currentVoice.volume = 1.0;
+        
+        this.fadeAmbient(this.voiceDuckingVolume);
+        
+        this.currentVoice.play().catch(e => console.log('Joke play error:', e));
+        
+        this.currentVoice.onended = () => {
+            this.currentVoice = null;
+            this.fadeAmbient(this.ambientTargetVolume);
+        };
     }
     
     fadeAmbient(targetVol) {
