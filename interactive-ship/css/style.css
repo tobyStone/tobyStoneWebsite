@@ -148,14 +148,18 @@ body {
 
 @media (max-width: 950px) and (orientation: landscape), (max-height: 500px) and (orientation: landscape) {
     body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: block;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .ghost-game-scene {
-        max-width: calc(100vh * (16 / 9));
-        max-height: calc(100vw * (9 / 16));
+        width: 100vw;
+        height: calc(100vw * (9 / 16));
+        max-width: none;
+        max-height: none;
     }
 
     .background-video,
