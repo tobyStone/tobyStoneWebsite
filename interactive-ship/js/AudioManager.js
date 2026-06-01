@@ -126,9 +126,18 @@ class AudioManager {
             this.unplayedJokes = [...this.jokes];
         }
         
-        // Pick a random joke from the unplayed bag and remove it
-        const jokeIndex = Math.floor(Math.random() * this.unplayedJokes.length);
+        // Pick a random joke from the unplayed bag
+        let jokeIndex = Math.floor(Math.random() * this.unplayedJokes.length);
+        
+        // If we just refilled the bag, ensure the first pick isn't the same as the last played joke!
+        while (this.unplayedJokes.length === this.jokes.length && 
+               this.unplayedJokes[jokeIndex] === this.lastPlayedJoke && 
+               this.jokes.length > 1) {
+            jokeIndex = Math.floor(Math.random() * this.unplayedJokes.length);
+        }
+        
         const joke = this.unplayedJokes.splice(jokeIndex, 1)[0];
+        this.lastPlayedJoke = joke;
         
         this.currentVoice = joke;
         this.currentVoice.volume = 1.0;
