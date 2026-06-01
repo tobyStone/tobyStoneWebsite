@@ -130,10 +130,13 @@ class ShipGameController {
                 newVideo.playbackRate = 0.3773; // Slow down the tilting video further (0.49 * 0.77) to hide clipping
             } else if (newState === STATE.SAILING) {
                 newVideo.playbackRate = 1.7;
-                newVideo.currentTime = 0;
+                // Removed currentTime = 0 to prevent decoder freezing ("hanging") on looping videos
+            } else if (newState === STATE.HIT) {
+                newVideo.playbackRate = 1.0;
+                newVideo.currentTime = 0; // Hit MUST restart
             } else {
                 newVideo.playbackRate = 1.0;
-                newVideo.currentTime = 0;
+                // Removed currentTime = 0 for seamless idle loops
             }
             newVideo.classList.add('active');
         }
@@ -147,14 +150,17 @@ class ShipGameController {
     // --- Public API for Game Logic ---
 
     playIdle() {
+        if (this.state === STATE.TURN) return;
         this.setState(STATE.IDLE);
     }
 
     startSailing() {
+        if (this.state === STATE.TURN) return;
         this.setState(STATE.SAILING);
     }
 
     playHit() {
+        if (this.state === STATE.TURN) return;
         this.setState(STATE.HIT);
         
         // Once hit finishes, return to idle automatically
@@ -168,6 +174,7 @@ class ShipGameController {
     }
 
     playSink() {
+        if (this.state === STATE.TURN) return;
         this.setState(STATE.SINK);
     }
 
@@ -306,7 +313,8 @@ class ShipGameController {
 
             // X-Axis Movement Logic
             if (this.state === STATE.SAILING) {
-                const isFlipped = this.seaVideo.classList.contains('flipped');
+                // Read from IDLE to avoid delayed sea flip race condition
+                const isFlipped = this.videos[STATE.IDLE].classList.contains('flipped');
                 const speed = (75 - 22) / (12 * 60); // 12 seconds to cross screen at 60fps
                 
                 if (isFlipped) {
@@ -329,7 +337,16 @@ class ShipGameController {
                     
                     // Native left-facing: positive pitch = prow up. Flipped right-facing: negative pitch = prow up.
                     const isFlipped = vid.classList.contains('flipped');
-                    const rot = isFlipped ? -this.currentPitch : this.currentPitch;
+                    let rot = isFlipped ? -this.currentPitch : this.currentPitch;
+                    
+                    if (vid === this.videos[STATE.TURN]) {
+                        // The turn video visually rotates the ship 180 degrees over 3 seconds.
+                        // We must seamlessly interpolate the CSS pitch from one side to the other so it doesn't snap!
+                        const progress = vid.currentTime / 3.0; 
+                        let multiplier = 1.0 - (progress * 2.0); // Goes from 1.0 at start, to -1.0 at end
+                        multiplier = Math.max(-1.0, Math.min(1.0, multiplier));
+                        rot = rot * multiplier;
+                    }
                     
                     // Apply rotation before scale so the 2D pitch happens natively
                     vid.style.transform = `translateX(-50%) rotate(${rot}deg) ${isFlipped ? 'scaleX(-1)' : ''}`;
